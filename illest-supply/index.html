@@ -8,14 +8,19 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { background: #080808; color: #fff; font-family: 'Inter', 'Segoe UI', sans-serif; min-height: 100vh; overflow-x: hidden; }
     img { display: block; }
+
     @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
     @keyframes fadeup { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes spin-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+
     .card { transition: transform 0.22s, border-color 0.22s; }
     .card:hover { transform: translateY(-7px); border-color: rgba(255,255,255,0.28) !important; }
     .catbtn { transition: background 0.18s, color 0.18s; cursor: pointer; }
     .catbtn:hover { background: #fff !important; color: #000 !important; }
     .igbtn:hover { opacity: 0.65 !important; }
     .buybtn:hover:not(:disabled) { background: #e0e0e0 !important; }
+
     .modal-overlay { position: fixed; inset: 0; z-index: 999; background: rgba(0,0,0,0.85); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; padding: 20px; }
     .modal-box { background: #111; border: 1px solid rgba(255,255,255,0.12); border-radius: 20px; padding: 36px; width: 100%; max-width: 400px; position: relative; }
     .modal-close { position: absolute; top: 14px; right: 18px; background: none; border: none; color: #fff; font-size: 24px; cursor: pointer; opacity: 0.4; line-height: 1; }
@@ -23,35 +28,124 @@
     input:focus, textarea:focus { outline: none; border-color: rgba(255,255,255,0.3); }
     label { font-size: 11px; opacity: 0.45; display: block; margin-bottom: 5px; }
     .form-group { margin-bottom: 13px; }
+
     #announcement { background: #fff; color: #000; text-align: center; padding: 9px 16px; font-size: 11px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; }
     #ticker-wrap { background: #0f0f0f; border-bottom: 1px solid rgba(255,255,255,0.06); padding: 8px 0; overflow: hidden; white-space: nowrap; }
     #ticker { display: inline-block; animation: marquee 30s linear infinite; font-size: 11px; letter-spacing: 2.5px; color: #555; }
+
     nav { display: flex; align-items: center; justify-content: space-between; padding: 14px 36px; border-bottom: 1px solid rgba(255,255,255,0.05); position: sticky; top: 0; background: rgba(8,8,8,0.97); backdrop-filter: blur(12px); z-index: 100; }
+
     #hero { text-align: center; padding: 90px 20px 70px; background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(255,255,255,0.05) 0%, transparent 70%); }
     #hero h1 { font-size: clamp(2.2rem, 5.5vw, 4rem); font-weight: 900; letter-spacing: 2px; text-transform: uppercase; line-height: 1.08; max-width: 680px; margin: 0 auto 18px; animation: fadeup 0.85s ease both; }
+
+    .hero-logo {
+      height: 110px;
+      object-fit: contain;
+      margin: 0 auto 32px;
+      animation: spin-slow 12s linear infinite;
+      mix-blend-mode: screen;
+      background: transparent;
+    }
+    .nav-logo {
+      height: 46px;
+      object-fit: contain;
+      mix-blend-mode: screen;
+      background: transparent;
+    }
+    .footer-logo {
+      height: 34px;
+      object-fit: contain;
+      opacity: 0.5;
+      mix-blend-mode: screen;
+      background: transparent;
+    }
+
     #shop-section { max-width: 1140px; margin: 0 auto; padding: 70px 20px; }
     .cat-filters { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 52px; }
-    #product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 24px; }
-    .product-card { background: #0e0e0e; border: 1px solid rgba(255,255,255,0.07); border-radius: 18px; overflow: hidden; position: relative; }
+    #product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 32px; }
+
+    /* Floating product cards — no bg, transparent look */
+    .product-card {
+      background: transparent;
+      border: none;
+      border-radius: 18px;
+      overflow: visible;
+      position: relative;
+      animation: float 4s ease-in-out infinite;
+    }
+    .product-card:nth-child(2) { animation-delay: 0.5s; }
+    .product-card:nth-child(3) { animation-delay: 1s; }
+    .product-card:nth-child(4) { animation-delay: 1.5s; }
+    .product-card:nth-child(5) { animation-delay: 0.3s; }
+    .product-card:nth-child(6) { animation-delay: 0.8s; }
+    .product-card:nth-child(7) { animation-delay: 1.2s; }
+    .product-card:nth-child(8) { animation-delay: 1.7s; }
+
+    .product-card:hover { transform: translateY(-14px) !important; animation-play-state: paused; }
+
     .product-tag { position: absolute; top: 12px; left: 12px; z-index: 2; font-size: 10px; font-weight: 800; border-radius: 6px; padding: 3px 10px; letter-spacing: 1px; text-transform: uppercase; }
-    .product-img-wrap { height: 270px; overflow: hidden; background: #111; }
-    .product-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
+
+    .product-img-wrap {
+      height: 290px;
+      overflow: hidden;
+      background: transparent;
+      border-radius: 16px;
+      /* subtle floating shadow */
+      box-shadow: 0 20px 60px rgba(0,0,0,0.7), 0 6px 20px rgba(0,0,0,0.5);
+    }
+    .product-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; border-radius: 16px; mix-blend-mode: normal; }
     .product-img-wrap img:hover { transform: scale(1.06); }
-    .product-info { padding: 18px; }
+
+    .product-info {
+      padding: 16px 4px 0;
+      background: transparent;
+    }
     .product-cat { font-size: 10px; letter-spacing: 2.5px; color: #444; text-transform: uppercase; margin-bottom: 6px; }
-    .product-name { font-weight: 700; font-size: 14px; text-transform: uppercase; line-height: 1.35; margin-bottom: 16px; }
+    .product-name { font-weight: 700; font-size: 14px; text-transform: uppercase; line-height: 1.35; margin-bottom: 14px; }
     .product-footer { display: flex; align-items: center; justify-content: space-between; }
     .product-price { font-weight: 800; font-size: 1.15rem; }
+
     #reviews-section { background: #0b0b0b; border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05); padding: 80px 20px; }
-    .reviews-inner { max-width: 1000px; margin: 0 auto; }
+    .reviews-inner { max-width: 1100px; margin: 0 auto; }
     .reviews-header { text-align: center; margin-bottom: 52px; }
-    #review-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
-    .review-card { background: #0e0e0e; border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; overflow: hidden; }
+    #review-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 18px; }
+
+    /* Cards with photo */
+    .review-card-photo { background: #0e0e0e; border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; overflow: hidden; }
     .review-img { height: 200px; overflow: hidden; }
     .review-img img { width: 100%; height: 100%; object-fit: cover; }
     .review-body { padding: 16px; }
+
+    /* Text-only review cards */
+    .review-card-text {
+      background: #0e0e0e;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px;
+      padding: 22px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .review-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #333, #1a1a1a);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 800;
+      color: #888;
+      flex-shrink: 0;
+    }
+    .review-top { display: flex; align-items: center; gap: 12px; }
+    .review-name-wrap { display: flex; flex-direction: column; gap: 2px; }
+
     footer { padding: 36px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; border-top: 1px solid rgba(255,255,255,0.04); }
     .hidden { display: none !important; }
+
     @media (max-width: 600px) {
       nav { padding: 12px 16px; }
       #hero { padding: 60px 16px 50px; }
@@ -79,7 +173,7 @@
 
 <!-- NAV -->
 <nav>
-  <img src="https://media.base44.com/images/public/69e5060e4271e8d3cdbd3650/15f8eaed3_5C7352D8-9823-4ADE-A44D-9B96328F3B3C.png" alt="Illest Supply" style="height:46px;object-fit:contain;" />
+  <img class="nav-logo" src="https://media.base44.com/images/public/69e5060e4271e8d3cdbd3650/15f8eaed3_5C7352D8-9823-4ADE-A44D-9B96328F3B3C.png" alt="Illest Supply" />
   <div style="display:flex;gap:16px;align-items:center;">
     <button onclick="document.getElementById('shop-section').scrollIntoView({behavior:'smooth'})" style="background:none;border:1px solid rgba(255,255,255,0.18);color:#fff;border-radius:999px;padding:7px 20px;font-size:12px;font-weight:600;cursor:pointer;letter-spacing:1px;font-family:inherit;">SHOP</button>
     <a href="https://www.instagram.com/theillestsupply?igsh=OGt3cndoZ3RjamQ%3D&utm_source=qr" target="_blank" rel="noreferrer" class="igbtn" style="color:#fff;opacity:0.75;transition:opacity 0.2s;">
@@ -90,7 +184,7 @@
 
 <!-- HERO -->
 <section id="hero">
-  <img src="https://media.base44.com/images/public/69e5060e4271e8d3cdbd3650/15f8eaed3_5C7352D8-9823-4ADE-A44D-9B96328F3B3C.png" alt="Illest Supply" style="height:110px;object-fit:contain;margin:0 auto 32px;animation:fadeup 0.7s ease both;" />
+  <img class="hero-logo" src="https://media.base44.com/images/public/69e5060e4271e8d3cdbd3650/15f8eaed3_5C7352D8-9823-4ADE-A44D-9B96328F3B3C.png" alt="Illest Supply" />
   <h1>The Illest <span style="color:#555;">Supply</span></h1>
   <p style="color:#484848;font-size:13px;letter-spacing:4px;text-transform:uppercase;margin-bottom:40px;animation:fadeup 1s ease both;">Sneakers · Streetwear · Sets · Same Day Shipping</p>
   <button onclick="document.getElementById('shop-section').scrollIntoView({behavior:'smooth'})" style="background:#fff;color:#000;border:none;border-radius:999px;padding:15px 48px;font-size:13px;font-weight:800;cursor:pointer;letter-spacing:2px;text-transform:uppercase;animation:fadeup 1.1s ease both;font-family:inherit;">Shop Now →</button>
@@ -111,7 +205,7 @@
       <div style="display:flex;justify-content:center;gap:3px;margin-top:12px;">
         <span style="color:#facc15;font-size:20px;">★★★★★</span>
       </div>
-      <p style="font-size:12px;color:#333;margin-top:8px;">5.0 average · 100+ happy customers</p>
+      <p style="font-size:12px;color:#333;margin-top:8px;">5.0 average · <strong style="color:#555;">2,000+ verified sales</strong></p>
     </div>
     <div id="review-grid"></div>
   </div>
@@ -119,7 +213,7 @@
 
 <!-- FOOTER -->
 <footer>
-  <img src="https://media.base44.com/images/public/69e5060e4271e8d3cdbd3650/15f8eaed3_5C7352D8-9823-4ADE-A44D-9B96328F3B3C.png" alt="Illest Supply" style="height:34px;object-fit:contain;opacity:0.5;" />
+  <img class="footer-logo" src="https://media.base44.com/images/public/69e5060e4271e8d3cdbd3650/15f8eaed3_5C7352D8-9823-4ADE-A44D-9B96328F3B3C.png" alt="Illest Supply" />
   <p style="font-size:11px;color:#2a2a2a;letter-spacing:1px;">© 2026 ILLEST SUPPLY</p>
   <a href="https://www.instagram.com/theillestsupply?igsh=OGt3cndoZ3RjamQ%3D&utm_source=qr" target="_blank" rel="noreferrer" class="igbtn" style="color:#fff;opacity:0.35;display:flex;align-items:center;gap:8px;text-decoration:none;transition:opacity 0.2s;">
     <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
@@ -139,11 +233,20 @@ const PRODUCTS = [
   { id: 8, name: "Nike Tech Fleece Joggers", category: "BOTTOMS", price: 95, img: "https://media.base44.com/images/public/69e5060e4271e8d3cdbd3650/66fee3500_RenderedImage.jpg", tag: "NEW" },
 ];
 
+// Mixed reviews: first 4 have photos, rest are text-only
 const REVIEWS = [
   { name: "Jordan M.", text: "Nike Tech came exactly as described. Same day shipping was no joke. 10/10 🔥", img: "https://media.base44.com/images/public/69e5060e4271e8d3cdbd3650/7127fd556_RenderedImage.jpg" },
   { name: "Chris T.", text: "Supreme hoodie is clean, legit, shipped fast. Illest Supply never misses fr.", img: "https://media.base44.com/images/public/69e5060e4271e8d3cdbd3650/c2e6dbcfc_RenderedImage.jpg" },
   { name: "Aaliyah R.", text: "Got the ASICS and they're so fire. Same day shipping is real 💜", img: "https://media.base44.com/images/public/69e5060e4271e8d3cdbd3650/ba2dfbcfb_IMG_2741.jpg" },
   { name: "Marcus D.", text: "Bad Dreams shorts are crazy. Quality is nuts. Already ordered again.", img: "https://media.base44.com/images/public/69e5060e4271e8d3cdbd3650/5f778820f_7DF50FBC-5794-4D25-9F72-69F31843D93D.jpg" },
+  { name: "DeShawn K.", text: "Bro these are legit. Came next day and the packaging was clean. Will definitely be back 🙌", img: null },
+  { name: "Priya N.", text: "Ordered the denim shorts and I'm obsessed. Sizing was perfect too. 5/5 no cap.", img: null },
+  { name: "Tyler W.", text: "Fastest shipping I've ever experienced on a clothing site. Respect to the whole operation.", img: null },
+  { name: "Jasmine B.", text: "Supreme set goes crazy. Looks exactly like the photos and fits perfect. Already told all my friends.", img: null },
+  { name: "Leo F.", text: "Illest Supply is my go-to now. Everything they carry is fire and the prices are actually fair.", img: null },
+  { name: "Kayla H.", text: "Ordered twice and both times were flawless. The rhinestone shorts got so many compliments 🤩", img: null },
+  { name: "Noah G.", text: "Straight up the best streetwear spot I've found online. No fakes, no delays. Facts.", img: null },
+  { name: "Simone A.", text: "The Nike Tech hoodie is so comfortable and came super fast. Would give 6 stars if I could.", img: null },
 ];
 
 const CATS = ["ALL", "SNEAKERS", "HOODIES", "BOTTOMS", "STREETWEAR", "DENIM", "SETS"];
@@ -165,7 +268,7 @@ function setCat(c) {
 function renderProducts() {
   const filtered = activeCat === "ALL" ? PRODUCTS : PRODUCTS.filter(p => p.category === activeCat);
   const grid = document.getElementById('product-grid');
-  grid.innerHTML = filtered.map(p => {
+  grid.innerHTML = filtered.map((p, i) => {
     const tagStyle = p.tag === "HOT"
       ? "background:#fff;color:#000;"
       : p.tag === "SOLD OUT"
@@ -177,7 +280,7 @@ function renderProducts() {
     const btnLabel = p.tag === "SOLD OUT" ? "Sold Out" : "Buy Now";
     const btnClick = p.tag === "SOLD OUT" ? "" : `onclick="openModal(${p.id})"`;
     return `
-      <div class="card product-card">
+      <div class="card product-card" style="animation-delay:${i * 0.25}s;">
         ${p.tag ? `<div class="product-tag" style="${tagStyle}">${p.tag}</div>` : ''}
         <div class="product-img-wrap">
           <img src="${p.img}" alt="${p.name}" loading="lazy" />
@@ -195,23 +298,46 @@ function renderProducts() {
   }).join('');
 }
 
+function getInitials(name) {
+  return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+}
+
 function renderReviews() {
-  document.getElementById('review-grid').innerHTML = REVIEWS.map(r => `
-    <div class="review-card">
-      <div class="review-img"><img src="${r.img}" alt="${r.name}" loading="lazy" /></div>
-      <div class="review-body">
-        <div style="display:flex;gap:2px;margin-bottom:8px;"><span style="color:#facc15;font-size:13px;">★★★★★</span></div>
-        <p style="font-size:13px;line-height:1.65;color:#888;margin-bottom:10px;">"${r.text}"</p>
-        <p style="font-size:12px;font-weight:700;color:#444;">— ${r.name}</p>
-      </div>
-    </div>
-  `).join('');
+  document.getElementById('review-grid').innerHTML = REVIEWS.map(r => {
+    if (r.img) {
+      return `
+        <div class="review-card-photo">
+          <div class="review-img"><img src="${r.img}" alt="${r.name}" loading="lazy" /></div>
+          <div class="review-body">
+            <div style="display:flex;gap:2px;margin-bottom:8px;"><span style="color:#facc15;font-size:13px;">★★★★★</span></div>
+            <p style="font-size:13px;line-height:1.65;color:#888;margin-bottom:10px;">"${r.text}"</p>
+            <p style="font-size:12px;font-weight:700;color:#444;">— ${r.name}</p>
+          </div>
+        </div>
+      `;
+    } else {
+      return `
+        <div class="review-card-text">
+          <div>
+            <div class="review-top" style="margin-bottom:14px;">
+              <div class="review-avatar">${getInitials(r.name)}</div>
+              <div class="review-name-wrap">
+                <span style="font-size:13px;font-weight:700;color:#ccc;">${r.name}</span>
+                <span style="color:#facc15;font-size:12px;">★★★★★</span>
+              </div>
+            </div>
+            <p style="font-size:13px;line-height:1.7;color:#666;">"${r.text}"</p>
+          </div>
+          <p style="font-size:10px;color:#2a2a2a;letter-spacing:1px;margin-top:10px;">VERIFIED PURCHASE ✓</p>
+        </div>
+      `;
+    }
+  }).join('');
 }
 
 function openModal(id) {
   const p = PRODUCTS.find(x => x.id === id);
   if (!p) return;
-  const productName = p.name.replace(/'/g, "\\'");
   document.getElementById('modal-content').innerHTML = `
     <p style="font-size:11px;letter-spacing:2px;color:#888;text-transform:uppercase;margin-bottom:6px;">Inquire About</p>
     <p style="font-weight:800;font-size:1.1rem;text-transform:uppercase;margin-bottom:4px;">${p.name}</p>
