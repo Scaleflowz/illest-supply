@@ -13,16 +13,16 @@
     @keyframes fadeup { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes spin-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+    @keyframes spin-btn { 0%,100%{transform:rotate(-3deg)} 50%{transform:rotate(3deg)} }
 
     .card { transition: transform 0.22s, border-color 0.22s; }
-    .card:hover { transform: translateY(-7px); border-color: rgba(255,255,255,0.28) !important; }
     .catbtn { transition: background 0.18s, color 0.18s; cursor: pointer; }
     .catbtn:hover { background: #fff !important; color: #000 !important; }
     .igbtn:hover { opacity: 0.65 !important; }
     .buybtn:hover:not(:disabled) { background: #e0e0e0 !important; }
 
     .modal-overlay { position: fixed; inset: 0; z-index: 999; background: rgba(0,0,0,0.85); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; padding: 20px; }
-    .modal-box { background: #111; border: 1px solid rgba(255,255,255,0.12); border-radius: 20px; padding: 36px; width: 100%; max-width: 400px; position: relative; }
+    .modal-box { background: #111; border: 1px solid rgba(255,255,255,0.12); border-radius: 20px; padding: 36px; width: 100%; max-width: 400px; position: relative; max-height: 90vh; overflow-y: auto; }
     .modal-close { position: absolute; top: 14px; right: 18px; background: none; border: none; color: #fff; font-size: 24px; cursor: pointer; opacity: 0.4; line-height: 1; }
     input, textarea { width: 100%; padding: 11px 13px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); background: #0a0a0a; color: #fff; font-size: 14px; box-sizing: border-box; font-family: inherit; }
     input:focus, textarea:focus { outline: none; border-color: rgba(255,255,255,0.3); }
@@ -38,41 +38,15 @@
     #hero { text-align: center; padding: 90px 20px 70px; background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(255,255,255,0.05) 0%, transparent 70%); }
     #hero h1 { font-size: clamp(2.2rem, 5.5vw, 4rem); font-weight: 900; letter-spacing: 2px; text-transform: uppercase; line-height: 1.08; max-width: 680px; margin: 0 auto 18px; animation: fadeup 0.85s ease both; }
 
-    .hero-logo {
-      height: 110px;
-      object-fit: contain;
-      margin: 0 auto 32px;
-      animation: spin-slow 12s linear infinite;
-      mix-blend-mode: screen;
-      background: transparent;
-    }
-    .nav-logo {
-      height: 46px;
-      object-fit: contain;
-      mix-blend-mode: screen;
-      background: transparent;
-    }
-    .footer-logo {
-      height: 34px;
-      object-fit: contain;
-      opacity: 0.5;
-      mix-blend-mode: screen;
-      background: transparent;
-    }
+    .hero-logo { height: 110px; object-fit: contain; margin: 0 auto 32px; animation: spin-slow 12s linear infinite; mix-blend-mode: screen; background: transparent; }
+    .nav-logo { height: 46px; object-fit: contain; mix-blend-mode: screen; background: transparent; }
+    .footer-logo { height: 34px; object-fit: contain; opacity: 0.5; mix-blend-mode: screen; background: transparent; }
 
     #shop-section { max-width: 1140px; margin: 0 auto; padding: 70px 20px; }
     .cat-filters { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 52px; }
     #product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 32px; }
 
-    /* Floating product cards — no bg, transparent look */
-    .product-card {
-      background: transparent;
-      border: none;
-      border-radius: 18px;
-      overflow: visible;
-      position: relative;
-      animation: float 4s ease-in-out infinite;
-    }
+    .product-card { background: transparent; border: none; border-radius: 18px; overflow: visible; position: relative; animation: float 4s ease-in-out infinite; }
     .product-card:nth-child(2) { animation-delay: 0.5s; }
     .product-card:nth-child(3) { animation-delay: 1s; }
     .product-card:nth-child(4) { animation-delay: 1.5s; }
@@ -80,26 +54,13 @@
     .product-card:nth-child(6) { animation-delay: 0.8s; }
     .product-card:nth-child(7) { animation-delay: 1.2s; }
     .product-card:nth-child(8) { animation-delay: 1.7s; }
-
     .product-card:hover { transform: translateY(-14px) !important; animation-play-state: paused; }
 
     .product-tag { position: absolute; top: 12px; left: 12px; z-index: 2; font-size: 10px; font-weight: 800; border-radius: 6px; padding: 3px 10px; letter-spacing: 1px; text-transform: uppercase; }
-
-    .product-img-wrap {
-      height: 290px;
-      overflow: hidden;
-      background: transparent;
-      border-radius: 16px;
-      /* subtle floating shadow */
-      box-shadow: 0 20px 60px rgba(0,0,0,0.7), 0 6px 20px rgba(0,0,0,0.5);
-    }
-    .product-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; border-radius: 16px; mix-blend-mode: normal; }
+    .product-img-wrap { height: 290px; overflow: hidden; background: transparent; border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,0.7), 0 6px 20px rgba(0,0,0,0.5); }
+    .product-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; border-radius: 16px; }
     .product-img-wrap img:hover { transform: scale(1.06); }
-
-    .product-info {
-      padding: 16px 4px 0;
-      background: transparent;
-    }
+    .product-info { padding: 16px 4px 0; background: transparent; }
     .product-cat { font-size: 10px; letter-spacing: 2.5px; color: #444; text-transform: uppercase; margin-bottom: 6px; }
     .product-name { font-weight: 700; font-size: 14px; text-transform: uppercase; line-height: 1.35; margin-bottom: 14px; }
     .product-footer { display: flex; align-items: center; justify-content: space-between; }
@@ -110,36 +71,13 @@
     .reviews-header { text-align: center; margin-bottom: 52px; }
     #review-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 18px; }
 
-    /* Cards with photo */
     .review-card-photo { background: #0e0e0e; border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; overflow: hidden; }
     .review-img { height: 200px; overflow: hidden; }
     .review-img img { width: 100%; height: 100%; object-fit: cover; }
     .review-body { padding: 16px; }
 
-    /* Text-only review cards */
-    .review-card-text {
-      background: #0e0e0e;
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 16px;
-      padding: 22px 20px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 12px;
-    }
-    .review-avatar {
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #333, #1a1a1a);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 15px;
-      font-weight: 800;
-      color: #888;
-      flex-shrink: 0;
-    }
+    .review-card-text { background: #0e0e0e; border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 22px 20px; display: flex; flex-direction: column; justify-content: space-between; gap: 12px; }
+    .review-avatar { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #333, #1a1a1a); display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 800; color: #888; flex-shrink: 0; }
     .review-top { display: flex; align-items: center; gap: 12px; }
     .review-name-wrap { display: flex; flex-direction: column; gap: 2px; }
 
@@ -222,6 +160,8 @@
 </footer>
 
 <script>
+const FUNCTION_URL = 'https://superagent-bc2ec54c.base44.app/functions/sendInquiry';
+
 const PRODUCTS = [
   { id: 1, name: "Bad Dreams Rhinestone Shorts", category: "STREETWEAR", price: 85, img: "https://media.base44.com/images/public/69e5060e4271e8d3cdbd3650/5f778820f_7DF50FBC-5794-4D25-9F72-69F31843D93D.jpg", tag: "HOT" },
   { id: 2, name: "Valley Denim Shorts", category: "DENIM", price: 75, img: "https://media.base44.com/images/public/69e5060e4271e8d3cdbd3650/4e7e3bbd0_74A998F7-E15E-4E87-8A68-5C2D9880512F.jpg", tag: "NEW" },
@@ -233,7 +173,6 @@ const PRODUCTS = [
   { id: 8, name: "Nike Tech Fleece Joggers", category: "BOTTOMS", price: 95, img: "https://media.base44.com/images/public/69e5060e4271e8d3cdbd3650/66fee3500_RenderedImage.jpg", tag: "NEW" },
 ];
 
-// Mixed reviews: first 4 have photos, rest are text-only
 const REVIEWS = [
   { name: "Jordan M.", text: "Nike Tech came exactly as described. Same day shipping was no joke. 10/10 🔥", img: "https://media.base44.com/images/public/69e5060e4271e8d3cdbd3650/7127fd556_RenderedImage.jpg" },
   { name: "Chris T.", text: "Supreme hoodie is clean, legit, shipped fast. Illest Supply never misses fr.", img: "https://media.base44.com/images/public/69e5060e4271e8d3cdbd3650/c2e6dbcfc_RenderedImage.jpg" },
@@ -251,33 +190,21 @@ const REVIEWS = [
 
 const CATS = ["ALL", "SNEAKERS", "HOODIES", "BOTTOMS", "STREETWEAR", "DENIM", "SETS"];
 let activeCat = "ALL";
+let currentProduct = null;
 
 function renderCats() {
-  const el = document.getElementById('cat-filters');
-  el.innerHTML = CATS.map(c => `
+  document.getElementById('cat-filters').innerHTML = CATS.map(c => `
     <button class="catbtn" onclick="setCat('${c}')" style="padding:8px 20px;border-radius:999px;border:1px solid rgba(255,255,255,0.18);background:${c===activeCat?'#fff':'transparent'};color:${c===activeCat?'#000':'#fff'};font-size:11px;font-weight:700;letter-spacing:1px;font-family:inherit;">${c}</button>
   `).join('');
 }
 
-function setCat(c) {
-  activeCat = c;
-  renderCats();
-  renderProducts();
-}
+function setCat(c) { activeCat = c; renderCats(); renderProducts(); }
 
 function renderProducts() {
   const filtered = activeCat === "ALL" ? PRODUCTS : PRODUCTS.filter(p => p.category === activeCat);
-  const grid = document.getElementById('product-grid');
-  grid.innerHTML = filtered.map((p, i) => {
-    const tagStyle = p.tag === "HOT"
-      ? "background:#fff;color:#000;"
-      : p.tag === "SOLD OUT"
-        ? "background:#2a2a2a;color:#fff;"
-        : "background:#1a1a1a;color:#fff;";
-    const btnStyle = p.tag === "SOLD OUT"
-      ? "background:#1e1e1e;color:#444;cursor:default;"
-      : "background:#fff;color:#000;cursor:pointer;";
-    const btnLabel = p.tag === "SOLD OUT" ? "Sold Out" : "Buy Now";
+  document.getElementById('product-grid').innerHTML = filtered.map((p, i) => {
+    const tagStyle = p.tag === "HOT" ? "background:#fff;color:#000;" : p.tag === "SOLD OUT" ? "background:#2a2a2a;color:#fff;" : "background:#1a1a1a;color:#fff;";
+    const btnStyle = p.tag === "SOLD OUT" ? "background:#1e1e1e;color:#444;cursor:default;" : "background:#fff;color:#000;cursor:pointer;";
     const btnClick = p.tag === "SOLD OUT" ? "" : `onclick="openModal(${p.id})"`;
     return `
       <div class="card product-card" style="animation-delay:${i * 0.25}s;">
@@ -290,86 +217,113 @@ function renderProducts() {
           <p class="product-name">${p.name}</p>
           <div class="product-footer">
             <span class="product-price">$${p.price}</span>
-            <button class="buybtn" ${btnClick} style="${btnStyle}border:none;border-radius:8px;padding:9px 17px;font-size:11px;font-weight:800;letter-spacing:0.5px;text-transform:uppercase;transition:background 0.18s;font-family:inherit;">${btnLabel}</button>
+            <button class="buybtn" ${btnClick} style="${btnStyle}border:none;border-radius:8px;padding:9px 17px;font-size:11px;font-weight:800;letter-spacing:0.5px;text-transform:uppercase;transition:background 0.18s;font-family:inherit;">${p.tag === "SOLD OUT" ? "Sold Out" : "Buy Now"}</button>
           </div>
         </div>
-      </div>
-    `;
+      </div>`;
   }).join('');
 }
 
-function getInitials(name) {
-  return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
-}
+function getInitials(name) { return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2); }
 
 function renderReviews() {
-  document.getElementById('review-grid').innerHTML = REVIEWS.map(r => {
-    if (r.img) {
-      return `
-        <div class="review-card-photo">
-          <div class="review-img"><img src="${r.img}" alt="${r.name}" loading="lazy" /></div>
-          <div class="review-body">
-            <div style="display:flex;gap:2px;margin-bottom:8px;"><span style="color:#facc15;font-size:13px;">★★★★★</span></div>
-            <p style="font-size:13px;line-height:1.65;color:#888;margin-bottom:10px;">"${r.text}"</p>
-            <p style="font-size:12px;font-weight:700;color:#444;">— ${r.name}</p>
+  document.getElementById('review-grid').innerHTML = REVIEWS.map(r => r.img ? `
+    <div class="review-card-photo">
+      <div class="review-img"><img src="${r.img}" alt="${r.name}" loading="lazy" /></div>
+      <div class="review-body">
+        <div style="margin-bottom:8px;"><span style="color:#facc15;font-size:13px;">★★★★★</span></div>
+        <p style="font-size:13px;line-height:1.65;color:#888;margin-bottom:10px;">"${r.text}"</p>
+        <p style="font-size:12px;font-weight:700;color:#444;">— ${r.name}</p>
+      </div>
+    </div>` : `
+    <div class="review-card-text">
+      <div>
+        <div class="review-top" style="margin-bottom:14px;">
+          <div class="review-avatar">${getInitials(r.name)}</div>
+          <div class="review-name-wrap">
+            <span style="font-size:13px;font-weight:700;color:#ccc;">${r.name}</span>
+            <span style="color:#facc15;font-size:12px;">★★★★★</span>
           </div>
         </div>
-      `;
-    } else {
-      return `
-        <div class="review-card-text">
-          <div>
-            <div class="review-top" style="margin-bottom:14px;">
-              <div class="review-avatar">${getInitials(r.name)}</div>
-              <div class="review-name-wrap">
-                <span style="font-size:13px;font-weight:700;color:#ccc;">${r.name}</span>
-                <span style="color:#facc15;font-size:12px;">★★★★★</span>
-              </div>
-            </div>
-            <p style="font-size:13px;line-height:1.7;color:#666;">"${r.text}"</p>
-          </div>
-          <p style="font-size:10px;color:#2a2a2a;letter-spacing:1px;margin-top:10px;">VERIFIED PURCHASE ✓</p>
-        </div>
-      `;
-    }
-  }).join('');
+        <p style="font-size:13px;line-height:1.7;color:#666;">"${r.text}"</p>
+      </div>
+      <p style="font-size:10px;color:#2a2a2a;letter-spacing:1px;margin-top:10px;">VERIFIED PURCHASE ✓</p>
+    </div>`
+  ).join('');
 }
 
 function openModal(id) {
-  const p = PRODUCTS.find(x => x.id === id);
-  if (!p) return;
+  currentProduct = PRODUCTS.find(x => x.id === id);
+  if (!currentProduct) return;
   document.getElementById('modal-content').innerHTML = `
     <p style="font-size:11px;letter-spacing:2px;color:#888;text-transform:uppercase;margin-bottom:6px;">Inquire About</p>
-    <p style="font-weight:800;font-size:1.1rem;text-transform:uppercase;margin-bottom:4px;">${p.name}</p>
-    <p style="color:#e5e5e5;font-weight:800;font-size:1.4rem;margin-bottom:24px;">$${p.price}</p>
-    <form onsubmit="submitInquiry(event)">
-      <div class="form-group"><label>Your Name</label><input type="text" name="iname" placeholder="John Doe" /></div>
-      <div class="form-group"><label>Email</label><input type="email" name="iemail" placeholder="you@gmail.com" /></div>
-      <div class="form-group"><label>Size (if applicable)</label><input type="text" name="isize" placeholder="M / 10 / etc." /></div>
-      <div class="form-group"><label>Message (optional)</label><textarea rows="3" name="inote" placeholder="Any questions..." style="resize:none;"></textarea></div>
-      <button type="submit" style="width:100%;padding:14px;background:#fff;color:#000;border:none;border-radius:10px;font-weight:800;font-size:14px;cursor:pointer;letter-spacing:1px;text-transform:uppercase;font-family:inherit;">Send Inquiry →</button>
+    <p style="font-weight:800;font-size:1.1rem;text-transform:uppercase;margin-bottom:4px;">${currentProduct.name}</p>
+    <p style="color:#e5e5e5;font-weight:800;font-size:1.4rem;margin-bottom:24px;">$${currentProduct.price}</p>
+    <form id="inquiry-form" onsubmit="submitInquiry(event)">
+      <div class="form-group"><label>Your Name *</label><input type="text" id="f-name" placeholder="John Doe" required /></div>
+      <div class="form-group"><label>Email *</label><input type="email" id="f-email" placeholder="you@gmail.com" required /></div>
+      <div class="form-group"><label>Size (if applicable)</label><input type="text" id="f-size" placeholder="M / 10 / etc." /></div>
+      <div class="form-group"><label>Message (optional)</label><textarea rows="3" id="f-note" placeholder="Any questions..." style="resize:none;"></textarea></div>
+      <button type="submit" id="submit-btn" style="width:100%;padding:14px;background:#fff;color:#000;border:none;border-radius:10px;font-weight:800;font-size:14px;cursor:pointer;letter-spacing:1px;text-transform:uppercase;font-family:inherit;transition:opacity 0.2s;">Send Inquiry →</button>
+      <p id="form-error" style="font-size:12px;color:#e55;text-align:center;margin-top:10px;display:none;"></p>
       <p style="font-size:11px;opacity:0.25;text-align:center;margin-top:10px;">We respond within minutes</p>
-    </form>
-  `;
+    </form>`;
   document.getElementById('modal').classList.remove('hidden');
   document.body.style.overflow = 'hidden';
 }
 
-function submitInquiry(e) {
+async function submitInquiry(e) {
   e.preventDefault();
-  document.getElementById('modal-content').innerHTML = `
-    <div style="text-align:center;padding:24px 0;">
-      <div style="font-size:52px;margin-bottom:16px;">✅</div>
-      <div style="font-weight:800;font-size:1.2rem;margin-bottom:10px;">Inquiry Sent!</div>
-      <div style="opacity:0.45;font-size:14px;line-height:1.7;">We'll DM you ASAP. Follow <a href="https://www.instagram.com/theillestsupply?igsh=OGt3cndoZ3RjamQ%3D&utm_source=qr" target="_blank" rel="noreferrer" style="color:#fff;">@theillestsupply</a> for new drops.</div>
-      <button onclick="closeModal()" style="margin-top:24px;padding:11px 32px;background:#fff;color:#000;border:none;border-radius:999px;font-weight:700;cursor:pointer;font-family:inherit;">Close</button>
-    </div>
-  `;
+  const btn = document.getElementById('submit-btn');
+  const errEl = document.getElementById('form-error');
+  const name = document.getElementById('f-name').value.trim();
+  const email = document.getElementById('f-email').value.trim();
+  const size = document.getElementById('f-size').value.trim();
+  const note = document.getElementById('f-note').value.trim();
+
+  btn.textContent = 'Sending...';
+  btn.style.opacity = '0.6';
+  btn.disabled = true;
+  errEl.style.display = 'none';
+
+  try {
+    const res = await fetch(FUNCTION_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name, email, size, note,
+        product: currentProduct.name,
+        price: currentProduct.price
+      })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok || !data.ok) {
+      throw new Error(data.error || 'Something went wrong');
+    }
+
+    // Success screen
+    document.getElementById('modal-content').innerHTML = `
+      <div style="text-align:center;padding:24px 0;">
+        <div style="font-size:52px;margin-bottom:16px;">✅</div>
+        <div style="font-weight:800;font-size:1.2rem;margin-bottom:10px;">Inquiry Sent!</div>
+        <div style="opacity:0.45;font-size:14px;line-height:1.7;">We'll reach out ASAP. Follow <a href="https://www.instagram.com/theillestsupply?igsh=OGt3cndoZ3RjamQ%3D&utm_source=qr" target="_blank" rel="noreferrer" style="color:#fff;">@theillestsupply</a> for new drops.</div>
+        <button onclick="closeModal()" style="margin-top:24px;padding:11px 32px;background:#fff;color:#000;border:none;border-radius:999px;font-weight:700;cursor:pointer;font-family:inherit;">Close</button>
+      </div>`;
+  } catch (err) {
+    btn.textContent = 'Send Inquiry →';
+    btn.style.opacity = '1';
+    btn.disabled = false;
+    errEl.textContent = 'Failed to send — please DM us on Instagram instead.';
+    errEl.style.display = 'block';
+  }
 }
 
 function closeModal() {
   document.getElementById('modal').classList.add('hidden');
   document.body.style.overflow = '';
+  currentProduct = null;
 }
 
 document.getElementById('modal').addEventListener('click', function(e) {
