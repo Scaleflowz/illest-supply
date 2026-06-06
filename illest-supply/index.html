@@ -113,6 +113,11 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:18px 4
 .stock-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,#f59e0b,#ef4444);}
 
 .buy-btn{display:none;}
+.card-sizes{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.05);}
+.csz{padding:3px 8px;border-radius:6px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:#666;font-size:9px;font-weight:600;cursor:pointer;transition:all .18s;font-family:inherit;letter-spacing:0.04em;}
+.csz:hover:not(.oos){border-color:rgba(255,255,255,0.35);color:#ccc;}
+.csz.selected{border-color:#fff;background:#fff;color:#000;}
+.csz.oos{color:#252525;border-color:rgba(255,255,255,0.03);cursor:default;text-decoration:line-through;}
 .buy-btn:hover{background:#f0f0f0;transform:translateY(-1px);}
 .buy-btn:active{transform:translateY(0);}
 
@@ -494,6 +499,18 @@ function renderProducts(filter) {
 
 
 
+    // Slim size pills
+    let sizePills = '';
+    if(p.type === 'shoe') {
+      [['6',false],['7',false],['8',true],['9',true],['10',true],['11',false],['12',false],['13',false]].forEach(([s,oos]) => {
+        sizePills += `<button class="csz${oos?' oos':''}" onclick="event.stopPropagation();${oos?'':` pickCS(${p.id},'${s}',this)`}">${s}</button>`;
+      });
+    } else if(p.type === 'short') {
+      [['S',false],['M',false],['L',false],['XL',true]].forEach(([s,oos]) => {
+        sizePills += `<button class="csz${oos?' oos':''}" onclick="event.stopPropagation();${oos?'':` pickCS(${p.id},'${s}',this)`}">${s}</button>`;
+      });
+    }
+
     return `
       <div class="product-card" data-category="${p.category}" onclick="goToProduct(${p.id})">
         <div class="product-badge">${badgeHTML}</div>
@@ -505,6 +522,7 @@ function renderProducts(filter) {
             <span class="price-original">$${p.origPrice}</span>
             <span class="price-save">-${save}%</span>
           </div>
+          ${sizePills ? `<div class="card-sizes" id="cs${p.id}">${sizePills}</div>` : ''}
         </div>
       </div>`;
   }).join('');
@@ -513,6 +531,12 @@ function renderProducts(filter) {
 
 function goToProduct(id) {
   window.location.href = 'product.html?id=' + id;
+}
+function pickCS(id, size, btn) {
+  const row = document.getElementById('cs'+id);
+  if(row) row.querySelectorAll('.csz:not(.oos)').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedSizes[id] = size;
 }
 
 function selectSize(productId, size, btn, type) {
