@@ -42,6 +42,11 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:18px 4
 .hero-badge .dot{width:6px;height:6px;background:#22c55e;border-radius:50%;animation:pulse 2s infinite;}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
 
+
+/* HERO LOGO SPIN */
+.hero-brand-logo{width:200px;height:auto;margin:0 auto 32px;display:block;animation:spinY 4s linear infinite;}
+@keyframes spinY{from{transform:rotateY(0deg);}to{transform:rotateY(360deg);}}
+
 /* FILTERS */
 .filters{display:flex;justify-content:center;gap:10px;padding:30px 20px 10px;flex-wrap:wrap;}
 .filter-btn{padding:8px 22px;border-radius:50px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:#888;font-size:11px;font-weight:600;letter-spacing:0.09em;cursor:pointer;transition:all .2s;text-transform:uppercase;}
@@ -73,8 +78,8 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:18px 4
 
 /* PRICE */
 .price-row{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
-.price-current{font-size:20px;font-weight:800;color:#fff;}
-.price-original{font-size:14px;color:#444;text-decoration:line-through;}
+.price-current{font-size:22px;font-weight:800;color:#ef4444;text-shadow:0 0 12px rgba(239,68,68,0.4);}
+.price-original{font-size:17px;color:#555;text-decoration:line-through;}
 .price-save{font-size:10px;font-weight:700;color:#22c55e;background:rgba(34,197,94,0.1);padding:2px 8px;border-radius:50px;letter-spacing:0.05em;}
 
 /* SIZE SELECTOR */
@@ -153,7 +158,7 @@ select option:disabled{color:#444;}
   .products-grid{grid-template-columns:repeat(2,1fr);gap:12px;}
   .product-info{padding:12px 10px 14px;}
   .product-name{font-size:12px;}
-  .price-current{font-size:16px;}
+  .price-current{font-size:18px;}
   .size-btn{min-width:34px;font-size:10px;padding:4px 6px;}
   .buy-btn{font-size:10px;padding:10px;}
   .filters{gap:6px;padding:20px 12px 6px;}
@@ -236,6 +241,7 @@ select option:disabled{color:#444;}
 
 <section class="hero">
   <div class="hero-eyebrow">Est. The Illest Supply — Curated Luxury</div>
+  <img class="hero-brand-logo" src="https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/e6282f07d_918D9A7E-D61E-4658-A7B6-5DF1F8B5AC78.png" alt="Illest Supply Logo" />
   <h1>DRESS <em>DIFFERENT</em><br>STAY <em>ILLEST</em></h1>
   <p class="hero-sub">Authenticated designer pieces. Real price. Real heat.</p>
   <div class="hero-badge"><span class="dot"></span> Secure checkout · Verified seller · Ships fast</div>
@@ -246,61 +252,13 @@ select option:disabled{color:#444;}
   <button class="filter-btn" onclick="filterProducts('SNEAKERS',this)">Sneakers</button>
   <button class="filter-btn" onclick="filterProducts('SLIDES',this)">Slides</button>
   <button class="filter-btn" onclick="filterProducts('BOTTOMS',this)">Bottoms</button>
-  <button class="filter-btn" onclick="filterProducts('CUPS',this)">Cups</button>
 </div>
 
 
 <!-- SIZE CHART -->
-<section class="size-chart-section" id="sizeChart">
-  <div class="size-chart-inner">
-    <div class="section-header" style="text-align:left;margin-bottom:28px;">
-      <div class="section-eyebrow">Sizing Guide</div>
-      <div class="section-title" style="font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,4vw,42px);letter-spacing:0.04em;">SIZE CHART</div>
-    </div>
-    <div class="size-chart-tabs">
-      <button class="sc-tab active" onclick="switchChart('shoes',this)">Shoes / Slides</button>
-      <button class="sc-tab" onclick="switchChart('shorts',this)">Shorts / Jorts</button>
-    </div>
-
-    <!-- SHOES PANEL -->
-    <div class="size-chart-panel active" id="chart-shoes">
-      <table class="size-chart-table">
-        <thead><tr><th>US Men's</th><th>US Women's</th><th>EU</th><th>UK</th><th>CM</th><th>Status</th></tr></thead>
-        <tbody>
-          <tr><td>6</td><td>7.5W</td><td>38.5</td><td>5.5</td><td>24</td><td style="color:#22c55e;font-weight:700;">✓ In Stock</td></tr>
-          <tr><td>6.5</td><td>8W</td><td>39</td><td>6</td><td>24.5</td><td style="color:#22c55e;font-weight:700;">✓ In Stock</td></tr>
-          <tr><td>7</td><td>8.5W</td><td>40</td><td>6.5</td><td>25</td><td style="color:#22c55e;font-weight:700;">✓ In Stock</td></tr>
-          <tr><td>7.5</td><td>9W</td><td>40.5</td><td>7</td><td>25.5</td><td style="color:#22c55e;font-weight:700;">✓ In Stock</td></tr>
-          <tr class="oos-row"><td>8</td><td>9.5W</td><td>41</td><td>7.5</td><td>26</td><td style="color:#ef4444;font-weight:700;">✗ Sold Out</td></tr>
-          <tr class="oos-row"><td>8.5</td><td>10W</td><td>42</td><td>8</td><td>26.5</td><td style="color:#ef4444;font-weight:700;">✗ Sold Out</td></tr>
-          <tr class="oos-row"><td>9</td><td>10.5W</td><td>42.5</td><td>8.5</td><td>27</td><td style="color:#ef4444;font-weight:700;">✗ Sold Out</td></tr>
-          <tr class="oos-row"><td>9.5</td><td>11W</td><td>43</td><td>9</td><td>27.5</td><td style="color:#ef4444;font-weight:700;">✗ Sold Out</td></tr>
-          <tr class="oos-row"><td>10</td><td>11.5W</td><td>44</td><td>9.5</td><td>28</td><td style="color:#ef4444;font-weight:700;">✗ Sold Out</td></tr>
-          <tr class="oos-row"><td>10.5</td><td>12W</td><td>44.5</td><td>10</td><td>28.5</td><td style="color:#ef4444;font-weight:700;">✗ Sold Out</td></tr>
-          <tr><td>11</td><td>12.5W</td><td>45</td><td>10.5</td><td>29</td><td style="color:#22c55e;font-weight:700;">✓ In Stock</td></tr>
-          <tr><td>12</td><td>13.5W</td><td>46</td><td>11</td><td>30</td><td style="color:#22c55e;font-weight:700;">✓ In Stock</td></tr>
-          <tr><td>13</td><td>14.5W</td><td>47</td><td>12</td><td>31</td><td style="color:#22c55e;font-weight:700;">✓ In Stock</td></tr>
-        </tbody>
-      </table>
-      <p class="size-chart-note"><strong>Tip:</strong> Women should size down 1.5 from their women's size to get their men's equivalent. Not sure? DM us on Instagram and we'll help you find your perfect fit.</p>
-    </div>
-
-    <!-- SHORTS PANEL -->
-    <div class="size-chart-panel" id="chart-shorts">
-      <table class="size-chart-table">
-        <thead><tr><th>Size</th><th>Waist (inches)</th><th>Hip (inches)</th><th>Inseam</th><th>Status</th></tr></thead>
-        <tbody>
-          <tr class="oos-row"><td>XS</td><td>26–28"</td><td>33–35"</td><td>~11"</td><td style="color:#ef4444;font-weight:700;">✗ Sold Out</td></tr>
-          <tr><td>S</td><td>28–30"</td><td>35–37"</td><td>~11"</td><td style="color:#22c55e;font-weight:700;">✓ In Stock</td></tr>
-          <tr><td>M</td><td>30–32"</td><td>37–39"</td><td>~12"</td><td style="color:#22c55e;font-weight:700;">✓ In Stock</td></tr>
-          <tr><td>L</td><td>32–34"</td><td>39–41"</td><td>~12"</td><td style="color:#22c55e;font-weight:700;">✓ In Stock</td></tr>
-          <tr class="oos-row"><td>XL</td><td>34–36"</td><td>41–43"</td><td>~13"</td><td style="color:#ef4444;font-weight:700;">✗ Sold Out</td></tr>
-        </tbody>
-      </table>
-      <p class="size-chart-note"><strong>Note:</strong> These are baggy/wide-leg jorts — they run oversized by design. If you're between sizes, size down for a cleaner fit or stay true for the full streetwear silhouette.</p>
-    </div>
-  </div>
-</section>
+<div style="text-align:center;padding:30px 20px 10px;">
+  <a href="size-chart.html" style="display:inline-flex;align-items:center;gap:8px;padding:10px 28px;border-radius:50px;border:1px solid rgba(255,255,255,0.18);color:#fff;background:transparent;font-size:12px;font-weight:600;letter-spacing:0.1em;text-decoration:none;text-transform:uppercase;transition:all .2s;" onmouseover="this.style.background='#fff';this.style.color='#000'" onmouseout="this.style.background='transparent';this.style.color='#fff'">📏 View Size Chart →</a>
+</div>
 
 <!-- RECENTLY VIEWED -->
 <section class="rv-section" id="recentlyViewed" style="display:none;">
@@ -450,12 +408,12 @@ const PRODUCTS = [
     tag:"HOT", type:"shoe", stock:82
   },
   {
-    id:2, name:"Prada Cups (Black)", category:"CUPS", price:170, origPrice:240,
+    id:2, name:"Prada Cups (Black)", category:"SNEAKERS", price:170, origPrice:240,
     video:"https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/6557a200f_d411fd6a5_IMG_3816.mov",
     tag:"LIMITED", type:"nosize", stock:60
   },
   {
-    id:3, name:"Prada Cups (Blue)", category:"CUPS", price:170, origPrice:240,
+    id:3, name:"Prada Cups (Blue)", category:"SNEAKERS", price:170, origPrice:240,
     video:"https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/efa1df4ca_5b35fc966_IMG_3817.mov",
     tag:"LIMITED", type:"nosize", stock:55
   },
