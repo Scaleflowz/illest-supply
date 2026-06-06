@@ -171,6 +171,7 @@ const PRODUCTS = [
   { id: 6, name: "Nike Tech Fleece Full Set", category: "SETS", price: 200, img: "https://media.base44.com/images/public/69e5060e4271e8d3cdbd3650/7127fd556_RenderedImage.jpg", tag: "HOT" },
   { id: 7, name: "Nike Tech Fleece Hoodie", category: "HOODIES", price: 110, img: "https://media.base44.com/images/public/69e5060e4271e8d3cdbd3650/d16a64dc5_CED128CF-E9C1-4116-9CBF-337710930EEC.jpg", tag: "NEW" },
   { id: 8, name: "Nike Tech Fleece Joggers", category: "BOTTOMS", price: 95, img: "https://media.base44.com/images/public/69e5060e4271e8d3cdbd3650/66fee3500_RenderedImage.jpg", tag: "NEW" },
+  { id: 9, name: "Louis Vuitton Sneakers", category: "SNEAKERS", price: 350, video: "https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/596809019_fdba18512_51cb75de-43cf-461f-849e-1f05d6d5a56a.mp4", tag: "HOT" },
 ];
 
 const REVIEWS = [
@@ -212,7 +213,7 @@ function renderProducts() {
       <div class="card product-card" style="animation-delay:${i * 0.25}s;">
         ${p.tag ? `<div class="product-tag" style="${tagStyle}">${p.tag}</div>` : ''}
         <div class="product-img-wrap">
-          <img src="${p.img}" alt="${p.name}" loading="lazy" />
+          ${p.video ? `<video src="${p.video}" autoplay muted loop playsinline style="width:100%;height:100%;object-fit:cover;border-radius:16px;"></video>` : `<img src="${p.img}" alt="${p.name}" loading="lazy" />`}
         </div>
         <div class="product-info">
           <p class="product-cat">${p.category}</p>
