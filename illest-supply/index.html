@@ -174,6 +174,8 @@ const PRODUCTS = [
 ];
 
 const REVIEWS = [
+  { name: "nughuggers", text: "Good quality great seller", img: null, source: "depop", time: "6 weeks ago" },
+  { name: "lustlovs", text: "Fast shipping amazing quality love the hoodie ❤️❤️", img: null, source: "depop", time: "11 weeks ago" },
   { name: "Jordan M.", text: "Nike Tech came exactly as described. Same day shipping was no joke. 10/10 🔥", img: "https://media.base44.com/images/public/69e5060e4271e8d3cdbd3650/7127fd556_RenderedImage.jpg" },
   { name: "Chris T.", text: "Supreme hoodie is clean, legit, shipped fast. Illest Supply never misses fr.", img: "https://media.base44.com/images/public/69e5060e4271e8d3cdbd3650/c2e6dbcfc_RenderedImage.jpg" },
   { name: "Aaliyah R.", text: "Got the ASICS and they're so fire. Same day shipping is real 💜", img: "https://media.base44.com/images/public/69e5060e4271e8d3cdbd3650/ba2dfbcfb_IMG_2741.jpg" },
@@ -241,13 +243,17 @@ function renderReviews() {
         <div class="review-top" style="margin-bottom:14px;">
           <div class="review-avatar">${getInitials(r.name)}</div>
           <div class="review-name-wrap">
-            <span style="font-size:13px;font-weight:700;color:#ccc;">${r.name}</span>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="font-size:13px;font-weight:700;color:#ccc;">${r.name}</span>
+              ${r.source === 'depop' ? '<span style="background:#ff2300;color:#fff;font-size:9px;font-weight:800;padding:2px 7px;border-radius:4px;letter-spacing:1px;text-transform:uppercase;">Depop</span>' : ''}
+            </div>
             <span style="color:#facc15;font-size:12px;">★★★★★</span>
+            ${r.time ? '<span style="font-size:10px;color:#3a3a3a;letter-spacing:0.5px;">' + r.time + '</span>' : ''}
           </div>
         </div>
         <p style="font-size:13px;line-height:1.7;color:#666;">"${r.text}"</p>
       </div>
-      <p style="font-size:10px;color:#2a2a2a;letter-spacing:1px;margin-top:10px;">VERIFIED PURCHASE ✓</p>
+      <p style="font-size:10px;color:#2a2a2a;letter-spacing:1px;margin-top:10px;">${r.source === 'depop' ? 'VERIFIED ON DEPOP ✓' : 'VERIFIED PURCHASE ✓'}</p>
     </div>`
   ).join('');
 }
