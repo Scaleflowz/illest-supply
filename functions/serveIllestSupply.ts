@@ -1,0 +1,753 @@
+export default async function handler(req: Request): Promise<Response> {
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>The Illest Supply</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#080808;color:#fff;font-family:'Inter',sans-serif;overflow-x:hidden;}
+
+/* ANNOUNCEMENT */
+#announcement{background:#fff;color:#000;text-align:center;padding:9px 12px;font-size:12px;font-weight:600;letter-spacing:0.08em;}
+#announcement span{color:#c00;margin:0 6px;}
+
+/* NAV */
+nav{display:flex;align-items:center;justify-content:space-between;padding:18px 40px;border-bottom:1px solid rgba(255,255,255,0.05);background:rgba(8,8,8,0.97);position:sticky;top:0;z-index:100;}
+.nav-logo{height:52px;object-fit:contain;animation:spin 12s linear infinite;}
+@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+.nav-right{display:flex;align-items:center;gap:14px;}
+.nav-right a{color:#fff;opacity:0.75;font-size:13px;text-decoration:none;letter-spacing:0.04em;transition:opacity .2s;}
+.nav-right a:hover{opacity:1;}
+.nav-btn{padding:8px 20px;border-radius:50px;border:1px solid rgba(255,255,255,0.18);color:#fff;background:transparent;font-size:12px;font-weight:600;letter-spacing:0.07em;cursor:pointer;transition:all .2s;}
+.nav-btn:hover{background:#fff;color:#000;}
+
+/* TICKER */
+.ticker-wrap{background:#0f0f0f;border-bottom:1px solid rgba(255,255,255,0.06);overflow:hidden;padding:10px 0;}
+.ticker{display:flex;width:max-content;animation:ticker 28s linear infinite;}
+.ticker span{white-space:nowrap;padding:0 32px;font-size:11px;letter-spacing:0.14em;font-weight:600;color:#555;text-transform:uppercase;}
+.ticker span.dot{color:#c00;padding:0 4px;}
+@keyframes ticker{from{transform:translateX(0);}to{transform:translateX(-50%);}}}
+
+/* HERO */
+.hero{text-align:center;padding:90px 20px 70px;position:relative;}
+.hero::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(255,255,255,0.05) 0%,transparent 70%);pointer-events:none;}
+.hero-eyebrow{font-size:11px;letter-spacing:0.22em;color:#555;text-transform:uppercase;margin-bottom:18px;font-weight:600;}
+.hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(64px,10vw,130px);line-height:0.92;letter-spacing:0.02em;margin-bottom:20px;}
+.hero h1 em{font-style:normal;color:transparent;-webkit-text-stroke:1px rgba(255,255,255,0.35);}
+.hero-sub{font-size:14px;color:#484848;letter-spacing:0.06em;margin-bottom:36px;font-weight:400;}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:50px;padding:8px 18px;font-size:11px;letter-spacing:0.1em;color:#888;}
+.hero-badge .dot{width:6px;height:6px;background:#22c55e;border-radius:50%;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+
+/* FILTERS */
+.filters{display:flex;justify-content:center;gap:10px;padding:30px 20px 10px;flex-wrap:wrap;}
+.filter-btn{padding:8px 22px;border-radius:50px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:#888;font-size:11px;font-weight:600;letter-spacing:0.09em;cursor:pointer;transition:all .2s;text-transform:uppercase;}
+.filter-btn.active,.filter-btn:hover{border-color:#fff;color:#fff;background:rgba(255,255,255,0.05);}
+
+/* PRODUCTS */
+.products-section{padding:40px 30px 80px;}
+.products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:28px;max-width:1400px;margin:0 auto;}
+
+.product-card{border-radius:20px;overflow:hidden;background:#0e0e0e;border:1px solid rgba(255,255,255,0.06);position:relative;animation:float 5s ease-in-out infinite;transition:transform .3s,box-shadow .3s;}
+.product-card:hover{transform:translateY(-8px) scale(1.02);box-shadow:0 30px 80px rgba(0,0,0,0.8);}
+.product-card:nth-child(even){animation-delay:2.5s;}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+.product-card:hover{animation-play-state:paused;}
+
+.product-badge{position:absolute;top:14px;left:14px;z-index:2;display:flex;flex-direction:column;gap:5px;}
+.badge{padding:4px 10px;border-radius:50px;font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;}
+.badge.hot{background:#c00;color:#fff;}
+.badge.new{background:#fff;color:#000;}
+.badge.limited{background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;}
+.badge.out{background:rgba(255,255,255,0.08);color:#666;}
+
+.product-img-wrap{width:100%;aspect-ratio:4/5;overflow:hidden;background:#111;}
+.product-img-wrap img,.product-img-wrap video{width:100%;height:100%;object-fit:cover;}
+
+.product-info{padding:18px 16px 20px;}
+.product-cat{font-size:9px;letter-spacing:0.16em;color:#444;text-transform:uppercase;margin-bottom:6px;font-weight:600;}
+.product-name{font-size:15px;font-weight:700;letter-spacing:0.02em;margin-bottom:12px;line-height:1.3;}
+
+/* PRICE */
+.price-row{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
+.price-current{font-size:20px;font-weight:800;color:#fff;}
+.price-original{font-size:14px;color:#444;text-decoration:line-through;}
+.price-save{font-size:10px;font-weight:700;color:#22c55e;background:rgba(34,197,94,0.1);padding:2px 8px;border-radius:50px;letter-spacing:0.05em;}
+
+/* SIZE SELECTOR */
+.size-section{margin-bottom:14px;}
+.size-label{font-size:10px;letter-spacing:0.12em;color:#555;text-transform:uppercase;font-weight:600;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;}
+.size-label span{color:#888;font-size:9px;letter-spacing:0.08em;}
+.size-grid{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px;}
+.size-btn{padding:5px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.12);background:transparent;color:#ccc;font-size:11px;font-weight:600;cursor:pointer;transition:all .2s;min-width:42px;text-align:center;}
+.size-btn:hover:not(.oos){border-color:#fff;color:#fff;background:rgba(255,255,255,0.07);}
+.size-btn.selected{border-color:#fff;background:#fff;color:#000;}
+.size-btn.oos{border-color:rgba(255,255,255,0.04);color:#333;cursor:not-allowed;position:relative;text-decoration:line-through;}
+.size-conversion{font-size:9px;color:#444;margin-top:4px;font-style:italic;}
+
+/* STOCK BAR */
+.stock-bar-wrap{margin-bottom:14px;}
+.stock-text{font-size:10px;color:#f59e0b;font-weight:600;letter-spacing:0.06em;margin-bottom:5px;}
+.stock-bar{height:3px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;}
+.stock-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,#f59e0b,#ef4444);}
+
+.buy-btn{width:100%;padding:13px;border-radius:12px;background:#fff;color:#000;font-size:12px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;border:none;cursor:pointer;transition:all .2s;}
+.buy-btn:hover{background:#f0f0f0;transform:translateY(-1px);}
+.buy-btn:active{transform:translateY(0);}
+
+/* REVIEWS */
+.reviews-section{background:#0b0b0b;border-top:1px solid rgba(255,255,255,0.05);border-bottom:1px solid rgba(255,255,255,0.05);padding:70px 30px;}
+.section-header{text-align:center;margin-bottom:48px;}
+.section-eyebrow{font-size:10px;letter-spacing:0.2em;color:#555;text-transform:uppercase;font-weight:600;margin-bottom:10px;}
+.section-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,5vw,56px);letter-spacing:0.04em;}
+.stars{color:#f59e0b;font-size:14px;margin-bottom:4px;}
+.rating-summary{font-size:13px;color:#666;margin-top:6px;}
+.reviews-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px;max-width:1200px;margin:0 auto;}
+.review-card{background:#0e0e0e;border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:22px 20px;}
+.review-top{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+.review-avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#333,#1a1a1a);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#888;flex-shrink:0;}
+.review-meta{flex:1;}
+.review-name{font-size:13px;font-weight:700;color:#ccc;}
+.review-date{font-size:10px;color:#444;margin-top:1px;}
+.review-stars{color:#f59e0b;font-size:11px;margin-bottom:8px;}
+.review-text{font-size:12px;color:#666;line-height:1.6;}
+.review-verified{font-size:9px;color:#22c55e;font-weight:600;letter-spacing:0.08em;margin-top:10px;display:flex;align-items:center;gap:4px;}
+
+/* FOOTER */
+footer{padding:40px 30px;text-align:center;border-top:1px solid rgba(255,255,255,0.04);}
+.footer-logo{height:40px;opacity:0.5;mix-blend-mode:screen;margin-bottom:14px;animation:spin 12s linear infinite;}
+footer p{font-size:11px;color:#333;letter-spacing:0.08em;}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:1000;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.open{display:flex;}
+.modal{background:#111;border:1px solid rgba(255,255,255,0.12);border-radius:24px;padding:36px;max-width:460px;width:100%;position:relative;max-height:90vh;overflow-y:auto;}
+.modal-close{position:absolute;top:16px;right:18px;background:none;border:none;color:#666;font-size:22px;cursor:pointer;line-height:1;}
+.modal-close:hover{color:#fff;}
+.modal h2{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:0.06em;margin-bottom:4px;}
+.modal-product-info{font-size:13px;color:#888;margin-bottom:6px;}
+.modal-size-info{font-size:12px;color:#f59e0b;font-weight:600;margin-bottom:20px;}
+.modal-price-row{display:flex;align-items:center;gap:10px;margin-bottom:24px;}
+.modal-price{font-size:24px;font-weight:800;}
+.modal-price-orig{font-size:14px;color:#444;text-decoration:line-through;}
+.modal-save{font-size:11px;color:#22c55e;font-weight:700;background:rgba(34,197,94,0.1);padding:3px 10px;border-radius:50px;}
+.modal label{display:block;font-size:11px;letter-spacing:0.1em;color:#555;text-transform:uppercase;font-weight:600;margin-bottom:6px;}
+.modal input,.modal select,.modal textarea{width:100%;background:#0a0a0a;border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#fff;font-size:13px;padding:11px 14px;margin-bottom:14px;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s;}
+.modal input:focus,.modal select:focus,.modal textarea:focus{border-color:rgba(255,255,255,0.3);}
+.modal textarea{resize:vertical;min-height:80px;}
+.modal-submit{width:100%;padding:14px;background:#fff;color:#000;font-size:13px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;border:none;border-radius:12px;cursor:pointer;transition:all .2s;margin-top:4px;}
+.modal-submit:hover{background:#f0f0f0;}
+.modal-submit:disabled{opacity:0.5;cursor:not-allowed;}
+.modal-note{font-size:10px;color:#444;text-align:center;margin-top:12px;line-height:1.5;}
+
+select option:disabled{color:#444;}
+
+/* MOBILE 2-COLUMN */
+@media(max-width:600px){
+  nav{padding:12px 16px;}
+  .hero{padding:60px 16px 50px;}
+  .products-section{padding:30px 12px 60px;}
+  .products-grid{grid-template-columns:repeat(2,1fr);gap:12px;}
+  .product-info{padding:12px 10px 14px;}
+  .product-name{font-size:12px;}
+  .price-current{font-size:16px;}
+  .size-btn{min-width:34px;font-size:10px;padding:4px 6px;}
+  .buy-btn{font-size:10px;padding:10px;}
+  .filters{gap:6px;padding:20px 12px 6px;}
+  .filter-btn{padding:6px 14px;font-size:10px;}
+  .reviews-grid{grid-template-columns:1fr;}
+  .size-chart-table th,.size-chart-table td{padding:8px 10px;font-size:11px;}
+}
+
+/* SIZE CHART SECTION */
+.size-chart-section{padding:60px 30px;background:#080808;border-top:1px solid rgba(255,255,255,0.05);}
+.size-chart-inner{max-width:900px;margin:0 auto;}
+.size-chart-tabs{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;}
+.sc-tab{padding:8px 22px;border-radius:50px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:#888;font-size:11px;font-weight:600;letter-spacing:0.09em;cursor:pointer;transition:all .2s;text-transform:uppercase;}
+.sc-tab.active{border-color:#fff;color:#fff;background:rgba(255,255,255,0.05);}
+.size-chart-panel{display:none;}
+.size-chart-panel.active{display:block;}
+.size-chart-table{width:100%;border-collapse:collapse;font-size:12px;}
+.size-chart-table th{background:rgba(255,255,255,0.05);color:#888;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;font-weight:600;padding:12px 16px;text-align:left;border-bottom:1px solid rgba(255,255,255,0.06);}
+.size-chart-table td{padding:11px 16px;border-bottom:1px solid rgba(255,255,255,0.04);color:#ccc;font-size:12px;}
+.size-chart-table tr:hover td{background:rgba(255,255,255,0.02);}
+.size-chart-table .oos-row td{color:#333;text-decoration:line-through;}
+.size-chart-note{font-size:11px;color:#444;margin-top:16px;line-height:1.7;}
+.size-chart-note strong{color:#888;}
+
+/* RECENTLY VIEWED */
+.rv-section{padding:50px 30px;background:#0a0a0a;border-top:1px solid rgba(255,255,255,0.04);}
+.rv-section .section-header{margin-bottom:28px;}
+.rv-scroll{display:flex;gap:16px;overflow-x:auto;padding-bottom:10px;scrollbar-width:none;max-width:1400px;margin:0 auto;}
+.rv-scroll::-webkit-scrollbar{display:none;}
+.rv-card{flex:0 0 160px;border-radius:14px;overflow:hidden;background:#0e0e0e;border:1px solid rgba(255,255,255,0.06);cursor:pointer;transition:transform .2s,box-shadow .2s;}
+.rv-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,0.6);}
+.rv-card-img{width:100%;aspect-ratio:3/4;overflow:hidden;background:#111;}
+.rv-card-img img,.rv-card-img video{width:100%;height:100%;object-fit:cover;}
+.rv-card-info{padding:10px 10px 12px;}
+.rv-card-name{font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.rv-card-price{font-size:13px;font-weight:800;color:#fff;}
+.rv-card-orig{font-size:10px;color:#444;text-decoration:line-through;margin-left:4px;}
+.rv-empty{color:#444;font-size:13px;text-align:center;padding:30px;}
+
+</style>
+</head>
+<body>
+
+<div id="announcement">
+  🔥 FINAL CLEARANCE — UP TO 40% OFF &nbsp;<span>|</span>&nbsp; FREE SHIPPING OVER $150 &nbsp;<span>|</span>&nbsp; 2,000+ VERIFIED SALES ✓
+</div>
+
+<nav>
+  <img class="nav-logo" src="https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/733a313ba_IMG_2927.jpg" alt="Illest Supply" />
+  <div class="nav-right">
+    <a href="https://www.instagram.com/sleazysold" target="_blank">📷 Instagram</a>
+    <button class="nav-btn" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">SHOP NOW</button>
+  </div>
+</nav>
+
+<div class="ticker-wrap">
+  <div class="ticker">
+    <span>BALENCIAGA</span><span class="dot">✦</span>
+    <span>PRADA</span><span class="dot">✦</span>
+    <span>DIOR</span><span class="dot">✦</span>
+    <span>RICK OWENS</span><span class="dot">✦</span>
+    <span>BOTTEGA VENETA</span><span class="dot">✦</span>
+    <span>VALE FOREVER</span><span class="dot">✦</span>
+    <span>ASICS</span><span class="dot">✦</span>
+    <span>THE ILLEST SUPPLY</span><span class="dot">✦</span>
+    <span>AUTHENTICATED</span><span class="dot">✦</span>
+    <span>2,000+ SALES</span><span class="dot">✦</span>
+    <span>BALENCIAGA</span><span class="dot">✦</span>
+    <span>PRADA</span><span class="dot">✦</span>
+    <span>DIOR</span><span class="dot">✦</span>
+    <span>RICK OWENS</span><span class="dot">✦</span>
+    <span>BOTTEGA VENETA</span><span class="dot">✦</span>
+    <span>VALE FOREVER</span><span class="dot">✦</span>
+    <span>ASICS</span><span class="dot">✦</span>
+    <span>THE ILLEST SUPPLY</span><span class="dot">✦</span>
+    <span>AUTHENTICATED</span><span class="dot">✦</span>
+    <span>2,000+ SALES</span><span class="dot">✦</span>
+  </div>
+</div>
+
+<section class="hero">
+  <div class="hero-eyebrow">Est. The Illest Supply — Curated Luxury</div>
+  <h1>DRESS <em>DIFFERENT</em><br>STAY <em>ILLEST</em></h1>
+  <p class="hero-sub">Authenticated designer pieces. Real price. Real heat.</p>
+  <div class="hero-badge"><span class="dot"></span> Secure checkout · Verified seller · Ships fast</div>
+</section>
+
+<div class="filters">
+  <button class="filter-btn active" onclick="filterProducts('ALL',this)">All</button>
+  <button class="filter-btn" onclick="filterProducts('SNEAKERS',this)">Sneakers</button>
+  <button class="filter-btn" onclick="filterProducts('SLIDES',this)">Slides</button>
+  <button class="filter-btn" onclick="filterProducts('BOTTOMS',this)">Bottoms</button>
+  <button class="filter-btn" onclick="filterProducts('CUPS',this)">Cups</button>
+</div>
+
+
+<!-- SIZE CHART -->
+<section class="size-chart-section" id="sizeChart">
+  <div class="size-chart-inner">
+    <div class="section-header" style="text-align:left;margin-bottom:28px;">
+      <div class="section-eyebrow">Sizing Guide</div>
+      <div class="section-title" style="font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,4vw,42px);letter-spacing:0.04em;">SIZE CHART</div>
+    </div>
+    <div class="size-chart-tabs">
+      <button class="sc-tab active" onclick="switchChart('shoes',this)">Shoes / Slides</button>
+      <button class="sc-tab" onclick="switchChart('shorts',this)">Shorts / Jorts</button>
+    </div>
+
+    <!-- SHOES PANEL -->
+    <div class="size-chart-panel active" id="chart-shoes">
+      <table class="size-chart-table">
+        <thead><tr><th>US Men's</th><th>US Women's</th><th>EU</th><th>UK</th><th>CM</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>6</td><td>7.5W</td><td>38.5</td><td>5.5</td><td>24</td><td style="color:#22c55e;font-weight:700;">✓ In Stock</td></tr>
+          <tr><td>6.5</td><td>8W</td><td>39</td><td>6</td><td>24.5</td><td style="color:#22c55e;font-weight:700;">✓ In Stock</td></tr>
+          <tr><td>7</td><td>8.5W</td><td>40</td><td>6.5</td><td>25</td><td style="color:#22c55e;font-weight:700;">✓ In Stock</td></tr>
+          <tr><td>7.5</td><td>9W</td><td>40.5</td><td>7</td><td>25.5</td><td style="color:#22c55e;font-weight:700;">✓ In Stock</td></tr>
+          <tr class="oos-row"><td>8</td><td>9.5W</td><td>41</td><td>7.5</td><td>26</td><td style="color:#ef4444;font-weight:700;">✗ Sold Out</td></tr>
+          <tr class="oos-row"><td>8.5</td><td>10W</td><td>42</td><td>8</td><td>26.5</td><td style="color:#ef4444;font-weight:700;">✗ Sold Out</td></tr>
+          <tr class="oos-row"><td>9</td><td>10.5W</td><td>42.5</td><td>8.5</td><td>27</td><td style="color:#ef4444;font-weight:700;">✗ Sold Out</td></tr>
+          <tr class="oos-row"><td>9.5</td><td>11W</td><td>43</td><td>9</td><td>27.5</td><td style="color:#ef4444;font-weight:700;">✗ Sold Out</td></tr>
+          <tr class="oos-row"><td>10</td><td>11.5W</td><td>44</td><td>9.5</td><td>28</td><td style="color:#ef4444;font-weight:700;">✗ Sold Out</td></tr>
+          <tr class="oos-row"><td>10.5</td><td>12W</td><td>44.5</td><td>10</td><td>28.5</td><td style="color:#ef4444;font-weight:700;">✗ Sold Out</td></tr>
+          <tr><td>11</td><td>12.5W</td><td>45</td><td>10.5</td><td>29</td><td style="color:#22c55e;font-weight:700;">✓ In Stock</td></tr>
+          <tr><td>12</td><td>13.5W</td><td>46</td><td>11</td><td>30</td><td style="color:#22c55e;font-weight:700;">✓ In Stock</td></tr>
+          <tr><td>13</td><td>14.5W</td><td>47</td><td>12</td><td>31</td><td style="color:#22c55e;font-weight:700;">✓ In Stock</td></tr>
+        </tbody>
+      </table>
+      <p class="size-chart-note"><strong>Tip:</strong> Women should size down 1.5 from their women's size to get their men's equivalent. Not sure? DM us on Instagram and we'll help you find your perfect fit.</p>
+    </div>
+
+    <!-- SHORTS PANEL -->
+    <div class="size-chart-panel" id="chart-shorts">
+      <table class="size-chart-table">
+        <thead><tr><th>Size</th><th>Waist (inches)</th><th>Hip (inches)</th><th>Inseam</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr class="oos-row"><td>XS</td><td>26–28"</td><td>33–35"</td><td>~11"</td><td style="color:#ef4444;font-weight:700;">✗ Sold Out</td></tr>
+          <tr><td>S</td><td>28–30"</td><td>35–37"</td><td>~11"</td><td style="color:#22c55e;font-weight:700;">✓ In Stock</td></tr>
+          <tr><td>M</td><td>30–32"</td><td>37–39"</td><td>~12"</td><td style="color:#22c55e;font-weight:700;">✓ In Stock</td></tr>
+          <tr><td>L</td><td>32–34"</td><td>39–41"</td><td>~12"</td><td style="color:#22c55e;font-weight:700;">✓ In Stock</td></tr>
+          <tr class="oos-row"><td>XL</td><td>34–36"</td><td>41–43"</td><td>~13"</td><td style="color:#ef4444;font-weight:700;">✗ Sold Out</td></tr>
+        </tbody>
+      </table>
+      <p class="size-chart-note"><strong>Note:</strong> These are baggy/wide-leg jorts — they run oversized by design. If you're between sizes, size down for a cleaner fit or stay true for the full streetwear silhouette.</p>
+    </div>
+  </div>
+</section>
+
+<!-- RECENTLY VIEWED -->
+<section class="rv-section" id="recentlyViewed" style="display:none;">
+  <div class="section-header">
+    <div class="section-eyebrow">Don't Sleep</div>
+    <div class="section-title" style="font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,4vw,42px);letter-spacing:0.04em;">RECENTLY VIEWED</div>
+  </div>
+  <div class="rv-scroll" id="rvScroll"></div>
+</section>
+
+<section class="products-section" id="products">
+  <div class="products-grid" id="productsGrid"></div>
+</section>
+
+<section class="reviews-section">
+  <div class="section-header">
+    <div class="section-eyebrow">Customer Reviews</div>
+    <div class="section-title">THEY LOVE IT 🔥</div>
+    <div class="stars">★★★★★</div>
+    <div class="rating-summary">4.9 out of 5 · 2,000+ verified purchases on Depop</div>
+  </div>
+  <div class="reviews-grid">
+    <div class="review-card">
+      <div class="review-top">
+        <div class="review-avatar">JM</div>
+        <div class="review-meta">
+          <div class="review-name">jordanmike_</div>
+          <div class="review-date">2 days ago</div>
+        </div>
+      </div>
+      <div class="review-stars">★★★★★</div>
+      <div class="review-text">"Slides came exactly as described. Super fast shipping, packaged really well. Already got compliments wearing them out. Def buying again."</div>
+      <div class="review-verified">✓ VERIFIED PURCHASE</div>
+    </div>
+    <div class="review-card">
+      <div class="review-top">
+        <div class="review-avatar">KL</div>
+        <div class="review-meta">
+          <div class="review-name">kaylaloves_fits</div>
+          <div class="review-date">5 days ago</div>
+        </div>
+      </div>
+      <div class="review-stars">★★★★★</div>
+      <div class="review-text">"Got the Vale Forever jorts and I am OBSESSED. The quality is insane for the price. Seller was super responsive and shipped same day."</div>
+      <div class="review-verified">✓ VERIFIED PURCHASE</div>
+    </div>
+    <div class="review-card">
+      <div class="review-top">
+        <div class="review-avatar">TR</div>
+        <div class="review-meta">
+          <div class="review-name">trey.refresh</div>
+          <div class="review-date">1 week ago</div>
+        </div>
+      </div>
+      <div class="review-stars">★★★★★</div>
+      <div class="review-text">"Honestly thought it was too good to be true at this price point but nah, completely legit. Prada cups are real, came with everything. 10/10."</div>
+      <div class="review-verified">✓ VERIFIED PURCHASE</div>
+    </div>
+    <div class="review-card">
+      <div class="review-top">
+        <div class="review-avatar">NB</div>
+        <div class="review-meta">
+          <div class="review-name">nayabfit</div>
+          <div class="review-date">1 week ago</div>
+        </div>
+      </div>
+      <div class="review-stars">★★★★★</div>
+      <div class="review-text">"My third order from Illest Supply. Never disappointed. The Asics were fresh, correct size, fast delivery. This is my go-to spot now fr."</div>
+      <div class="review-verified">✓ VERIFIED PURCHASE</div>
+    </div>
+    <div class="review-card">
+      <div class="review-top">
+        <div class="review-avatar">DV</div>
+        <div class="review-meta">
+          <div class="review-name">dariusvibe</div>
+          <div class="review-date">2 weeks ago</div>
+        </div>
+      </div>
+      <div class="review-stars">★★★★★</div>
+      <div class="review-text">"Rick Owens came in perfect condition. Seller even messaged me to confirm the size before shipping. That's the kind of service you don't get everywhere."</div>
+      <div class="review-verified">✓ VERIFIED PURCHASE</div>
+    </div>
+    <div class="review-card">
+      <div class="review-top">
+        <div class="review-avatar">AM</div>
+        <div class="review-meta">
+          <div class="review-name">amara.drip</div>
+          <div class="review-date">2 weeks ago</div>
+        </div>
+      </div>
+      <div class="review-stars">★★★★★</div>
+      <div class="review-text">"Got the Bottegas and they're everything. Came with dust bag, looked brand new. Pricing is unreal compared to retail. Already told 5 of my friends."</div>
+      <div class="review-verified">✓ VERIFIED PURCHASE</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <img class="footer-logo" src="https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/733a313ba_IMG_2927.jpg" alt="Illest Supply" />
+  <p>© 2025 The Illest Supply · All Rights Reserved · <a href="https://www.instagram.com/sleazysold" target="_blank" style="color:#555;text-decoration:none;">@sleazysold</a></p>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <h2>SECURE YOUR PAIR</h2>
+    <div class="modal-product-info" id="modalProductName"></div>
+    <div class="modal-size-info" id="modalSizeInfo"></div>
+    <div class="modal-price-row">
+      <span class="modal-price" id="modalPrice"></span>
+      <span class="modal-price-orig" id="modalOrig"></span>
+      <span class="modal-save" id="modalSave"></span>
+    </div>
+    <label>Your Name</label>
+    <input type="text" id="inquiryName" placeholder="Full name" />
+    <label>Email Address</label>
+    <input type="email" id="inquiryEmail" placeholder="your@email.com" />
+    <label>Message (optional)</label>
+    <textarea id="inquiryMessage" placeholder="Any questions or special requests?"></textarea>
+    <button class="modal-submit" id="submitBtn" onclick="submitInquiry()">CLAIM THIS ITEM →</button>
+    <p class="modal-note">🔒 Secure inquiry · We'll confirm your order within 24hrs · No payment info collected here</p>
+  </div>
+</div>
+
+<script>
+const SHOE_SIZES = [
+  {us:'6',women:'7.5',oos:false},
+  {us:'6.5',women:'8',oos:false},
+  {us:'7',women:'8.5',oos:false},
+  {us:'7.5',women:'9',oos:false},
+  {us:'8',women:'9.5',oos:true},
+  {us:'8.5',women:'10',oos:true},
+  {us:'9',women:'10.5',oos:true},
+  {us:'9.5',women:'11',oos:true},
+  {us:'10',women:'11.5',oos:true},
+  {us:'10.5',women:'12',oos:true},
+  {us:'11',women:'12.5',oos:false},
+  {us:'12',women:'13.5',oos:false},
+  {us:'13',women:'14.5',oos:false},
+];
+
+const PRODUCTS = [
+  {
+    id:1, name:"Balenciaga Slides", category:"SLIDES", price:130, origPrice:185,
+    video:"https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/5823dd706_3852cb545_IMG_3818.mov",
+    tag:"HOT", type:"shoe", stock:82
+  },
+  {
+    id:2, name:"Prada Cups (Black)", category:"CUPS", price:170, origPrice:240,
+    video:"https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/6557a200f_d411fd6a5_IMG_3816.mov",
+    tag:"LIMITED", type:"nosize", stock:60
+  },
+  {
+    id:3, name:"Prada Cups (Blue)", category:"CUPS", price:170, origPrice:240,
+    video:"https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/efa1df4ca_5b35fc966_IMG_3817.mov",
+    tag:"LIMITED", type:"nosize", stock:55
+  },
+  {
+    id:4, name:"Dior Slides", category:"SLIDES", price:130, origPrice:195,
+    video:"https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/b309349de_7099759ef_IMG_3824.mov",
+    tag:"HOT", type:"shoe", stock:70
+  },
+  {
+    id:5, name:"Vale Forever College Jorts", category:"BOTTOMS", price:64.99, origPrice:95,
+    imgs:[
+      "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/f4b027634_74A998F7-E15E-4E87-8A68-5C2D9880512F.png",
+      "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/6b287f63d_AA36F7DE-F3CD-47CF-BAFB-FEE327EF145A.png"
+    ],
+    tag:"LIMITED", type:"short", stock:35
+  },
+  {
+    id:6, name:"Vale Forever Jorts", category:"BOTTOMS", price:69.99, origPrice:105,
+    imgs:[
+      "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/effd672da_F748D361-0A5E-4D84-B7CE-21A80BF31A03.png",
+      "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/eac22a547_FF86E6B6-910B-416D-8894-171D71295C5C.png",
+      "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/ab18f8c12_CBA80A5F-97CF-45C5-AA11-522922875DE3.png"
+    ],
+    tag:"LIMITED", type:"short", stock:28
+  },
+  {
+    id:7, name:"Vale Forever Jorts (Rhinestone)", category:"BOTTOMS", price:79.99, origPrice:120,
+    imgs:[
+      "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/607e2c691_CF43C058-BCF4-41FB-963A-95E3D9C3D886.png",
+      "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/e6a45f9dd_FEF16C09-1B37-4184-95F3-F18D4A350911.png"
+    ],
+    tag:"LIMITED", type:"short", stock:20
+  },
+  {
+    id:8, name:"Vale Forever Bad Dreams Jorts", category:"BOTTOMS", price:79.99, origPrice:120,
+    imgs:[
+      "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/05a792aed_AdobeExpress-file.png",
+      "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/3dd13263d_AdobeExpress-file3.png"
+    ],
+    tag:"LIMITED", type:"short", stock:15
+  },
+  {
+    id:9, name:"Asics Gel Kayano 14 Pink Glow", category:"SNEAKERS", price:110, origPrice:160,
+    video:"https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/a3863a27a_a3a6a46f6_IMG_38152.mov",
+    tag:"HOT", type:"shoe", stock:65
+  },
+  {
+    id:10, name:"Rick Owens", category:"SNEAKERS", price:150, origPrice:220,
+    video:"https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/5933676ed_424a09905_IMG_38132.mov",
+    tag:"HOT", type:"shoe", stock:75
+  },
+  {
+    id:11, name:"Bottegas (Green)", category:"SNEAKERS", price:150, origPrice:210,
+    video:"https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/eac53cd23_5dd2172fc_IMG_3820.mov",
+    tag:"NEW", type:"shoe", stock:80
+  },
+  {
+    id:12, name:"Bottegas (Blue)", category:"SNEAKERS", price:150, origPrice:210,
+    video:"https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/261fd2257_888b8f45f_IMG_3821.mov",
+    tag:"NEW", type:"shoe", stock:80
+  },
+  {
+    id:13, name:"Bottegas (Pink)", category:"SNEAKERS", price:150, origPrice:210,
+    video:"https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/44c290b36_9874363bd_IMG_3823.mov",
+    tag:"NEW", type:"shoe", stock:80
+  },
+];
+
+const SHORT_SIZES = [
+  {label:'XS', oos:true},
+  {label:'S', oos:false},
+  {label:'M', oos:false},
+  {label:'L', oos:false},
+  {label:'XL', oos:true},
+];
+
+let selectedSizes = {};
+let currentFilter = 'ALL';
+let modalProduct = null;
+
+function getSavePercent(price, orig) {
+  return Math.round((1 - price/orig)*100);
+}
+
+function renderProducts(filter) {
+  const grid = document.getElementById('productsGrid');
+  const filtered = filter === 'ALL' ? PRODUCTS : PRODUCTS.filter(p => p.category === filter);
+  grid.innerHTML = filtered.map(p => {
+    const save = getSavePercent(p.price, p.origPrice);
+    const stockPct = p.stock;
+    let badgeHTML = '';
+    if(p.tag === 'HOT') badgeHTML += \`<span class="badge hot">🔥 HOT</span>\`;
+    if(p.tag === 'NEW') badgeHTML += \`<span class="badge new">NEW</span>\`;
+    if(p.tag === 'LIMITED') badgeHTML += \`<span class="badge limited">⚡ LIMITED</span>\`;
+    badgeHTML += \`<span class="badge" style="background:rgba(34,197,94,0.15);color:#22c55e;">-\${save}% OFF</span>\`;
+
+    let mediaHTML = '';
+    if(p.video) {
+      mediaHTML = \`<video src="\${p.video}" autoplay muted loop playsinline style="width:100%;height:100%;object-fit:cover;"></video>\`;
+    } else if(p.imgs && p.imgs.length > 0) {
+      mediaHTML = \`<img src="\${p.imgs[0]}" alt="\${p.name}" loading="lazy" />\`;
+    }
+
+    let sizeHTML = '';
+    if(p.type === 'shoe') {
+      const selectedSize = selectedSizes[p.id] || null;
+      sizeHTML = \`
+        <div class="size-section">
+          <div class="size-label">Men's US Size <span>Women's size in ()</span></div>
+          <div class="size-grid" id="shoeGrid\${p.id}">
+            \${SHOE_SIZES.map(s => \`
+              <button class="size-btn\${s.oos?' oos':''}\${selectedSizes[p.id]===s.us?' selected':''}"
+                onclick="\${s.oos?'':\` selectSize(\${p.id},'\${s.us}',this,'shoe')\`}"
+                title="\${s.oos?'Out of Stock':''}">
+                \${s.us}<br><span style="font-size:9px;opacity:0.5;">(\${s.women}W)</span>
+              </button>\`).join('')}
+          </div>
+          <div class="size-conversion">Women: add 1.5 to men's size shown · EU sizes available on request</div>
+        </div>\`;
+    } else if(p.type === 'short') {
+      sizeHTML = \`
+        <div class="size-section">
+          <div class="size-label">Size <span>⚡ Limited Stock</span></div>
+          <div class="size-grid" id="shortGrid\${p.id}">
+            \${SHORT_SIZES.map(s => \`
+              <button class="size-btn\${s.oos?' oos':''}\${selectedSizes[p.id]===s.label?' selected':''}"
+                onclick="\${s.oos?'':\` selectSize(\${p.id},'\${s.label}',this,'short')\`}"
+                title="\${s.oos?'Out of Stock':''}">
+                \${s.label}
+              </button>\`).join('')}
+          </div>
+        </div>\`;
+    }
+
+    let stockMsg = '';
+    if(p.type === 'short') {
+      const msgs = ['Only 3 left!','Almost gone!','2 remaining!','Last few!'];
+      const msg = p.stock <= 20 ? msgs[p.id % msgs.length] : 'Selling fast';
+      stockMsg = \`<div class="stock-bar-wrap">
+        <div class="stock-text">⚠️ \${msg} · \${p.stock}% claimed</div>
+        <div class="stock-bar"><div class="stock-fill" style="width:\${p.stock}%;"></div></div>
+      </div>\`;
+    }
+
+    return \`
+      <div class="product-card" data-category="\${p.category}">
+        <div class="product-badge">\${badgeHTML}</div>
+        <div class="product-img-wrap">\${mediaHTML}</div>
+        <div class="product-info">
+          <div class="product-cat">\${p.category}</div>
+          <div class="product-name">\${p.name}</div>
+          <div class="price-row">
+            <span class="price-current">$\${p.price}</span>
+            <span class="price-original">$\${p.origPrice}</span>
+            <span class="price-save">SAVE \${save}%</span>
+          </div>
+          \${sizeHTML}
+          \${stockMsg}
+          <button class="buy-btn" onclick="openModal(\${p.id})">INQUIRE NOW →</button>
+        </div>
+      </div>\`;
+  }).join('');
+}
+
+function selectSize(productId, size, btn, type) {
+  selectedSizes[productId] = size;
+  const gridId = type === 'shoe' ? \`shoeGrid\${productId}\` : \`shortGrid\${productId}\`;
+  const grid = document.getElementById(gridId);
+  if(grid) {
+    grid.querySelectorAll('.size-btn:not(.oos)').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+  }
+}
+
+function filterProducts(cat, btn) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderProducts(cat);
+}
+
+function openModal(id) {
+  trackView(id);
+  const p = PRODUCTS.find(x => x.id === id);
+  if(!p) return;
+  modalProduct = p;
+  const save = getSavePercent(p.price, p.origPrice);
+  const size = selectedSizes[p.id];
+  document.getElementById('modalProductName').textContent = p.name;
+  document.getElementById('modalPrice').textContent = \`$\${p.price}\`;
+  document.getElementById('modalOrig').textContent = \`$\${p.origPrice}\`;
+  document.getElementById('modalSave').textContent = \`SAVE \${save}%\`;
+  if(size) {
+    document.getElementById('modalSizeInfo').textContent = \`Selected size: \${size}\`;
+  } else if(p.type === 'shoe') {
+    document.getElementById('modalSizeInfo').textContent = '⚠️ No size selected — please select a size before ordering';
+  } else if(p.type === 'short') {
+    document.getElementById('modalSizeInfo').textContent = '⚠️ No size selected — please select a size before ordering';
+  } else {
+    document.getElementById('modalSizeInfo').textContent = '';
+  }
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.getElementById('inquiryName').value = '';
+  document.getElementById('inquiryEmail').value = '';
+  document.getElementById('inquiryMessage').value = '';
+}
+
+async function submitInquiry() {
+  const name = document.getElementById('inquiryName').value.trim();
+  const email = document.getElementById('inquiryEmail').value.trim();
+  const message = document.getElementById('inquiryMessage').value.trim();
+  const size = selectedSizes[modalProduct?.id] || 'Not selected';
+  if(!name || !email) { alert('Please fill in your name and email.'); return; }
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true; btn.textContent = 'Sending...';
+  try {
+    const res = await fetch('https://api.base44.com/api/apps/6a21ea02495f72afbc2ec54c/functions/sendInquiry', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        name, email, message,
+        product: modalProduct?.name || '',
+        size,
+        price: modalProduct?.price || ''
+      })
+    });
+    btn.textContent = '✓ Inquiry Sent!';
+    setTimeout(closeModal, 2000);
+  } catch(e) {
+    btn.textContent = 'Error — try again';
+    btn.disabled = false;
+  }
+}
+
+document.getElementById('modalOverlay').addEventListener('click', function(e) {
+  if(e.target === this) closeModal();
+});
+
+
+// SIZE CHART TABS
+function switchChart(tab, btn) {
+  document.querySelectorAll('.size-chart-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sc-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('chart-' + tab).classList.add('active');
+  btn.classList.add('active');
+}
+
+// RECENTLY VIEWED
+let recentlyViewed = [];
+function trackView(id) {
+  if(!recentlyViewed.includes(id)) {
+    recentlyViewed.unshift(id);
+    if(recentlyViewed.length > 6) recentlyViewed.pop();
+    renderRecentlyViewed();
+  }
+}
+function renderRecentlyViewed() {
+  const section = document.getElementById('recentlyViewed');
+  const scroll = document.getElementById('rvScroll');
+  if(recentlyViewed.length === 0) { section.style.display = 'none'; return; }
+  section.style.display = 'block';
+  scroll.innerHTML = recentlyViewed.map(id => {
+    const p = PRODUCTS.find(x => x.id === id);
+    if(!p) return '';
+    const save = getSavePercent(p.price, p.origPrice);
+    let media = '';
+    if(p.video) media = \`<video src="\${p.video}" autoplay muted loop playsinline style="width:100%;height:100%;object-fit:cover;"></video>\`;
+    else if(p.imgs) media = \`<img src="\${p.imgs[0]}" alt="\${p.name}" style="width:100%;height:100%;object-fit:cover;" />\`;
+    return \`<div class="rv-card" onclick="openModal(\${p.id})">
+      <div class="rv-card-img">\${media}</div>
+      <div class="rv-card-info">
+        <div class="rv-card-name">\${p.name}</div>
+        <div><span class="rv-card-price">$\${p.price}</span><span class="rv-card-orig">$\${p.origPrice}</span></div>
+      </div>
+    </div>\`;
+  }).join('');
+}
+
+renderProducts('ALL');
+</script>
+</body>
+</html>
+`;
+  return new Response(html, {
+    headers: {
+      'Content-Type': 'text/html; charset=utf-8',
+      'Cache-Control': 'public, max-age=3600',
+    },
+  });
+}
