@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>FAQ — The Illest Supply</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#080808;color:#fff;font-family:'Inter',sans-serif;min-height:100vh;}
+nav{display:flex;align-items:center;justify-content:space-between;padding:18px 28px;border-bottom:1px solid rgba(255,255,255,0.05);background:rgba(8,8,8,0.97);position:sticky;top:0;z-index:100;backdrop-filter:blur(12px);}
+.nav-logo{height:48px;mix-blend-mode:screen;animation:spinY 10s linear infinite;}
+@keyframes spinY{from{transform:rotateY(0deg);}to{transform:rotateY(360deg);}}
+.nav-links{display:flex;align-items:center;gap:20px;}
+.nav-links a{color:#fff;opacity:0.6;font-size:12px;text-decoration:none;letter-spacing:0.06em;transition:opacity .2s;}
+.nav-links a:hover{opacity:1;}
+
+.page-header{text-align:center;padding:56px 20px 40px;}
+.page-eyebrow{font-size:11px;letter-spacing:0.2em;color:#555;text-transform:uppercase;font-weight:600;margin-bottom:10px;}
+.page-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(48px,8vw,80px);line-height:0.95;letter-spacing:0.02em;margin-bottom:12px;}
+.page-sub{font-size:13px;color:#555;}
+
+.container{max-width:680px;margin:0 auto;padding:0 20px 80px;}
+
+.faq-group{margin-bottom:36px;}
+.faq-group-title{font-size:10px;letter-spacing:0.2em;color:#444;text-transform:uppercase;font-weight:700;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.05);}
+
+.faq-item{border:1px solid rgba(255,255,255,0.06);border-radius:14px;margin-bottom:10px;overflow:hidden;background:#0d0d0d;transition:border-color .2s;}
+.faq-item:hover{border-color:rgba(255,255,255,0.12);}
+.faq-q{width:100%;background:none;border:none;color:#fff;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;text-align:left;padding:18px 20px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;letter-spacing:0.01em;}
+.faq-q .arrow{font-size:16px;color:#444;transition:transform .3s;flex-shrink:0;}
+.faq-item.open .faq-q .arrow{transform:rotate(180deg);color:#fff;}
+.faq-a{max-height:0;overflow:hidden;transition:max-height 0.35s ease;}
+.faq-item.open .faq-a{max-height:300px;}
+.faq-a-inner{padding:0 20px 18px;font-size:12px;color:#666;line-height:1.75;}
+.faq-a-inner a{color:#fff;text-decoration:underline;text-underline-offset:2px;}
+
+.cta-box{background:#0e0e0e;border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:28px 24px;text-align:center;margin-top:20px;}
+.cta-box p{font-size:13px;color:#666;margin-bottom:18px;line-height:1.7;}
+.cta-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.cta-btn{display:inline-flex;align-items:center;gap:8px;padding:11px 24px;border-radius:50px;font-size:12px;font-weight:700;letter-spacing:0.08em;text-decoration:none;text-transform:uppercase;transition:all .2s;}
+.cta-btn.primary{background:#fff;color:#000;}
+.cta-btn.primary:hover{background:#f0f0f0;}
+.cta-btn.secondary{background:transparent;border:1px solid rgba(255,255,255,0.15);color:#fff;}
+.cta-btn.secondary:hover{background:rgba(255,255,255,0.06);}
+
+.back-btn{display:inline-flex;align-items:center;gap:8px;padding:11px 26px;border-radius:50px;border:1px solid rgba(255,255,255,0.15);color:#fff;background:transparent;font-size:11px;font-weight:700;letter-spacing:0.1em;text-decoration:none;text-transform:uppercase;transition:all .2s;margin-top:40px;}
+.back-btn:hover{background:#fff;color:#000;}
+
+footer{padding:28px;text-align:center;border-top:1px solid rgba(255,255,255,0.04);}
+footer p{font-size:11px;color:#333;letter-spacing:0.08em;}
+
+@media(max-width:600px){
+  nav{padding:12px 16px;}
+  .container{padding:0 14px 60px;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <img class="nav-logo" src="https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/409f6a116_918D9A7E-D61E-4658-A7B6-5DF1F8B5AC78.png" alt="Illest Supply"/>
+  <div class="nav-links">
+    <a href="index.html">← Store</a>
+    <a href="reviews.html">Reviews</a>
+    <a href="size-chart.html">Size Chart</a>
+    <a href="https://www.instagram.com/theillestsupply?igsh=OGt3cndoZ3RjamQ%3D&utm_source=qr" target="_blank">📷</a>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="page-eyebrow">The Illest Supply</div>
+  <div class="page-title">FAQ</div>
+  <p class="page-sub">Got questions? We got answers.</p>
+</div>
+
+<div class="container">
+
+  <!-- AUTHENTICITY -->
+  <div class="faq-group">
+    <div class="faq-group-title">Authenticity & Products</div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggle(this)">Are the items authentic? <span class="arrow">⌄</span></button>
+      <div class="faq-a"><div class="faq-a-inner">Yes — every item we sell is 100% authenticated before listing. We've completed 2,000+ verified sales on Depop with a 4.9 star rating. We don't do reps or fakes — period.</div></div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggle(this)">Where do the items come from? <span class="arrow">⌄</span></button>
+      <div class="faq-a"><div class="faq-a-inner">We source directly from trusted suppliers, estate sales, and verified resellers. Every piece is checked for condition and authenticity before it goes live on the site.</div></div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggle(this)">Do items come with original packaging? <span class="arrow">⌄</span></button>
+      <div class="faq-a"><div class="faq-a-inner">Most items do include original boxes, dust bags, or packaging where applicable. If you want to confirm for a specific item, just DM us on Instagram or send an inquiry and we'll let you know.</div></div>
+    </div>
+  </div>
+
+  <!-- ORDERING -->
+  <div class="faq-group">
+    <div class="faq-group-title">Ordering & Payment</div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggle(this)">How do I order? <span class="arrow">⌄</span></button>
+      <div class="faq-a"><div class="faq-a-inner">Tap any product, select your size, and fill out the inquiry form. We'll reply to your email within a few hours to confirm availability and send payment details. Simple as that.</div></div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggle(this)">How do I pay? <span class="arrow">⌄</span></button>
+      <div class="faq-a"><div class="faq-a-inner">We accept payment via PayPal, Depop, CashApp, Venmo, and bank transfer. We'll confirm the best option when we reply to your inquiry.</div></div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggle(this)">Can I reserve an item? <span class="arrow">⌄</span></button>
+      <div class="faq-a"><div class="faq-a-inner">Yes — send an inquiry or DM us on Instagram and we can hold an item for up to 24 hours while you sort payment. After that it goes back to general availability.</div></div>
+    </div>
+  </div>
+
+  <!-- SHIPPING -->
+  <div class="faq-group">
+    <div class="faq-group-title">Shipping & Delivery</div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggle(this)">How fast do you ship? <span class="arrow">⌄</span></button>
+      <div class="faq-a"><div class="faq-a-inner">We ship within 1–3 business days of confirmed payment. Most orders arrive within 3–5 days domestically. You'll receive tracking once your order is dispatched.</div></div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggle(this)">Do you ship internationally? <span class="arrow">⌄</span></button>
+      <div class="faq-a"><div class="faq-a-inner">Yes! We ship internationally. International delivery typically takes 7–14 days. Shipping costs vary by location — DM us for a quote before ordering.</div></div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggle(this)">Is free shipping available? <span class="arrow">⌄</span></button>
+      <div class="faq-a"><div class="faq-a-inner">Yes — orders over $150 qualify for free domestic shipping. This is applied automatically when we confirm your order.</div></div>
+    </div>
+  </div>
+
+  <!-- RETURNS -->
+  <div class="faq-group">
+    <div class="faq-group-title">Returns & Issues</div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggle(this)">What if something arrives damaged or wrong? <span class="arrow">⌄</span></button>
+      <div class="faq-a"><div class="faq-a-inner">That shouldn't happen — but if it does, message us immediately on Instagram or reply to your order email with photos. We'll make it right. Customer satisfaction is everything to us.</div></div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggle(this)">Do you accept returns? <span class="arrow">⌄</span></button>
+      <div class="faq-a"><div class="faq-a-inner">Due to the nature of our inventory, all sales are generally final. However, if there's a genuine issue with the item — wrong size sent, damage not disclosed — reach out and we'll sort it out.</div></div>
+    </div>
+  </div>
+
+  <!-- SIZING -->
+  <div class="faq-group">
+    <div class="faq-group-title">Sizing</div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggle(this)">How do I know what size to get? <span class="arrow">⌄</span></button>
+      <div class="faq-a"><div class="faq-a-inner">Check our <a href="size-chart.html">full size chart</a> for shoes and jorts. If you're still unsure, DM us on Instagram — we'll help you nail the right size before you commit.</div></div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-q" onclick="toggle(this)">Women's sizing — how does it work? <span class="arrow">⌄</span></button>
+      <div class="faq-a"><div class="faq-a-inner">For shoes and slides, women should add 1.5 to their women's size to get the men's equivalent. Example: Women's 9 = Men's 7.5. The size chart on each product page shows both.</div></div>
+    </div>
+  </div>
+
+  <div class="cta-box">
+    <p>Still have a question? We reply fast — usually within a few hours.</p>
+    <div class="cta-row">
+      <a class="cta-btn primary" href="https://www.instagram.com/theillestsupply?igsh=OGt3cndoZ3RjamQ%3D&utm_source=qr" target="_blank">📷 DM on Instagram</a>
+      <a class="cta-btn secondary" href="index.html">Browse the Store</a>
+    </div>
+  </div>
+
+  <div style="text-align:center;">
+    <a class="back-btn" href="index.html">← Back to Store</a>
+  </div>
+
+</div>
+
+<footer>
+  <p>© 2025 The Illest Supply · <a href="https://www.instagram.com/theillestsupply?igsh=OGt3cndoZ3RjamQ%3D&utm_source=qr" target="_blank" style="color:#444;text-decoration:none;">@theillestsupply</a></p>
+</footer>
+
+<script>
+function toggle(btn) {
+  const item = btn.closest('.faq-item');
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+  if(!isOpen) item.classList.add('open');
+}
+</script>
+</body>
+</html>

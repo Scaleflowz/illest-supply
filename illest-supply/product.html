@@ -87,7 +87,11 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:18px 2
 <nav>
   <a class="nav-back" href="index.html">← Back</a>
   <img class="nav-logo" src="https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/409f6a116_918D9A7E-D61E-4658-A7B6-5DF1F8B5AC78.png" alt="Illest Supply"/>
-  <a href="https://www.instagram.com/theillestsupply?igsh=OGt3cndoZ3RjamQ%3D&utm_source=qr" target="_blank" style="font-size:18px;text-decoration:none;">📷</a>
+  <div style="display:flex;align-items:center;gap:16px;">
+    <a href="reviews.html" style="color:#fff;opacity:0.6;font-size:12px;text-decoration:none;letter-spacing:0.06em;">Reviews</a>
+    <a href="faq.html" style="color:#fff;opacity:0.6;font-size:12px;text-decoration:none;letter-spacing:0.06em;">FAQ</a>
+    <a href="https://www.instagram.com/theillestsupply?igsh=OGt3cndoZ3RjamQ%3D&utm_source=qr" target="_blank" style="font-size:18px;text-decoration:none;">📷</a>
+  </div>
 </nav>
 
 <div class="page" id="page">
@@ -96,7 +100,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:18px 2
 
 <!-- STICKY BAR -->
 <div class="sticky-bar" id="stickyBar" style="display:none;">
-  <button class="sticky-btn secondary" id="btnScroll" onclick="scrollToForm()">INQUIRE</button>
+  <a class="sticky-btn secondary" id="btnWA" href="#" target="_blank" style="text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px;">💬 WHATSAPP</a>
   <button class="sticky-btn primary" id="btnSubmit" onclick="submitInquiry()">SEND INQUIRY →</button>
 </div>
 
@@ -213,6 +217,9 @@ function init() {
   document.title = product.name + ' — The Illest Supply';
   render();
   document.getElementById('stickyBar').style.display = 'flex';
+  // Set WhatsApp link with product pre-filled
+  const waMsg = encodeURIComponent('Hi! I\'m interested in ' + product.name + ' ($' + product.price + '). Is it available?');
+  document.getElementById('btnWA').href = 'https://wa.me/?text=' + waMsg;
 }
 
 function render() {
@@ -286,6 +293,11 @@ function render() {
       <span class="price-current">$${p.price}</span>
       <span class="price-original">$${p.origPrice}</span>
       <span class="price-save">SAVE ${save}%</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;flex-wrap:wrap;">
+      <span style="font-size:11px;color:#22c55e;font-weight:600;letter-spacing:0.04em;">📦 Ships in 1–3 days</span>
+      <span style="color:#333;">·</span>
+      <a href="size-chart.html" style="font-size:11px;color:#888;text-decoration:none;letter-spacing:0.04em;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#888'">📏 Size Chart</a>
     </div>
     ${sizeHTML}
     ${colorHTML}

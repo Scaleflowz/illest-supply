@@ -11,7 +11,9 @@
 body{background:#080808;color:#fff;font-family:'Inter',sans-serif;overflow-x:hidden;}
 
 /* ANNOUNCEMENT */
-#announcement{background:#fff;color:#000;text-align:center;padding:9px 12px;font-size:12px;font-weight:600;letter-spacing:0.08em;}
+#announcement{background:#fff;color:#000;text-align:center;padding:9px 12px;font-size:12px;font-weight:600;letter-spacing:0.08em;overflow:hidden;position:relative;height:36px;}
+.announce-slide{position:absolute;width:100%;left:0;top:0;padding:9px 12px;opacity:0;transition:opacity 0.6s ease;}
+.announce-slide.active{opacity:1;}
 #announcement span{color:#c00;margin:0 6px;}
 
 /* NAV */
@@ -214,13 +216,29 @@ select option:disabled{color:#444;}
 <body>
 
 <div id="announcement">
-  🔥 FINAL CLEARANCE — UP TO 40% OFF &nbsp;<span>|</span>&nbsp; FREE SHIPPING OVER $150 &nbsp;<span>|</span>&nbsp; 2,000+ VERIFIED SALES ✓
+  <div class="announce-slide active">🔥 FINAL CLEARANCE — UP TO 40% OFF &nbsp;·&nbsp; FREE SHIPPING OVER $150</div>
+  <div class="announce-slide">✓ 2,000+ VERIFIED SALES ON DEPOP &nbsp;·&nbsp; ALL ITEMS AUTHENTICATED</div>
+  <div class="announce-slide">📦 SHIPS IN 1–3 DAYS &nbsp;·&nbsp; FAST & SECURE PACKAGING</div>
+  <div class="announce-slide">📷 DM US ON INSTAGRAM &nbsp;·&nbsp; @THEILLESTSUPPLY</div>
 </div>
+<script>
+(function(){
+  const slides = document.querySelectorAll('.announce-slide');
+  let cur = 0;
+  setInterval(()=>{
+    slides[cur].classList.remove('active');
+    cur = (cur+1)%slides.length;
+    slides[cur].classList.add('active');
+  }, 3000);
+})();
+</script>
 
 <nav>
   <img class="nav-logo" src="https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/409f6a116_918D9A7E-D61E-4658-A7B6-5DF1F8B5AC78.png" alt="Illest Supply" />
   <div class="nav-right">
-    <a href="https://www.instagram.com/theillestsupply?igsh=OGt3cndoZ3RjamQ%3D&utm_source=qr" target="_blank">📷 Instagram</a>
+    <a href="reviews.html">Reviews</a>
+    <a href="faq.html">FAQ</a>
+    <a href="https://www.instagram.com/theillestsupply?igsh=OGt3cndoZ3RjamQ%3D&utm_source=qr" target="_blank" style="font-size:18px;">📷</a>
     <button class="nav-btn" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">SHOP NOW</button>
   </div>
 </nav>
@@ -284,92 +302,39 @@ select option:disabled{color:#444;}
   <div class="products-grid" id="productsGrid"></div>
 </section>
 
-<section class="reviews-section">
-  <div class="section-header">
-    <div class="section-eyebrow">Customer Reviews</div>
-    <div class="section-title">THEY LOVE IT 🔥</div>
-    <div class="stars">★★★★★</div>
-    <div class="rating-summary">4.9 out of 5 · 2,000+ verified purchases on Depop</div>
+<section style="padding:48px 30px;background:#0b0b0b;border-top:1px solid rgba(255,255,255,0.05);">
+  <div style="max-width:900px;margin:0 auto;display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-bottom:28px;">
+    <div style="background:#0e0e0e;border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:18px 22px;flex:1;min-width:220px;max-width:300px;">
+      <div style="color:#f59e0b;font-size:13px;margin-bottom:6px;">★★★★★</div>
+      <div style="font-size:12px;color:#888;line-height:1.6;">"Slides came exactly as described. Super fast shipping. Already got compliments."</div>
+      <div style="font-size:10px;color:#22c55e;font-weight:700;margin-top:10px;letter-spacing:0.06em;">✓ VERIFIED PURCHASE · jordanmike_</div>
+    </div>
+    <div style="background:#0e0e0e;border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:18px 22px;flex:1;min-width:220px;max-width:300px;">
+      <div style="color:#f59e0b;font-size:13px;margin-bottom:6px;">★★★★★</div>
+      <div style="font-size:12px;color:#888;line-height:1.6;">"Got the Vale Forever jorts and I am OBSESSED. Seller shipped same day."</div>
+      <div style="font-size:10px;color:#22c55e;font-weight:700;margin-top:10px;letter-spacing:0.06em;">✓ VERIFIED PURCHASE · kaylaloves_fits</div>
+    </div>
+    <div style="background:#0e0e0e;border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:18px 22px;flex:1;min-width:220px;max-width:300px;">
+      <div style="color:#f59e0b;font-size:13px;margin-bottom:6px;">★★★★★</div>
+      <div style="font-size:12px;color:#888;line-height:1.6;">"Rick Owens came in perfect condition. Seller confirmed size before shipping. 10/10."</div>
+      <div style="font-size:10px;color:#22c55e;font-weight:700;margin-top:10px;letter-spacing:0.06em;">✓ VERIFIED PURCHASE · dariusvibe</div>
+    </div>
   </div>
-  <div class="reviews-grid">
-    <div class="review-card">
-      <div class="review-top">
-        <div class="review-avatar">JM</div>
-        <div class="review-meta">
-          <div class="review-name">jordanmike_</div>
-          <div class="review-date">2 days ago</div>
-        </div>
-      </div>
-      <div class="review-stars">★★★★★</div>
-      <div class="review-text">"Slides came exactly as described. Super fast shipping, packaged really well. Already got compliments wearing them out. Def buying again."</div>
-      <div class="review-verified">✓ VERIFIED PURCHASE</div>
-    </div>
-    <div class="review-card">
-      <div class="review-top">
-        <div class="review-avatar">KL</div>
-        <div class="review-meta">
-          <div class="review-name">kaylaloves_fits</div>
-          <div class="review-date">5 days ago</div>
-        </div>
-      </div>
-      <div class="review-stars">★★★★★</div>
-      <div class="review-text">"Got the Vale Forever jorts and I am OBSESSED. The quality is insane for the price. Seller was super responsive and shipped same day."</div>
-      <div class="review-verified">✓ VERIFIED PURCHASE</div>
-    </div>
-    <div class="review-card">
-      <div class="review-top">
-        <div class="review-avatar">TR</div>
-        <div class="review-meta">
-          <div class="review-name">trey.refresh</div>
-          <div class="review-date">1 week ago</div>
-        </div>
-      </div>
-      <div class="review-stars">★★★★★</div>
-      <div class="review-text">"Honestly thought it was too good to be true at this price point but nah, completely legit. Prada cups are real, came with everything. 10/10."</div>
-      <div class="review-verified">✓ VERIFIED PURCHASE</div>
-    </div>
-    <div class="review-card">
-      <div class="review-top">
-        <div class="review-avatar">NB</div>
-        <div class="review-meta">
-          <div class="review-name">nayabfit</div>
-          <div class="review-date">1 week ago</div>
-        </div>
-      </div>
-      <div class="review-stars">★★★★★</div>
-      <div class="review-text">"My third order from Illest Supply. Never disappointed. The Asics were fresh, correct size, fast delivery. This is my go-to spot now fr."</div>
-      <div class="review-verified">✓ VERIFIED PURCHASE</div>
-    </div>
-    <div class="review-card">
-      <div class="review-top">
-        <div class="review-avatar">DV</div>
-        <div class="review-meta">
-          <div class="review-name">dariusvibe</div>
-          <div class="review-date">2 weeks ago</div>
-        </div>
-      </div>
-      <div class="review-stars">★★★★★</div>
-      <div class="review-text">"Rick Owens came in perfect condition. Seller even messaged me to confirm the size before shipping. That's the kind of service you don't get everywhere."</div>
-      <div class="review-verified">✓ VERIFIED PURCHASE</div>
-    </div>
-    <div class="review-card">
-      <div class="review-top">
-        <div class="review-avatar">AM</div>
-        <div class="review-meta">
-          <div class="review-name">amara.drip</div>
-          <div class="review-date">2 weeks ago</div>
-        </div>
-      </div>
-      <div class="review-stars">★★★★★</div>
-      <div class="review-text">"Got the Bottegas and they're everything. Came with dust bag, looked brand new. Pricing is unreal compared to retail. Already told 5 of my friends."</div>
-      <div class="review-verified">✓ VERIFIED PURCHASE</div>
-    </div>
+  <div style="text-align:center;">
+    <div style="font-size:12px;color:#555;margin-bottom:14px;">4.9 / 5 · 2,000+ verified sales on Depop</div>
+    <a href="reviews.html" style="display:inline-flex;align-items:center;gap:8px;padding:10px 28px;border-radius:50px;border:1px solid rgba(255,255,255,0.14);color:#fff;font-size:11px;font-weight:700;letter-spacing:0.1em;text-decoration:none;text-transform:uppercase;transition:all .2s;" onmouseover="this.style.background='#fff';this.style.color='#000'" onmouseout="this.style.background='transparent';this.style.color='#fff'">See All Reviews →</a>
   </div>
 </section>
 
 <footer>
   <img class="footer-logo" src="https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/409f6a116_918D9A7E-D61E-4658-A7B6-5DF1F8B5AC78.png" alt="Illest Supply" />
-  <p>© 2025 The Illest Supply · All Rights Reserved · <a href="https://www.instagram.com/theillestsupply?igsh=OGt3cndoZ3RjamQ%3D&utm_source=qr" target="_blank" style="color:#555;text-decoration:none;">@theillestsupply</a></p>
+  <div style="display:flex;justify-content:center;gap:24px;margin-bottom:14px;flex-wrap:wrap;">
+    <a href="reviews.html" style="color:#444;font-size:11px;text-decoration:none;letter-spacing:0.08em;">REVIEWS</a>
+    <a href="faq.html" style="color:#444;font-size:11px;text-decoration:none;letter-spacing:0.08em;">FAQ</a>
+    <a href="size-chart.html" style="color:#444;font-size:11px;text-decoration:none;letter-spacing:0.08em;">SIZE CHART</a>
+    <a href="https://www.instagram.com/theillestsupply?igsh=OGt3cndoZ3RjamQ%3D&utm_source=qr" target="_blank" style="color:#444;font-size:11px;text-decoration:none;letter-spacing:0.08em;">INSTAGRAM</a>
+  </div>
+  <p style="font-size:11px;color:#333;letter-spacing:0.08em;">© 2025 The Illest Supply · All Rights Reserved</p>
 </footer>
 
 <!-- MODAL -->
