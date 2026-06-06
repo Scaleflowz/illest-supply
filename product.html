@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Product — The Illest Supply</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#080808;color:#fff;font-family:'Inter',sans-serif;min-height:100vh;padding-bottom:100px;}
+
+nav{display:flex;align-items:center;justify-content:space-between;padding:18px 24px;border-bottom:1px solid rgba(255,255,255,0.05);position:sticky;top:0;background:rgba(8,8,8,0.97);z-index:100;backdrop-filter:blur(12px);}
+.nav-logo{height:48px;mix-blend-mode:screen;animation:spinY 10s linear infinite;}
+@keyframes spinY{from{transform:rotateY(0deg);}to{transform:rotateY(360deg);}}
+.nav-back{color:#fff;opacity:0.6;font-size:13px;text-decoration:none;letter-spacing:0.04em;transition:opacity .2s;}
+.nav-back:hover{opacity:1;}
+
+.page{max-width:500px;margin:0 auto;padding:28px 20px 120px;}
+
+/* MEDIA */
+.media-wrap{width:100%;aspect-ratio:4/5;border-radius:20px;overflow:hidden;background:#111;margin-bottom:22px;position:relative;}
+.media-wrap img,.media-wrap video{width:100%;height:100%;object-fit:cover;}
+.media-dots{display:flex;justify-content:center;gap:6px;margin-top:-14px;margin-bottom:18px;position:relative;z-index:2;}
+.media-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.2);cursor:pointer;transition:background .2s;}
+.media-dot.active{background:#fff;}
+
+/* BADGES */
+.badge-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
+.badge{padding:4px 10px;border-radius:50px;font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;}
+.badge.hot{background:#c00;color:#fff;}
+.badge.new{background:#fff;color:#000;}
+.badge.limited{background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;}
+.badge.save{background:rgba(34,197,94,0.15);color:#22c55e;}
+
+/* PRODUCT INFO */
+.product-name{font-size:26px;font-weight:800;letter-spacing:0.01em;margin-bottom:10px;line-height:1.2;}
+.price-row{display:flex;align-items:center;gap:10px;margin-bottom:24px;flex-wrap:wrap;}
+.price-current{font-size:28px;font-weight:800;color:#ef4444;text-shadow:0 0 16px rgba(239,68,68,0.4);}
+.price-original{font-size:16px;color:#555;text-decoration:line-through;}
+.price-save{font-size:11px;font-weight:700;color:#22c55e;background:rgba(34,197,94,0.1);padding:3px 10px;border-radius:50px;}
+
+/* SIZE / COLOR */
+.section-label{font-size:10px;letter-spacing:0.14em;color:#555;text-transform:uppercase;font-weight:600;margin-bottom:10px;}
+.options-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px;}
+.opt-btn{padding:9px 16px;border-radius:10px;border:1px solid rgba(255,255,255,0.12);background:transparent;color:#ccc;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;min-width:48px;text-align:center;}
+.opt-btn:hover:not(.oos){border-color:#fff;color:#fff;background:rgba(255,255,255,0.06);}
+.opt-btn.selected{border-color:#fff;background:#fff;color:#000;}
+.opt-btn.oos{border-color:rgba(255,255,255,0.04);color:#333;cursor:not-allowed;text-decoration:line-through;}
+
+/* STOCK */
+.stock-msg{font-size:11px;color:#f59e0b;font-weight:600;letter-spacing:0.06em;margin-bottom:20px;}
+.stock-bar{height:3px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;margin-top:6px;}
+.stock-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,#f59e0b,#ef4444);}
+
+/* FORM */
+.form-section{background:#0e0e0e;border:1px solid rgba(255,255,255,0.06);border-radius:20px;padding:22px 18px;margin-top:8px;}
+.form-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:0.06em;margin-bottom:16px;}
+.form-row{margin-bottom:12px;}
+.form-row label{display:block;font-size:10px;letter-spacing:0.1em;color:#555;text-transform:uppercase;font-weight:600;margin-bottom:5px;}
+.form-row input,.form-row textarea,.form-row select{width:100%;background:#080808;border:1px solid rgba(255,255,255,0.08);border-radius:10px;color:#fff;font-size:13px;padding:11px 14px;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s;}
+.form-row input:focus,.form-row textarea:focus,.form-row select:focus{border-color:rgba(255,255,255,0.28);}
+.form-row textarea{resize:vertical;min-height:70px;}
+.form-note{font-size:10px;color:#444;margin-top:10px;line-height:1.6;text-align:center;}
+
+/* STICKY BAR */
+.sticky-bar{position:fixed;bottom:0;left:0;right:0;z-index:500;background:rgba(10,10,10,0.97);border-top:1px solid rgba(255,255,255,0.08);padding:14px 20px;display:flex;gap:10px;backdrop-filter:blur(12px);}
+.sticky-btn{flex:1;padding:15px;border-radius:14px;font-size:13px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;border:none;cursor:pointer;transition:all .2s;}
+.sticky-btn.primary{background:#fff;color:#000;}
+.sticky-btn.primary:hover{background:#f0f0f0;}
+.sticky-btn.secondary{background:transparent;border:1px solid rgba(255,255,255,0.18);color:#fff;}
+.sticky-btn.secondary:hover{background:rgba(255,255,255,0.06);}
+.sticky-btn:disabled{opacity:0.4;cursor:not-allowed;}
+
+/* TOAST */
+.toast{position:fixed;top:80px;left:50%;transform:translateX(-50%) translateY(-20px);background:#22c55e;color:#fff;font-size:12px;font-weight:700;letter-spacing:0.08em;padding:10px 24px;border-radius:50px;opacity:0;transition:all .3s;z-index:999;pointer-events:none;white-space:nowrap;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+@media(max-width:400px){
+  .page{padding:20px 14px 120px;}
+  .product-name{font-size:22px;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-back" href="index.html">← Back</a>
+  <img class="nav-logo" src="https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/409f6a116_918D9A7E-D61E-4658-A7B6-5DF1F8B5AC78.png" alt="Illest Supply"/>
+  <a href="https://www.instagram.com/theillestsupply?igsh=OGt3cndoZ3RjamQ%3D&utm_source=qr" target="_blank" style="font-size:18px;text-decoration:none;">📷</a>
+</nav>
+
+<div class="page" id="page">
+  <div style="text-align:center;padding:60px 0;color:#333;">Loading product…</div>
+</div>
+
+<!-- STICKY BAR -->
+<div class="sticky-bar" id="stickyBar" style="display:none;">
+  <button class="sticky-btn secondary" id="btnScroll" onclick="scrollToForm()">INQUIRE</button>
+  <button class="sticky-btn primary" id="btnSubmit" onclick="submitInquiry()">SEND INQUIRY →</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const PRODUCTS = [
+  {
+    id:1, name:"Balenciaga Slides", category:"SLIDES", price:130, origPrice:200,
+    video:"https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/3a44c0ebc_d411fd6a5_IMG_3816.mov",
+    tag:"HOT", type:"shoe", stock:65
+  },
+  {
+    id:2, name:"Prada Cups (Black)", category:"SNEAKERS", price:170, origPrice:240,
+    imgs:[
+      "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/ab18f8c12_CBA80A5F-97CF-45C5-AA11-522922875DE3.png",
+      "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/6b287f63d_AA36F7DE-F3CD-47CF-BAFB-FEE327EF145A.png"
+    ],
+    tag:"HOT", type:"shoe", stock:70,
+    colors:["Black","White"]
+  },
+  {
+    id:3, name:"Prada Cups (Blue)", category:"SNEAKERS", price:170, origPrice:240,
+    imgs:[
+      "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/effd672da_F748D361-0A5E-4D84-B7CE-21A80BF31A03.png",
+      "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/f4b027634_74A998F7-E15E-4E87-8A68-5C2D9880512F.png"
+    ],
+    tag:"HOT", type:"shoe", stock:70,
+    colors:["Blue","Navy"]
+  },
+  {
+    id:4, name:"Dior Slides", category:"SLIDES", price:130, origPrice:195,
+    video:"https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/4b32b8095_5b35fc966_IMG_3817.mov",
+    tag:"HOT", type:"shoe", stock:60
+  },
+  {
+    id:5, name:"Vale Forever College Jorts", category:"BOTTOMS", price:64.99, origPrice:100,
+    imgs:[
+      "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/eac22a547_FF86E6B6-910B-416D-8894-171D71295C5C.png",
+      "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/040af7300_AdobeExpress-file3.png"
+    ],
+    tag:"LIMITED", type:"short", stock:35
+  },
+  {
+    id:6, name:"Vale Forever Jorts", category:"BOTTOMS", price:69.99, origPrice:110,
+    imgs:[
+      "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/35ae1e2e5_AdobeExpress-file3.png"
+    ],
+    tag:"LIMITED", type:"short", stock:28
+  },
+  {
+    id:7, name:"Vale Forever Jorts (Rhinestone)", category:"BOTTOMS", price:79.99, origPrice:120,
+    imgs:[
+      "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/607e2c691_CF43C058-BCF4-41FB-963A-95E3D9C3D886.png",
+      "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/e6a45f9dd_FEF16C09-1B37-4184-95F3-F18D4A350911.png"
+    ],
+    tag:"LIMITED", type:"short", stock:20
+  },
+  {
+    id:8, name:"Vale Forever Bad Dreams Jorts", category:"BOTTOMS", price:79.99, origPrice:120,
+    imgs:[
+      "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/05a792aed_AdobeExpress-file.png",
+      "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/3dd13263d_AdobeExpress-file3.png"
+    ],
+    tag:"LIMITED", type:"short", stock:15
+  },
+  {
+    id:9, name:"Asics Gel Kayano 14 Pink Glow", category:"SNEAKERS", price:110, origPrice:160,
+    video:"https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/a3863a27a_a3a6a46f6_IMG_38152.mov",
+    tag:"HOT", type:"shoe", stock:65
+  },
+  {
+    id:10, name:"Rick Owens", category:"SNEAKERS", price:150, origPrice:220,
+    video:"https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/5933676ed_424a09905_IMG_38132.mov",
+    tag:"HOT", type:"shoe", stock:75
+  },
+  {
+    id:11, name:"Bottegas (Green)", category:"SNEAKERS", price:150, origPrice:210,
+    video:"https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/eac53cd23_5dd2172fc_IMG_3820.mov",
+    tag:"NEW", type:"shoe", stock:80
+  },
+  {
+    id:12, name:"Bottegas (Blue)", category:"SNEAKERS", price:150, origPrice:210,
+    video:"https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/261fd2257_888b8f45f_IMG_3821.mov",
+    tag:"NEW", type:"shoe", stock:80
+  },
+  {
+    id:13, name:"Bottegas (Pink)", category:"SNEAKERS", price:150, origPrice:210,
+    video:"https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/44c290b36_9874363bd_IMG_3823.mov",
+    tag:"NEW", type:"shoe", stock:80
+  },
+];
+
+const SHOE_SIZES = [
+  {us:'6',women:'7.5',oos:false},{us:'6.5',women:'8',oos:false},{us:'7',women:'8.5',oos:false},
+  {us:'7.5',women:'9',oos:false},{us:'8',women:'9.5',oos:true},{us:'8.5',women:'10',oos:true},
+  {us:'9',women:'10.5',oos:true},{us:'9.5',women:'11',oos:true},{us:'10',women:'11.5',oos:true},
+  {us:'10.5',women:'12',oos:true},{us:'11',women:'12.5',oos:false},{us:'12',women:'13.5',oos:false},{us:'13',women:'14.5',oos:false}
+];
+const SHORT_SIZES = [{label:'XS',oos:true},{label:'S',oos:false},{label:'M',oos:false},{label:'L',oos:false},{label:'XL',oos:true}];
+
+let product = null;
+let selectedSize = '';
+let selectedColor = '';
+let currentImg = 0;
+
+function getSave(p,o){return Math.round((1-p/o)*100);}
+
+function init() {
+  const params = new URLSearchParams(window.location.search);
+  const id = parseInt(params.get('id'));
+  product = PRODUCTS.find(p => p.id === id);
+  if(!product){ document.getElementById('page').innerHTML = '<div style="text-align:center;padding:80px 0;color:#555;">Product not found. <a href="index.html" style="color:#fff;">← Back to store</a></div>'; return; }
+  document.title = product.name + ' — The Illest Supply';
+  render();
+  document.getElementById('stickyBar').style.display = 'flex';
+}
+
+function render() {
+  const p = product;
+  const save = getSave(p.price, p.origPrice);
+  const allMedia = [];
+  if(p.video) allMedia.push({type:'video',src:p.video});
+  if(p.imgs) p.imgs.forEach(src => allMedia.push({type:'img',src}));
+
+  let mediaHTML = '';
+  if(allMedia.length > 0) {
+    const m = allMedia[0];
+    if(m.type==='video') mediaHTML = `<video src="${m.src}" autoplay muted loop playsinline style="width:100%;height:100%;object-fit:cover;"></video>`;
+    else mediaHTML = `<img src="${m.src}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;"/>`;
+  }
+
+  let dotsHTML = '';
+  if(allMedia.length > 1) {
+    dotsHTML = `<div class="media-dots">${allMedia.map((_,i)=>`<div class="media-dot${i===0?' active':''}" onclick="switchMedia(${i})"></div>`).join('')}</div>`;
+  }
+
+  let badgeHTML = '';
+  if(p.tag==='HOT') badgeHTML += `<span class="badge hot">🔥 HOT</span>`;
+  if(p.tag==='NEW') badgeHTML += `<span class="badge new">NEW</span>`;
+  if(p.tag==='LIMITED') badgeHTML += `<span class="badge limited">⚡ LIMITED</span>`;
+  badgeHTML += `<span class="badge save">SAVE ${save}%</span>`;
+
+  let sizeHTML = '';
+  if(p.type==='shoe') {
+    sizeHTML = `
+      <div class="section-label">Select Size <span style="color:#888;font-size:9px;margin-left:6px;">Women's size in ()</span></div>
+      <div class="options-row" id="sizeOpts">
+        ${SHOE_SIZES.map(s=>`
+          <button class="opt-btn${s.oos?' oos':''}" onclick="${s.oos?'':` pickSize('${s.us}',this)`}" title="${s.oos?'Out of Stock':''}">
+            ${s.us}<br><span style="font-size:9px;opacity:0.45;">(${s.women}W)</span>
+          </button>`).join('')}
+      </div>`;
+  } else if(p.type==='short') {
+    sizeHTML = `
+      <div class="section-label">Select Size</div>
+      <div class="options-row" id="sizeOpts">
+        ${SHORT_SIZES.map(s=>`
+          <button class="opt-btn${s.oos?' oos':''}" onclick="${s.oos?'':` pickSize('${s.label}',this)`}" title="${s.oos?'Out of Stock':''}">
+            ${s.label}
+          </button>`).join('')}
+      </div>`;
+  }
+
+  let colorHTML = '';
+  if(p.colors && p.colors.length) {
+    colorHTML = `
+      <div class="section-label" style="margin-top:4px;">Select Color</div>
+      <div class="options-row" id="colorOpts">
+        ${p.colors.map(c=>`<button class="opt-btn" onclick="pickColor('${c}',this)">${c}</button>`).join('')}
+      </div>`;
+  }
+
+  let stockHTML = '';
+  if(p.type==='short') {
+    const msgs = ['Only 3 left!','Almost gone!','2 remaining!','Last few!'];
+    const msg = p.stock <= 20 ? msgs[p.id % msgs.length] : 'Selling fast';
+    stockHTML = `<div class="stock-msg">⚠️ ${msg} · ${p.stock}% claimed<div class="stock-bar"><div class="stock-fill" style="width:${p.stock}%;"></div></div></div>`;
+  }
+
+  document.getElementById('page').innerHTML = `
+    <div class="media-wrap" id="mediaWrap">${mediaHTML}</div>
+    ${dotsHTML}
+    <div class="badge-row">${badgeHTML}</div>
+    <div class="product-name">${p.name}</div>
+    <div class="price-row">
+      <span class="price-current">$${p.price}</span>
+      <span class="price-original">$${p.origPrice}</span>
+      <span class="price-save">SAVE ${save}%</span>
+    </div>
+    ${sizeHTML}
+    ${colorHTML}
+    ${stockHTML}
+
+    <div class="form-section" id="inquiryForm">
+      <div class="form-title">INQUIRE / ORDER</div>
+      <div class="form-row">
+        <label>Your Name</label>
+        <input type="text" id="fName" placeholder="e.g. Jordan M." />
+      </div>
+      <div class="form-row">
+        <label>Email</label>
+        <input type="email" id="fEmail" placeholder="your@email.com" />
+      </div>
+      <div class="form-row">
+        <label>Message (optional)</label>
+        <textarea id="fMsg" placeholder="Any questions, special requests, or notes…"></textarea>
+      </div>
+      <p class="form-note">We'll reply within a few hours via email 🔥</p>
+    </div>
+  `;
+
+  // Store media for switching
+  window._media = allMedia;
+}
+
+function switchMedia(i) {
+  currentImg = i;
+  const m = window._media[i];
+  const wrap = document.getElementById('mediaWrap');
+  if(m.type==='video') wrap.innerHTML = `<video src="${m.src}" autoplay muted loop playsinline style="width:100%;height:100%;object-fit:cover;"></video>`;
+  else wrap.innerHTML = `<img src="${m.src}" alt="" style="width:100%;height:100%;object-fit:cover;"/>`;
+  document.querySelectorAll('.media-dot').forEach((d,idx)=>d.classList.toggle('active',idx===i));
+}
+
+function pickSize(s, btn) {
+  selectedSize = s;
+  document.querySelectorAll('#sizeOpts .opt-btn:not(.oos)').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+function pickColor(c, btn) {
+  selectedColor = c;
+  document.querySelectorAll('#colorOpts .opt-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+function scrollToForm() {
+  document.getElementById('inquiryForm').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function showToast(msg, color) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = color || '#22c55e';
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 3000);
+}
+
+async function submitInquiry() {
+  const name = document.getElementById('fName')?.value.trim();
+  const email = document.getElementById('fEmail')?.value.trim();
+  const msg = document.getElementById('fMsg')?.value.trim();
+  if(!name || !email) { scrollToForm(); showToast('Please fill in your name & email', '#ef4444'); return; }
+  if(product.type !== 'none' && !selectedSize) { showToast('Please select a size first ↑', '#f59e0b'); return; }
+  const btn = document.getElementById('btnSubmit');
+  btn.disabled = true; btn.textContent = 'Sending…';
+  try {
+    await fetch('https://api.base44.com/api/apps/6a21ea02495f72afbc2ec54c/functions/sendInquiry', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        name, email, message: msg,
+        product: product.name,
+        size: selectedSize || 'Not selected',
+        color: selectedColor || 'N/A',
+        price: product.price
+      })
+    });
+    btn.textContent = '✓ Sent!';
+    showToast('Inquiry sent! We\'ll hit you back soon 🔥');
+    setTimeout(()=>{ btn.disabled=false; btn.textContent='SEND INQUIRY →'; }, 3000);
+  } catch(e) {
+    btn.textContent = 'Error — try again';
+    btn.disabled = false;
+    showToast('Something went wrong, try again', '#ef4444');
+  }
+}
+
+init();
+</script>
+</body>
+</html>
