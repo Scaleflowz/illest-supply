@@ -1,345 +1,592 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Illest Supply</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: #080808; color: #fff; font-family: 'Inter', 'Segoe UI', sans-serif; min-height: 100vh; overflow-x: hidden; }
-    img { display: block; }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>The Illest Supply</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#080808;color:#fff;font-family:'Inter',sans-serif;overflow-x:hidden;}
 
-    @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-    @keyframes fadeup { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes spin-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-    @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
-    @keyframes spin-btn { 0%,100%{transform:rotate(-3deg)} 50%{transform:rotate(3deg)} }
+/* ANNOUNCEMENT */
+#announcement{background:#fff;color:#000;text-align:center;padding:9px 12px;font-size:12px;font-weight:600;letter-spacing:0.08em;}
+#announcement span{color:#c00;margin:0 6px;}
 
-    .card { transition: transform 0.22s, border-color 0.22s; }
-    .catbtn { transition: background 0.18s, color 0.18s; cursor: pointer; }
-    .catbtn:hover { background: #fff !important; color: #000 !important; }
-    .igbtn:hover { opacity: 0.65 !important; }
-    .buybtn:hover:not(:disabled) { background: #e0e0e0 !important; }
+/* NAV */
+nav{display:flex;align-items:center;justify-content:space-between;padding:18px 40px;border-bottom:1px solid rgba(255,255,255,0.05);background:rgba(8,8,8,0.97);position:sticky;top:0;z-index:100;}
+.nav-logo{height:52px;object-fit:contain;animation:spin 12s linear infinite;}
+@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+.nav-right{display:flex;align-items:center;gap:14px;}
+.nav-right a{color:#fff;opacity:0.75;font-size:13px;text-decoration:none;letter-spacing:0.04em;transition:opacity .2s;}
+.nav-right a:hover{opacity:1;}
+.nav-btn{padding:8px 20px;border-radius:50px;border:1px solid rgba(255,255,255,0.18);color:#fff;background:transparent;font-size:12px;font-weight:600;letter-spacing:0.07em;cursor:pointer;transition:all .2s;}
+.nav-btn:hover{background:#fff;color:#000;}
 
-    .modal-overlay { position: fixed; inset: 0; z-index: 999; background: rgba(0,0,0,0.85); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; padding: 20px; }
-    .modal-box { background: #111; border: 1px solid rgba(255,255,255,0.12); border-radius: 20px; padding: 36px; width: 100%; max-width: 400px; position: relative; max-height: 90vh; overflow-y: auto; }
-    .modal-close { position: absolute; top: 14px; right: 18px; background: none; border: none; color: #fff; font-size: 24px; cursor: pointer; opacity: 0.4; line-height: 1; }
-    input, textarea { width: 100%; padding: 11px 13px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); background: #0a0a0a; color: #fff; font-size: 14px; box-sizing: border-box; font-family: inherit; }
-    input:focus, textarea:focus { outline: none; border-color: rgba(255,255,255,0.3); }
-    label { font-size: 11px; opacity: 0.45; display: block; margin-bottom: 5px; }
-    .form-group { margin-bottom: 13px; }
+/* TICKER */
+.ticker-wrap{background:#0f0f0f;border-bottom:1px solid rgba(255,255,255,0.06);overflow:hidden;padding:10px 0;}
+.ticker{display:flex;width:max-content;animation:ticker 28s linear infinite;}
+.ticker span{white-space:nowrap;padding:0 32px;font-size:11px;letter-spacing:0.14em;font-weight:600;color:#555;text-transform:uppercase;}
+.ticker span.dot{color:#c00;padding:0 4px;}
+@keyframes ticker{from{transform:translateX(0);}to{transform:translateX(-50%);}}}
 
-    #announcement { background: #fff; color: #000; text-align: center; padding: 9px 16px; font-size: 11px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; }
-    #ticker-wrap { background: #0f0f0f; border-bottom: 1px solid rgba(255,255,255,0.06); padding: 8px 0; overflow: hidden; white-space: nowrap; }
-    #ticker { display: inline-block; animation: marquee 30s linear infinite; font-size: 11px; letter-spacing: 2.5px; color: #555; }
+/* HERO */
+.hero{text-align:center;padding:90px 20px 70px;position:relative;}
+.hero::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(255,255,255,0.05) 0%,transparent 70%);pointer-events:none;}
+.hero-eyebrow{font-size:11px;letter-spacing:0.22em;color:#555;text-transform:uppercase;margin-bottom:18px;font-weight:600;}
+.hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(64px,10vw,130px);line-height:0.92;letter-spacing:0.02em;margin-bottom:20px;}
+.hero h1 em{font-style:normal;color:transparent;-webkit-text-stroke:1px rgba(255,255,255,0.35);}
+.hero-sub{font-size:14px;color:#484848;letter-spacing:0.06em;margin-bottom:36px;font-weight:400;}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:50px;padding:8px 18px;font-size:11px;letter-spacing:0.1em;color:#888;}
+.hero-badge .dot{width:6px;height:6px;background:#22c55e;border-radius:50%;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
 
-    nav { display: flex; align-items: center; justify-content: space-between; padding: 14px 36px; border-bottom: 1px solid rgba(255,255,255,0.05); position: sticky; top: 0; background: rgba(8,8,8,0.97); backdrop-filter: blur(12px); z-index: 100; }
+/* FILTERS */
+.filters{display:flex;justify-content:center;gap:10px;padding:30px 20px 10px;flex-wrap:wrap;}
+.filter-btn{padding:8px 22px;border-radius:50px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:#888;font-size:11px;font-weight:600;letter-spacing:0.09em;cursor:pointer;transition:all .2s;text-transform:uppercase;}
+.filter-btn.active,.filter-btn:hover{border-color:#fff;color:#fff;background:rgba(255,255,255,0.05);}
 
-    #hero { text-align: center; padding: 90px 20px 70px; background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(255,255,255,0.05) 0%, transparent 70%); }
-    #hero h1 { font-size: clamp(2.2rem, 5.5vw, 4rem); font-weight: 900; letter-spacing: 2px; text-transform: uppercase; line-height: 1.08; max-width: 680px; margin: 0 auto 18px; animation: fadeup 0.85s ease both; }
+/* PRODUCTS */
+.products-section{padding:40px 30px 80px;}
+.products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:28px;max-width:1400px;margin:0 auto;}
 
-    .hero-logo { height: 110px; object-fit: contain; margin: 0 auto 32px; animation: spin-slow 12s linear infinite; mix-blend-mode: screen; background: transparent; }
-    .nav-logo { height: 46px; object-fit: contain; mix-blend-mode: screen; background: transparent; }
-    .footer-logo { height: 34px; object-fit: contain; opacity: 0.5; mix-blend-mode: screen; background: transparent; }
+.product-card{border-radius:20px;overflow:hidden;background:#0e0e0e;border:1px solid rgba(255,255,255,0.06);position:relative;animation:float 5s ease-in-out infinite;transition:transform .3s,box-shadow .3s;}
+.product-card:hover{transform:translateY(-8px) scale(1.02);box-shadow:0 30px 80px rgba(0,0,0,0.8);}
+.product-card:nth-child(even){animation-delay:2.5s;}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+.product-card:hover{animation-play-state:paused;}
 
-    #shop-section { max-width: 1140px; margin: 0 auto; padding: 70px 20px; }
-    .cat-filters { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 52px; }
-    #product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 32px; }
+.product-badge{position:absolute;top:14px;left:14px;z-index:2;display:flex;flex-direction:column;gap:5px;}
+.badge{padding:4px 10px;border-radius:50px;font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;}
+.badge.hot{background:#c00;color:#fff;}
+.badge.new{background:#fff;color:#000;}
+.badge.limited{background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;}
+.badge.out{background:rgba(255,255,255,0.08);color:#666;}
 
-    .product-card { background: transparent; border: none; border-radius: 18px; overflow: visible; position: relative; animation: float 4s ease-in-out infinite; }
-    .product-card:nth-child(2) { animation-delay: 0.5s; }
-    .product-card:nth-child(3) { animation-delay: 1s; }
-    .product-card:nth-child(4) { animation-delay: 1.5s; }
-    .product-card:nth-child(5) { animation-delay: 0.3s; }
-    .product-card:nth-child(6) { animation-delay: 0.8s; }
-    .product-card:nth-child(7) { animation-delay: 1.2s; }
-    .product-card:nth-child(8) { animation-delay: 1.7s; }
-    .product-card:hover { transform: translateY(-14px) !important; animation-play-state: paused; }
+.product-img-wrap{width:100%;aspect-ratio:4/5;overflow:hidden;background:#111;}
+.product-img-wrap img,.product-img-wrap video{width:100%;height:100%;object-fit:cover;}
 
-    .product-tag { position: absolute; top: 12px; left: 12px; z-index: 2; font-size: 10px; font-weight: 800; border-radius: 6px; padding: 3px 10px; letter-spacing: 1px; text-transform: uppercase; }
-    .product-img-wrap { height: 290px; overflow: hidden; background: transparent; border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,0.7), 0 6px 20px rgba(0,0,0,0.5); }
-    .product-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; border-radius: 16px; }
-    .product-img-wrap img:hover { transform: scale(1.06); }
-    .product-info { padding: 16px 4px 0; background: transparent; }
-    .product-cat { font-size: 10px; letter-spacing: 2.5px; color: #444; text-transform: uppercase; margin-bottom: 6px; }
-    .product-name { font-weight: 700; font-size: 14px; text-transform: uppercase; line-height: 1.35; margin-bottom: 14px; }
-    .product-footer { display: flex; align-items: center; justify-content: space-between; }
-    .product-price { font-weight: 800; font-size: 1.15rem; }
+.product-info{padding:18px 16px 20px;}
+.product-cat{font-size:9px;letter-spacing:0.16em;color:#444;text-transform:uppercase;margin-bottom:6px;font-weight:600;}
+.product-name{font-size:15px;font-weight:700;letter-spacing:0.02em;margin-bottom:12px;line-height:1.3;}
 
-    #reviews-section { background: #0b0b0b; border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05); padding: 80px 20px; }
-    .reviews-inner { max-width: 1100px; margin: 0 auto; }
-    .reviews-header { text-align: center; margin-bottom: 52px; }
-    #review-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 18px; }
+/* PRICE */
+.price-row{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
+.price-current{font-size:20px;font-weight:800;color:#fff;}
+.price-original{font-size:14px;color:#444;text-decoration:line-through;}
+.price-save{font-size:10px;font-weight:700;color:#22c55e;background:rgba(34,197,94,0.1);padding:2px 8px;border-radius:50px;letter-spacing:0.05em;}
 
-    .review-card-photo { background: #0e0e0e; border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; overflow: hidden; }
-    .review-img { height: 200px; overflow: hidden; }
-    .review-img img { width: 100%; height: 100%; object-fit: cover; }
-    .review-body { padding: 16px; }
+/* SIZE SELECTOR */
+.size-section{margin-bottom:14px;}
+.size-label{font-size:10px;letter-spacing:0.12em;color:#555;text-transform:uppercase;font-weight:600;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;}
+.size-label span{color:#888;font-size:9px;letter-spacing:0.08em;}
+.size-grid{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px;}
+.size-btn{padding:5px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.12);background:transparent;color:#ccc;font-size:11px;font-weight:600;cursor:pointer;transition:all .2s;min-width:42px;text-align:center;}
+.size-btn:hover:not(.oos){border-color:#fff;color:#fff;background:rgba(255,255,255,0.07);}
+.size-btn.selected{border-color:#fff;background:#fff;color:#000;}
+.size-btn.oos{border-color:rgba(255,255,255,0.04);color:#333;cursor:not-allowed;position:relative;text-decoration:line-through;}
+.size-conversion{font-size:9px;color:#444;margin-top:4px;font-style:italic;}
 
-    .review-card-text { background: #0e0e0e; border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; padding: 22px 20px; display: flex; flex-direction: column; justify-content: space-between; gap: 12px; }
-    .review-avatar { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #333, #1a1a1a); display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 800; color: #888; flex-shrink: 0; }
-    .review-top { display: flex; align-items: center; gap: 12px; }
-    .review-name-wrap { display: flex; flex-direction: column; gap: 2px; }
+/* STOCK BAR */
+.stock-bar-wrap{margin-bottom:14px;}
+.stock-text{font-size:10px;color:#f59e0b;font-weight:600;letter-spacing:0.06em;margin-bottom:5px;}
+.stock-bar{height:3px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;}
+.stock-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,#f59e0b,#ef4444);}
 
-    footer { padding: 36px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; border-top: 1px solid rgba(255,255,255,0.04); }
-    .hidden { display: none !important; }
+.buy-btn{width:100%;padding:13px;border-radius:12px;background:#fff;color:#000;font-size:12px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;border:none;cursor:pointer;transition:all .2s;}
+.buy-btn:hover{background:#f0f0f0;transform:translateY(-1px);}
+.buy-btn:active{transform:translateY(0);}
 
-    @media (max-width: 600px) {
-      nav { padding: 12px 16px; }
-      #hero { padding: 60px 16px 50px; }
-      footer { padding: 24px 16px; }
-    }
-  </style>
+/* REVIEWS */
+.reviews-section{background:#0b0b0b;border-top:1px solid rgba(255,255,255,0.05);border-bottom:1px solid rgba(255,255,255,0.05);padding:70px 30px;}
+.section-header{text-align:center;margin-bottom:48px;}
+.section-eyebrow{font-size:10px;letter-spacing:0.2em;color:#555;text-transform:uppercase;font-weight:600;margin-bottom:10px;}
+.section-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,5vw,56px);letter-spacing:0.04em;}
+.stars{color:#f59e0b;font-size:14px;margin-bottom:4px;}
+.rating-summary{font-size:13px;color:#666;margin-top:6px;}
+.reviews-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px;max-width:1200px;margin:0 auto;}
+.review-card{background:#0e0e0e;border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:22px 20px;}
+.review-top{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+.review-avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#333,#1a1a1a);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#888;flex-shrink:0;}
+.review-meta{flex:1;}
+.review-name{font-size:13px;font-weight:700;color:#ccc;}
+.review-date{font-size:10px;color:#444;margin-top:1px;}
+.review-stars{color:#f59e0b;font-size:11px;margin-bottom:8px;}
+.review-text{font-size:12px;color:#666;line-height:1.6;}
+.review-verified{font-size:9px;color:#22c55e;font-weight:600;letter-spacing:0.08em;margin-top:10px;display:flex;align-items:center;gap:4px;}
+
+/* FOOTER */
+footer{padding:40px 30px;text-align:center;border-top:1px solid rgba(255,255,255,0.04);}
+.footer-logo{height:40px;opacity:0.5;mix-blend-mode:screen;margin-bottom:14px;animation:spin 12s linear infinite;}
+footer p{font-size:11px;color:#333;letter-spacing:0.08em;}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:1000;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.open{display:flex;}
+.modal{background:#111;border:1px solid rgba(255,255,255,0.12);border-radius:24px;padding:36px;max-width:460px;width:100%;position:relative;max-height:90vh;overflow-y:auto;}
+.modal-close{position:absolute;top:16px;right:18px;background:none;border:none;color:#666;font-size:22px;cursor:pointer;line-height:1;}
+.modal-close:hover{color:#fff;}
+.modal h2{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:0.06em;margin-bottom:4px;}
+.modal-product-info{font-size:13px;color:#888;margin-bottom:6px;}
+.modal-size-info{font-size:12px;color:#f59e0b;font-weight:600;margin-bottom:20px;}
+.modal-price-row{display:flex;align-items:center;gap:10px;margin-bottom:24px;}
+.modal-price{font-size:24px;font-weight:800;}
+.modal-price-orig{font-size:14px;color:#444;text-decoration:line-through;}
+.modal-save{font-size:11px;color:#22c55e;font-weight:700;background:rgba(34,197,94,0.1);padding:3px 10px;border-radius:50px;}
+.modal label{display:block;font-size:11px;letter-spacing:0.1em;color:#555;text-transform:uppercase;font-weight:600;margin-bottom:6px;}
+.modal input,.modal select,.modal textarea{width:100%;background:#0a0a0a;border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#fff;font-size:13px;padding:11px 14px;margin-bottom:14px;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s;}
+.modal input:focus,.modal select:focus,.modal textarea:focus{border-color:rgba(255,255,255,0.3);}
+.modal textarea{resize:vertical;min-height:80px;}
+.modal-submit{width:100%;padding:14px;background:#fff;color:#000;font-size:13px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;border:none;border-radius:12px;cursor:pointer;transition:all .2s;margin-top:4px;}
+.modal-submit:hover{background:#f0f0f0;}
+.modal-submit:disabled{opacity:0.5;cursor:not-allowed;}
+.modal-note{font-size:10px;color:#444;text-align:center;margin-top:12px;line-height:1.5;}
+
+select option:disabled{color:#444;}
+</style>
 </head>
 <body>
 
-<!-- MODAL -->
-<div id="modal" class="modal-overlay hidden">
-  <div class="modal-box" onclick="event.stopPropagation()">
-    <button class="modal-close" onclick="closeModal()">×</button>
-    <div id="modal-content"></div>
-  </div>
+<div id="announcement">
+  🔥 FINAL CLEARANCE — UP TO 40% OFF &nbsp;<span>|</span>&nbsp; FREE SHIPPING OVER $150 &nbsp;<span>|</span>&nbsp; 2,000+ VERIFIED SALES ✓
 </div>
 
-<!-- ANNOUNCEMENT BAR -->
-<div id="announcement">⚡ Same Day Shipping Available — Order Before 3PM &nbsp;·&nbsp; Free Shipping $150+</div>
-
-<!-- TICKER -->
-<div id="ticker-wrap">
-  <span id="ticker">⚡ SAME DAY SHIPPING &nbsp;✦&nbsp; 100% AUTHENTIC &nbsp;✦&nbsp; STREETWEAR · SNEAKERS · SETS &nbsp;✦&nbsp; DM ON INSTAGRAM &nbsp;✦&nbsp; LIMITED STOCK &nbsp;✦&nbsp; FREE SHIPPING $150+ &nbsp;✦&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⚡ SAME DAY SHIPPING &nbsp;✦&nbsp; 100% AUTHENTIC &nbsp;✦&nbsp; STREETWEAR · SNEAKERS · SETS &nbsp;✦&nbsp; DM ON INSTAGRAM &nbsp;✦&nbsp; LIMITED STOCK &nbsp;✦&nbsp; FREE SHIPPING $150+ &nbsp;✦&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⚡ SAME DAY SHIPPING &nbsp;✦&nbsp; 100% AUTHENTIC &nbsp;✦&nbsp; STREETWEAR · SNEAKERS · SETS &nbsp;✦&nbsp; DM ON INSTAGRAM &nbsp;✦&nbsp; LIMITED STOCK &nbsp;✦&nbsp; FREE SHIPPING $150+ &nbsp;✦&nbsp;</span>
-</div>
-
-<!-- NAV -->
 <nav>
-  <img class="nav-logo" src="https://media.base44.com/images/public/69e5060e4271e8d3cdbd3650/15f8eaed3_5C7352D8-9823-4ADE-A44D-9B96328F3B3C.png" alt="Illest Supply" />
-  <div style="display:flex;gap:16px;align-items:center;">
-    <button onclick="document.getElementById('shop-section').scrollIntoView({behavior:'smooth'})" style="background:none;border:1px solid rgba(255,255,255,0.18);color:#fff;border-radius:999px;padding:7px 20px;font-size:12px;font-weight:600;cursor:pointer;letter-spacing:1px;font-family:inherit;">SHOP</button>
-    <a href="https://www.instagram.com/theillestsupply?igsh=OGt3cndoZ3RjamQ%3D&utm_source=qr" target="_blank" rel="noreferrer" class="igbtn" style="color:#fff;opacity:0.75;transition:opacity 0.2s;">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
-    </a>
+  <img class="nav-logo" src="https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/733a313ba_IMG_2927.jpg" alt="Illest Supply" />
+  <div class="nav-right">
+    <a href="https://www.instagram.com/sleazysold" target="_blank">📷 Instagram</a>
+    <button class="nav-btn" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">SHOP NOW</button>
   </div>
 </nav>
 
-<!-- HERO -->
-<section id="hero">
-  <img class="hero-logo" src="https://media.base44.com/images/public/69e5060e4271e8d3cdbd3650/15f8eaed3_5C7352D8-9823-4ADE-A44D-9B96328F3B3C.png" alt="Illest Supply" />
-  <h1>The Illest <span style="color:#555;">Supply</span></h1>
-  <p style="color:#484848;font-size:13px;letter-spacing:4px;text-transform:uppercase;margin-bottom:40px;animation:fadeup 1s ease both;">Sneakers · Streetwear · Sets · Same Day Shipping</p>
-  <button onclick="document.getElementById('shop-section').scrollIntoView({behavior:'smooth'})" style="background:#fff;color:#000;border:none;border-radius:999px;padding:15px 48px;font-size:13px;font-weight:800;cursor:pointer;letter-spacing:2px;text-transform:uppercase;animation:fadeup 1.1s ease both;font-family:inherit;">Shop Now →</button>
+<div class="ticker-wrap">
+  <div class="ticker">
+    <span>BALENCIAGA</span><span class="dot">✦</span>
+    <span>PRADA</span><span class="dot">✦</span>
+    <span>DIOR</span><span class="dot">✦</span>
+    <span>RICK OWENS</span><span class="dot">✦</span>
+    <span>BOTTEGA VENETA</span><span class="dot">✦</span>
+    <span>VALE FOREVER</span><span class="dot">✦</span>
+    <span>ASICS</span><span class="dot">✦</span>
+    <span>THE ILLEST SUPPLY</span><span class="dot">✦</span>
+    <span>AUTHENTICATED</span><span class="dot">✦</span>
+    <span>2,000+ SALES</span><span class="dot">✦</span>
+    <span>BALENCIAGA</span><span class="dot">✦</span>
+    <span>PRADA</span><span class="dot">✦</span>
+    <span>DIOR</span><span class="dot">✦</span>
+    <span>RICK OWENS</span><span class="dot">✦</span>
+    <span>BOTTEGA VENETA</span><span class="dot">✦</span>
+    <span>VALE FOREVER</span><span class="dot">✦</span>
+    <span>ASICS</span><span class="dot">✦</span>
+    <span>THE ILLEST SUPPLY</span><span class="dot">✦</span>
+    <span>AUTHENTICATED</span><span class="dot">✦</span>
+    <span>2,000+ SALES</span><span class="dot">✦</span>
+  </div>
+</div>
+
+<section class="hero">
+  <div class="hero-eyebrow">Est. The Illest Supply — Curated Luxury</div>
+  <h1>DRESS <em>DIFFERENT</em><br>STAY <em>ILLEST</em></h1>
+  <p class="hero-sub">Authenticated designer pieces. Real price. Real heat.</p>
+  <div class="hero-badge"><span class="dot"></span> Secure checkout · Verified seller · Ships fast</div>
 </section>
 
-<!-- SHOP -->
-<section id="shop-section">
-  <div class="cat-filters" id="cat-filters"></div>
-  <div id="product-grid"></div>
+<div class="filters">
+  <button class="filter-btn active" onclick="filterProducts('ALL',this)">All</button>
+  <button class="filter-btn" onclick="filterProducts('SNEAKERS',this)">Sneakers</button>
+  <button class="filter-btn" onclick="filterProducts('SLIDES',this)">Slides</button>
+  <button class="filter-btn" onclick="filterProducts('BOTTOMS',this)">Bottoms</button>
+  <button class="filter-btn" onclick="filterProducts('CUPS',this)">Cups</button>
+</div>
+
+<section class="products-section" id="products">
+  <div class="products-grid" id="productsGrid"></div>
 </section>
 
-<!-- REVIEWS -->
-<section id="reviews-section">
-  <div class="reviews-inner">
-    <div class="reviews-header">
-      <p style="font-size:11px;letter-spacing:3px;color:#444;text-transform:uppercase;margin-bottom:12px;">Real Customers</p>
-      <h2 style="font-size:1.9rem;font-weight:900;letter-spacing:2px;text-transform:uppercase;">What They're Saying</h2>
-      <div style="display:flex;justify-content:center;gap:3px;margin-top:12px;">
-        <span style="color:#facc15;font-size:20px;">★★★★★</span>
+<section class="reviews-section">
+  <div class="section-header">
+    <div class="section-eyebrow">Customer Reviews</div>
+    <div class="section-title">THEY LOVE IT 🔥</div>
+    <div class="stars">★★★★★</div>
+    <div class="rating-summary">4.9 out of 5 · 2,000+ verified purchases on Depop</div>
+  </div>
+  <div class="reviews-grid">
+    <div class="review-card">
+      <div class="review-top">
+        <div class="review-avatar">JM</div>
+        <div class="review-meta">
+          <div class="review-name">jordanmike_</div>
+          <div class="review-date">2 days ago</div>
+        </div>
       </div>
-      <p style="font-size:12px;color:#333;margin-top:8px;">5.0 average · <strong style="color:#555;">2,000+ verified sales</strong></p>
+      <div class="review-stars">★★★★★</div>
+      <div class="review-text">"Slides came exactly as described. Super fast shipping, packaged really well. Already got compliments wearing them out. Def buying again."</div>
+      <div class="review-verified">✓ VERIFIED PURCHASE</div>
     </div>
-    <div id="review-grid"></div>
+    <div class="review-card">
+      <div class="review-top">
+        <div class="review-avatar">KL</div>
+        <div class="review-meta">
+          <div class="review-name">kaylaloves_fits</div>
+          <div class="review-date">5 days ago</div>
+        </div>
+      </div>
+      <div class="review-stars">★★★★★</div>
+      <div class="review-text">"Got the Vale Forever jorts and I am OBSESSED. The quality is insane for the price. Seller was super responsive and shipped same day."</div>
+      <div class="review-verified">✓ VERIFIED PURCHASE</div>
+    </div>
+    <div class="review-card">
+      <div class="review-top">
+        <div class="review-avatar">TR</div>
+        <div class="review-meta">
+          <div class="review-name">trey.refresh</div>
+          <div class="review-date">1 week ago</div>
+        </div>
+      </div>
+      <div class="review-stars">★★★★★</div>
+      <div class="review-text">"Honestly thought it was too good to be true at this price point but nah, completely legit. Prada cups are real, came with everything. 10/10."</div>
+      <div class="review-verified">✓ VERIFIED PURCHASE</div>
+    </div>
+    <div class="review-card">
+      <div class="review-top">
+        <div class="review-avatar">NB</div>
+        <div class="review-meta">
+          <div class="review-name">nayabfit</div>
+          <div class="review-date">1 week ago</div>
+        </div>
+      </div>
+      <div class="review-stars">★★★★★</div>
+      <div class="review-text">"My third order from Illest Supply. Never disappointed. The Asics were fresh, correct size, fast delivery. This is my go-to spot now fr."</div>
+      <div class="review-verified">✓ VERIFIED PURCHASE</div>
+    </div>
+    <div class="review-card">
+      <div class="review-top">
+        <div class="review-avatar">DV</div>
+        <div class="review-meta">
+          <div class="review-name">dariusvibe</div>
+          <div class="review-date">2 weeks ago</div>
+        </div>
+      </div>
+      <div class="review-stars">★★★★★</div>
+      <div class="review-text">"Rick Owens came in perfect condition. Seller even messaged me to confirm the size before shipping. That's the kind of service you don't get everywhere."</div>
+      <div class="review-verified">✓ VERIFIED PURCHASE</div>
+    </div>
+    <div class="review-card">
+      <div class="review-top">
+        <div class="review-avatar">AM</div>
+        <div class="review-meta">
+          <div class="review-name">amara.drip</div>
+          <div class="review-date">2 weeks ago</div>
+        </div>
+      </div>
+      <div class="review-stars">★★★★★</div>
+      <div class="review-text">"Got the Bottegas and they're everything. Came with dust bag, looked brand new. Pricing is unreal compared to retail. Already told 5 of my friends."</div>
+      <div class="review-verified">✓ VERIFIED PURCHASE</div>
+    </div>
   </div>
 </section>
 
-<!-- FOOTER -->
 <footer>
-  <img class="footer-logo" src="https://media.base44.com/images/public/69e5060e4271e8d3cdbd3650/15f8eaed3_5C7352D8-9823-4ADE-A44D-9B96328F3B3C.png" alt="Illest Supply" />
-  <p style="font-size:11px;color:#2a2a2a;letter-spacing:1px;">© 2026 ILLEST SUPPLY</p>
-  <a href="https://www.instagram.com/theillestsupply?igsh=OGt3cndoZ3RjamQ%3D&utm_source=qr" target="_blank" rel="noreferrer" class="igbtn" style="color:#fff;opacity:0.35;display:flex;align-items:center;gap:8px;text-decoration:none;transition:opacity 0.2s;">
-    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
-    <span style="font-size:12px;letter-spacing:1px;">@theillestsupply</span>
-  </a>
+  <img class="footer-logo" src="https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/733a313ba_IMG_2927.jpg" alt="Illest Supply" />
+  <p>© 2025 The Illest Supply · All Rights Reserved · <a href="https://www.instagram.com/sleazysold" target="_blank" style="color:#555;text-decoration:none;">@sleazysold</a></p>
 </footer>
 
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <h2>SECURE YOUR PAIR</h2>
+    <div class="modal-product-info" id="modalProductName"></div>
+    <div class="modal-size-info" id="modalSizeInfo"></div>
+    <div class="modal-price-row">
+      <span class="modal-price" id="modalPrice"></span>
+      <span class="modal-price-orig" id="modalOrig"></span>
+      <span class="modal-save" id="modalSave"></span>
+    </div>
+    <label>Your Name</label>
+    <input type="text" id="inquiryName" placeholder="Full name" />
+    <label>Email Address</label>
+    <input type="email" id="inquiryEmail" placeholder="your@email.com" />
+    <label>Message (optional)</label>
+    <textarea id="inquiryMessage" placeholder="Any questions or special requests?"></textarea>
+    <button class="modal-submit" id="submitBtn" onclick="submitInquiry()">CLAIM THIS ITEM →</button>
+    <p class="modal-note">🔒 Secure inquiry · We'll confirm your order within 24hrs · No payment info collected here</p>
+  </div>
+</div>
+
 <script>
-const FUNCTION_URL = 'https://superagent-bc2ec54c.base44.app/functions/sendInquiry';
+const SHOE_SIZES = [
+  {us:'6',women:'7.5',oos:false},
+  {us:'6.5',women:'8',oos:false},
+  {us:'7',women:'8.5',oos:false},
+  {us:'7.5',women:'9',oos:false},
+  {us:'8',women:'9.5',oos:true},
+  {us:'8.5',women:'10',oos:true},
+  {us:'9',women:'10.5',oos:true},
+  {us:'9.5',women:'11',oos:true},
+  {us:'10',women:'11.5',oos:true},
+  {us:'10.5',women:'12',oos:true},
+  {us:'11',women:'12.5',oos:false},
+  {us:'12',women:'13.5',oos:false},
+  {us:'13',women:'14.5',oos:false},
+];
 
 const PRODUCTS = [
-  { id: 1, name: "Bad Dreams Rhinestone Shorts", category: "STREETWEAR", price: 85, img: "https://media.base44.com/images/public/69e5060e4271e8d3cdbd3650/5f778820f_7DF50FBC-5794-4D25-9F72-69F31843D93D.jpg", tag: "HOT" },
-  { id: 2, name: "Valley Denim Shorts", category: "DENIM", price: 75, img: "https://media.base44.com/images/public/69e5060e4271e8d3cdbd3650/4e7e3bbd0_74A998F7-E15E-4E87-8A68-5C2D9880512F.jpg", tag: "NEW" },
-  { id: 3, name: "ASICS Gel-Kayano Pink/Silver", category: "SNEAKERS", price: 120, img: "https://media.base44.com/images/public/69e5060e4271e8d3cdbd3650/ba2dfbcfb_IMG_2741.jpg", tag: "HOT" },
-  { id: 4, name: "Supreme Script Hoodie", category: "HOODIES", price: 160, img: "https://media.base44.com/images/public/69e5060e4271e8d3cdbd3650/c2e6dbcfc_RenderedImage.jpg", tag: "SOLD OUT" },
-  { id: 5, name: "Supreme Script Sweatpants", category: "BOTTOMS", price: 140, img: "https://media.base44.com/images/public/69e5060e4271e8d3cdbd3650/34208737e_RenderedImage.jpg", tag: "NEW" },
-  { id: 6, name: "Nike Tech Fleece Full Set", category: "SETS", price: 200, img: "https://media.base44.com/images/public/69e5060e4271e8d3cdbd3650/7127fd556_RenderedImage.jpg", tag: "HOT" },
-  { id: 7, name: "Nike Tech Fleece Hoodie", category: "HOODIES", price: 110, img: "https://media.base44.com/images/public/69e5060e4271e8d3cdbd3650/d16a64dc5_CED128CF-E9C1-4116-9CBF-337710930EEC.jpg", tag: "NEW" },
-  { id: 8, name: "Nike Tech Fleece Joggers", category: "BOTTOMS", price: 95, img: "https://media.base44.com/images/public/69e5060e4271e8d3cdbd3650/66fee3500_RenderedImage.jpg", tag: "NEW" },
-  { id: 9, name: "Louis Vuitton Sneakers", category: "SNEAKERS", price: 350, video: "https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/596809019_fdba18512_51cb75de-43cf-461f-849e-1f05d6d5a56a.mp4", tag: "HOT" },
+  {
+    id:1, name:"Balenciaga Slides", category:"SLIDES", price:130, origPrice:185,
+    video:"https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/5823dd706_3852cb545_IMG_3818.mov",
+    tag:"HOT", type:"shoe", stock:82
+  },
+  {
+    id:2, name:"Prada Cups (Black)", category:"CUPS", price:170, origPrice:240,
+    video:"https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/6557a200f_d411fd6a5_IMG_3816.mov",
+    tag:"LIMITED", type:"nosize", stock:60
+  },
+  {
+    id:3, name:"Prada Cups (Blue)", category:"CUPS", price:170, origPrice:240,
+    video:"https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/efa1df4ca_5b35fc966_IMG_3817.mov",
+    tag:"LIMITED", type:"nosize", stock:55
+  },
+  {
+    id:4, name:"Dior Slides", category:"SLIDES", price:130, origPrice:195,
+    video:"https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/b309349de_7099759ef_IMG_3824.mov",
+    tag:"HOT", type:"shoe", stock:70
+  },
+  {
+    id:5, name:"Vale Forever College Jorts", category:"BOTTOMS", price:64.99, origPrice:95,
+    imgs:[
+      "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/f4b027634_74A998F7-E15E-4E87-8A68-5C2D9880512F.png",
+      "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/6b287f63d_AA36F7DE-F3CD-47CF-BAFB-FEE327EF145A.png"
+    ],
+    tag:"LIMITED", type:"short", stock:35
+  },
+  {
+    id:6, name:"Vale Forever Jorts", category:"BOTTOMS", price:69.99, origPrice:105,
+    imgs:[
+      "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/effd672da_F748D361-0A5E-4D84-B7CE-21A80BF31A03.png",
+      "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/eac22a547_FF86E6B6-910B-416D-8894-171D71295C5C.png",
+      "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/ab18f8c12_CBA80A5F-97CF-45C5-AA11-522922875DE3.png"
+    ],
+    tag:"LIMITED", type:"short", stock:28
+  },
+  {
+    id:7, name:"Vale Forever Jorts (Rhinestone)", category:"BOTTOMS", price:79.99, origPrice:120,
+    imgs:[
+      "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/607e2c691_CF43C058-BCF4-41FB-963A-95E3D9C3D886.png",
+      "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/e6a45f9dd_FEF16C09-1B37-4184-95F3-F18D4A350911.png"
+    ],
+    tag:"LIMITED", type:"short", stock:20
+  },
+  {
+    id:8, name:"Vale Forever Bad Dreams Jorts", category:"BOTTOMS", price:79.99, origPrice:120,
+    imgs:[
+      "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/05a792aed_AdobeExpress-file.png",
+      "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/3dd13263d_AdobeExpress-file3.png"
+    ],
+    tag:"LIMITED", type:"short", stock:15
+  },
+  {
+    id:9, name:"Asics Gel Kayano 14 Pink Glow", category:"SNEAKERS", price:110, origPrice:160,
+    video:"https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/a3863a27a_a3a6a46f6_IMG_38152.mov",
+    tag:"HOT", type:"shoe", stock:65
+  },
+  {
+    id:10, name:"Rick Owens", category:"SNEAKERS", price:150, origPrice:220,
+    video:"https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/5933676ed_424a09905_IMG_38132.mov",
+    tag:"HOT", type:"shoe", stock:75
+  },
+  {
+    id:11, name:"Bottegas (Green)", category:"SNEAKERS", price:150, origPrice:210,
+    video:"https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/eac53cd23_5dd2172fc_IMG_3820.mov",
+    tag:"NEW", type:"shoe", stock:80
+  },
+  {
+    id:12, name:"Bottegas (Blue)", category:"SNEAKERS", price:150, origPrice:210,
+    video:"https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/261fd2257_888b8f45f_IMG_3821.mov",
+    tag:"NEW", type:"shoe", stock:80
+  },
+  {
+    id:13, name:"Bottegas (Pink)", category:"SNEAKERS", price:150, origPrice:210,
+    video:"https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/44c290b36_9874363bd_IMG_3823.mov",
+    tag:"NEW", type:"shoe", stock:80
+  },
 ];
 
-const REVIEWS = [
-  { name: "nughuggers", text: "Good quality great seller", img: null, source: "depop", time: "6 weeks ago" },
-  { name: "lustlovs", text: "Fast shipping amazing quality love the hoodie ❤️❤️", img: null, source: "depop", time: "11 weeks ago" },
-  { name: "Jordan M.", text: "Nike Tech came exactly as described. Same day shipping was no joke. 10/10 🔥", img: "https://media.base44.com/images/public/69e5060e4271e8d3cdbd3650/7127fd556_RenderedImage.jpg" },
-  { name: "Chris T.", text: "Supreme hoodie is clean, legit, shipped fast. Illest Supply never misses fr.", img: "https://media.base44.com/images/public/69e5060e4271e8d3cdbd3650/c2e6dbcfc_RenderedImage.jpg" },
-  { name: "Aaliyah R.", text: "Got the ASICS and they're so fire. Same day shipping is real 💜", img: "https://media.base44.com/images/public/69e5060e4271e8d3cdbd3650/ba2dfbcfb_IMG_2741.jpg" },
-  { name: "Marcus D.", text: "Bad Dreams shorts are crazy. Quality is nuts. Already ordered again.", img: "https://media.base44.com/images/public/69e5060e4271e8d3cdbd3650/5f778820f_7DF50FBC-5794-4D25-9F72-69F31843D93D.jpg" },
-  { name: "DeShawn K.", text: "Bro these are legit. Came next day and the packaging was clean. Will definitely be back 🙌", img: null },
-  { name: "Priya N.", text: "Ordered the denim shorts and I'm obsessed. Sizing was perfect too. 5/5 no cap.", img: null },
-  { name: "Tyler W.", text: "Fastest shipping I've ever experienced on a clothing site. Respect to the whole operation.", img: null },
-  { name: "Jasmine B.", text: "Supreme set goes crazy. Looks exactly like the photos and fits perfect. Already told all my friends.", img: null },
-  { name: "Leo F.", text: "Illest Supply is my go-to now. Everything they carry is fire and the prices are actually fair.", img: null },
-  { name: "Kayla H.", text: "Ordered twice and both times were flawless. The rhinestone shorts got so many compliments 🤩", img: null },
-  { name: "Noah G.", text: "Straight up the best streetwear spot I've found online. No fakes, no delays. Facts.", img: null },
-  { name: "Simone A.", text: "The Nike Tech hoodie is so comfortable and came super fast. Would give 6 stars if I could.", img: null },
+const SHORT_SIZES = [
+  {label:'XS', oos:true},
+  {label:'S', oos:false},
+  {label:'M', oos:false},
+  {label:'L', oos:false},
+  {label:'XL', oos:true},
 ];
 
-const CATS = ["ALL", "SNEAKERS", "HOODIES", "BOTTOMS", "STREETWEAR", "DENIM", "SETS"];
-let activeCat = "ALL";
-let currentProduct = null;
+let selectedSizes = {};
+let currentFilter = 'ALL';
+let modalProduct = null;
 
-function renderCats() {
-  document.getElementById('cat-filters').innerHTML = CATS.map(c => `
-    <button class="catbtn" onclick="setCat('${c}')" style="padding:8px 20px;border-radius:999px;border:1px solid rgba(255,255,255,0.18);background:${c===activeCat?'#fff':'transparent'};color:${c===activeCat?'#000':'#fff'};font-size:11px;font-weight:700;letter-spacing:1px;font-family:inherit;">${c}</button>
-  `).join('');
+function getSavePercent(price, orig) {
+  return Math.round((1 - price/orig)*100);
 }
 
-function setCat(c) { activeCat = c; renderCats(); renderProducts(); }
+function renderProducts(filter) {
+  const grid = document.getElementById('productsGrid');
+  const filtered = filter === 'ALL' ? PRODUCTS : PRODUCTS.filter(p => p.category === filter);
+  grid.innerHTML = filtered.map(p => {
+    const save = getSavePercent(p.price, p.origPrice);
+    const stockPct = p.stock;
+    let badgeHTML = '';
+    if(p.tag === 'HOT') badgeHTML += `<span class="badge hot">🔥 HOT</span>`;
+    if(p.tag === 'NEW') badgeHTML += `<span class="badge new">NEW</span>`;
+    if(p.tag === 'LIMITED') badgeHTML += `<span class="badge limited">⚡ LIMITED</span>`;
+    badgeHTML += `<span class="badge" style="background:rgba(34,197,94,0.15);color:#22c55e;">-${save}% OFF</span>`;
 
-function renderProducts() {
-  const filtered = activeCat === "ALL" ? PRODUCTS : PRODUCTS.filter(p => p.category === activeCat);
-  document.getElementById('product-grid').innerHTML = filtered.map((p, i) => {
-    const tagStyle = p.tag === "HOT" ? "background:#fff;color:#000;" : p.tag === "SOLD OUT" ? "background:#2a2a2a;color:#fff;" : "background:#1a1a1a;color:#fff;";
-    const btnStyle = p.tag === "SOLD OUT" ? "background:#1e1e1e;color:#444;cursor:default;" : "background:#fff;color:#000;cursor:pointer;";
-    const btnClick = p.tag === "SOLD OUT" ? "" : `onclick="openModal(${p.id})"`;
-    return `
-      <div class="card product-card" style="animation-delay:${i * 0.25}s;">
-        ${p.tag ? `<div class="product-tag" style="${tagStyle}">${p.tag}</div>` : ''}
-        <div class="product-img-wrap">
-          ${p.video ? `<video src="${p.video}" autoplay muted loop playsinline style="width:100%;height:100%;object-fit:cover;border-radius:16px;"></video>` : `<img src="${p.img}" alt="${p.name}" loading="lazy" />`}
-        </div>
-        <div class="product-info">
-          <p class="product-cat">${p.category}</p>
-          <p class="product-name">${p.name}</p>
-          <div class="product-footer">
-            <span class="product-price">$${p.price}</span>
-            <button class="buybtn" ${btnClick} style="${btnStyle}border:none;border-radius:8px;padding:9px 17px;font-size:11px;font-weight:800;letter-spacing:0.5px;text-transform:uppercase;transition:background 0.18s;font-family:inherit;">${p.tag === "SOLD OUT" ? "Sold Out" : "Buy Now"}</button>
+    let mediaHTML = '';
+    if(p.video) {
+      mediaHTML = `<video src="${p.video}" autoplay muted loop playsinline style="width:100%;height:100%;object-fit:cover;"></video>`;
+    } else if(p.imgs && p.imgs.length > 0) {
+      mediaHTML = `<img src="${p.imgs[0]}" alt="${p.name}" loading="lazy" />`;
+    }
+
+    let sizeHTML = '';
+    if(p.type === 'shoe') {
+      const selectedSize = selectedSizes[p.id] || null;
+      sizeHTML = `
+        <div class="size-section">
+          <div class="size-label">Men's US Size <span>Women's size in ()</span></div>
+          <div class="size-grid" id="shoeGrid${p.id}">
+            ${SHOE_SIZES.map(s => `
+              <button class="size-btn${s.oos?' oos':''}${selectedSizes[p.id]===s.us?' selected':''}"
+                onclick="${s.oos?'':` selectSize(${p.id},'${s.us}',this,'shoe')`}"
+                title="${s.oos?'Out of Stock':''}">
+                ${s.us}<br><span style="font-size:9px;opacity:0.5;">(${s.women}W)</span>
+              </button>`).join('')}
           </div>
+          <div class="size-conversion">Women: add 1.5 to men's size shown · EU sizes available on request</div>
+        </div>`;
+    } else if(p.type === 'short') {
+      sizeHTML = `
+        <div class="size-section">
+          <div class="size-label">Size <span>⚡ Limited Stock</span></div>
+          <div class="size-grid" id="shortGrid${p.id}">
+            ${SHORT_SIZES.map(s => `
+              <button class="size-btn${s.oos?' oos':''}${selectedSizes[p.id]===s.label?' selected':''}"
+                onclick="${s.oos?'':` selectSize(${p.id},'${s.label}',this,'short')`}"
+                title="${s.oos?'Out of Stock':''}">
+                ${s.label}
+              </button>`).join('')}
+          </div>
+        </div>`;
+    }
+
+    let stockMsg = '';
+    if(p.type === 'short') {
+      const msgs = ['Only 3 left!','Almost gone!','2 remaining!','Last few!'];
+      const msg = p.stock <= 20 ? msgs[p.id % msgs.length] : 'Selling fast';
+      stockMsg = `<div class="stock-bar-wrap">
+        <div class="stock-text">⚠️ ${msg} · ${p.stock}% claimed</div>
+        <div class="stock-bar"><div class="stock-fill" style="width:${p.stock}%;"></div></div>
+      </div>`;
+    }
+
+    return `
+      <div class="product-card" data-category="${p.category}">
+        <div class="product-badge">${badgeHTML}</div>
+        <div class="product-img-wrap">${mediaHTML}</div>
+        <div class="product-info">
+          <div class="product-cat">${p.category}</div>
+          <div class="product-name">${p.name}</div>
+          <div class="price-row">
+            <span class="price-current">$${p.price}</span>
+            <span class="price-original">$${p.origPrice}</span>
+            <span class="price-save">SAVE ${save}%</span>
+          </div>
+          ${sizeHTML}
+          ${stockMsg}
+          <button class="buy-btn" onclick="openModal(${p.id})">INQUIRE NOW →</button>
         </div>
       </div>`;
   }).join('');
 }
 
-function getInitials(name) { return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2); }
-
-function renderReviews() {
-  document.getElementById('review-grid').innerHTML = REVIEWS.map(r => r.img ? `
-    <div class="review-card-photo">
-      <div class="review-img"><img src="${r.img}" alt="${r.name}" loading="lazy" /></div>
-      <div class="review-body">
-        <div style="margin-bottom:8px;"><span style="color:#facc15;font-size:13px;">★★★★★</span></div>
-        <p style="font-size:13px;line-height:1.65;color:#888;margin-bottom:10px;">"${r.text}"</p>
-        <p style="font-size:12px;font-weight:700;color:#444;">— ${r.name}</p>
-      </div>
-    </div>` : `
-    <div class="review-card-text">
-      <div>
-        <div class="review-top" style="margin-bottom:14px;">
-          <div class="review-avatar">${getInitials(r.name)}</div>
-          <div class="review-name-wrap">
-            <div style="display:flex;align-items:center;gap:8px;">
-              <span style="font-size:13px;font-weight:700;color:#ccc;">${r.name}</span>
-              ${r.source === 'depop' ? '<span style="background:#ff2300;color:#fff;font-size:9px;font-weight:800;padding:2px 7px;border-radius:4px;letter-spacing:1px;text-transform:uppercase;">Depop</span>' : ''}
-            </div>
-            <span style="color:#facc15;font-size:12px;">★★★★★</span>
-            ${r.time ? '<span style="font-size:10px;color:#3a3a3a;letter-spacing:0.5px;">' + r.time + '</span>' : ''}
-          </div>
-        </div>
-        <p style="font-size:13px;line-height:1.7;color:#666;">"${r.text}"</p>
-      </div>
-      <p style="font-size:10px;color:#2a2a2a;letter-spacing:1px;margin-top:10px;">${r.source === 'depop' ? 'VERIFIED ON DEPOP ✓' : 'VERIFIED PURCHASE ✓'}</p>
-    </div>`
-  ).join('');
-}
-
-function openModal(id) {
-  currentProduct = PRODUCTS.find(x => x.id === id);
-  if (!currentProduct) return;
-  document.getElementById('modal-content').innerHTML = `
-    <p style="font-size:11px;letter-spacing:2px;color:#888;text-transform:uppercase;margin-bottom:6px;">Inquire About</p>
-    <p style="font-weight:800;font-size:1.1rem;text-transform:uppercase;margin-bottom:4px;">${currentProduct.name}</p>
-    <p style="color:#e5e5e5;font-weight:800;font-size:1.4rem;margin-bottom:24px;">$${currentProduct.price}</p>
-    <form id="inquiry-form" onsubmit="submitInquiry(event)">
-      <div class="form-group"><label>Your Name *</label><input type="text" id="f-name" placeholder="John Doe" required /></div>
-      <div class="form-group"><label>Email *</label><input type="email" id="f-email" placeholder="you@gmail.com" required /></div>
-      <div class="form-group"><label>Size (if applicable)</label><input type="text" id="f-size" placeholder="M / 10 / etc." /></div>
-      <div class="form-group"><label>Message (optional)</label><textarea rows="3" id="f-note" placeholder="Any questions..." style="resize:none;"></textarea></div>
-      <button type="submit" id="submit-btn" style="width:100%;padding:14px;background:#fff;color:#000;border:none;border-radius:10px;font-weight:800;font-size:14px;cursor:pointer;letter-spacing:1px;text-transform:uppercase;font-family:inherit;transition:opacity 0.2s;">Send Inquiry →</button>
-      <p id="form-error" style="font-size:12px;color:#e55;text-align:center;margin-top:10px;display:none;"></p>
-      <p style="font-size:11px;opacity:0.25;text-align:center;margin-top:10px;">We respond within minutes</p>
-    </form>`;
-  document.getElementById('modal').classList.remove('hidden');
-  document.body.style.overflow = 'hidden';
-}
-
-async function submitInquiry(e) {
-  e.preventDefault();
-  const btn = document.getElementById('submit-btn');
-  const errEl = document.getElementById('form-error');
-  const name = document.getElementById('f-name').value.trim();
-  const email = document.getElementById('f-email').value.trim();
-  const size = document.getElementById('f-size').value.trim();
-  const note = document.getElementById('f-note').value.trim();
-
-  btn.textContent = 'Sending...';
-  btn.style.opacity = '0.6';
-  btn.disabled = true;
-  errEl.style.display = 'none';
-
-  try {
-    const res = await fetch(FUNCTION_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        name, email, size, note,
-        product: currentProduct.name,
-        price: currentProduct.price
-      })
-    });
-
-    const data = await res.json();
-
-    if (!res.ok || !data.ok) {
-      throw new Error(data.error || 'Something went wrong');
-    }
-
-    // Success screen
-    document.getElementById('modal-content').innerHTML = `
-      <div style="text-align:center;padding:24px 0;">
-        <div style="font-size:52px;margin-bottom:16px;">✅</div>
-        <div style="font-weight:800;font-size:1.2rem;margin-bottom:10px;">Inquiry Sent!</div>
-        <div style="opacity:0.45;font-size:14px;line-height:1.7;">We'll reach out ASAP. Follow <a href="https://www.instagram.com/theillestsupply?igsh=OGt3cndoZ3RjamQ%3D&utm_source=qr" target="_blank" rel="noreferrer" style="color:#fff;">@theillestsupply</a> for new drops.</div>
-        <button onclick="closeModal()" style="margin-top:24px;padding:11px 32px;background:#fff;color:#000;border:none;border-radius:999px;font-weight:700;cursor:pointer;font-family:inherit;">Close</button>
-      </div>`;
-  } catch (err) {
-    btn.textContent = 'Send Inquiry →';
-    btn.style.opacity = '1';
-    btn.disabled = false;
-    errEl.textContent = 'Failed to send — please DM us on Instagram instead.';
-    errEl.style.display = 'block';
+function selectSize(productId, size, btn, type) {
+  selectedSizes[productId] = size;
+  const gridId = type === 'shoe' ? `shoeGrid${productId}` : `shortGrid${productId}`;
+  const grid = document.getElementById(gridId);
+  if(grid) {
+    grid.querySelectorAll('.size-btn:not(.oos)').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
   }
 }
 
-function closeModal() {
-  document.getElementById('modal').classList.add('hidden');
-  document.body.style.overflow = '';
-  currentProduct = null;
+function filterProducts(cat, btn) {
+  currentFilter = cat;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderProducts(cat);
 }
 
-document.getElementById('modal').addEventListener('click', function(e) {
-  if (e.target === this) closeModal();
+function openModal(id) {
+  const p = PRODUCTS.find(x => x.id === id);
+  if(!p) return;
+  modalProduct = p;
+  const save = getSavePercent(p.price, p.origPrice);
+  const size = selectedSizes[p.id];
+  document.getElementById('modalProductName').textContent = p.name;
+  document.getElementById('modalPrice').textContent = `$${p.price}`;
+  document.getElementById('modalOrig').textContent = `$${p.origPrice}`;
+  document.getElementById('modalSave').textContent = `SAVE ${save}%`;
+  if(size) {
+    document.getElementById('modalSizeInfo').textContent = `Selected size: ${size}`;
+  } else if(p.type === 'shoe') {
+    document.getElementById('modalSizeInfo').textContent = '⚠️ No size selected — please select a size before ordering';
+  } else if(p.type === 'short') {
+    document.getElementById('modalSizeInfo').textContent = '⚠️ No size selected — please select a size before ordering';
+  } else {
+    document.getElementById('modalSizeInfo').textContent = '';
+  }
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.getElementById('inquiryName').value = '';
+  document.getElementById('inquiryEmail').value = '';
+  document.getElementById('inquiryMessage').value = '';
+}
+
+async function submitInquiry() {
+  const name = document.getElementById('inquiryName').value.trim();
+  const email = document.getElementById('inquiryEmail').value.trim();
+  const message = document.getElementById('inquiryMessage').value.trim();
+  const size = selectedSizes[modalProduct?.id] || 'Not selected';
+  if(!name || !email) { alert('Please fill in your name and email.'); return; }
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true; btn.textContent = 'Sending...';
+  try {
+    const res = await fetch('https://api.base44.com/api/apps/6a21ea02495f72afbc2ec54c/functions/sendInquiry', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        name, email, message,
+        product: modalProduct?.name || '',
+        size,
+        price: modalProduct?.price || ''
+      })
+    });
+    btn.textContent = '✓ Inquiry Sent!';
+    setTimeout(closeModal, 2000);
+  } catch(e) {
+    btn.textContent = 'Error — try again';
+    btn.disabled = false;
+  }
+}
+
+document.getElementById('modalOverlay').addEventListener('click', function(e) {
+  if(e.target === this) closeModal();
 });
 
-renderCats();
-renderProducts();
-renderReviews();
+renderProducts('ALL');
 </script>
 </body>
 </html>
