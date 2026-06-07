@@ -1,0 +1,28 @@
+{
+  "type": "object",
+  "properties": {
+    "product_name": {
+      "type": "string"
+    },
+    "product_id": {
+      "type": "number"
+    },
+    "drop_date": {
+      "type": "string"
+    },
+    "drop_time": {
+      "type": "string"
+    },
+    "is_live": {
+      "type": "boolean"
+    },
+    "hype_text": {
+      "type": "string"
+    },
+    "notify_list": {
+      "type": "string"
+    }
+  },
+  "required": [],
+  "name": "ScheduledDrop"
+}
