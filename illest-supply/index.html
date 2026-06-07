@@ -728,7 +728,7 @@ function loadDropBanner() {
         + (drop.hype_text ? '<div class="drop-banner-hype">' + drop.hype_text + '</div>' : '')
         + '</div>'
         + '<div class="countdown" id="countdown"></div>'
-        + '<button class="drop-notify-btn" id="dropNotifyBtn" onclick="notifyDrop('' + drop.product_name + '')">🔔 Notify Me</button>'
+        + '<button class="drop-notify-btn" id="dropNotifyBtn" onclick="notifyDrop(\'' + drop.product_name + '\')">🔔 Notify Me</button>'
         + '</div></div>';
       // start countdown
       if (countdownInterval) clearInterval(countdownInterval);
