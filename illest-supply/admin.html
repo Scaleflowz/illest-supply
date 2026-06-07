@@ -2,634 +2,514 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Admin — The Illest Supply</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:#080808;color:#fff;font-family:'Inter',sans-serif;min-height:100vh;}
-:root{--accent:#fff;--red:#ef4444;--green:#22c55e;--yellow:#f59e0b;--border:rgba(255,255,255,0.07);--card:#0e0e0e;--sub:#555;}
 
-/* LOGIN */
-#loginScreen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;}
-.login-box{background:#0e0e0e;border:1px solid var(--border);border-radius:24px;padding:44px 36px;max-width:380px;width:100%;text-align:center;}
-.login-logo{height:60px;mix-blend-mode:screen;animation:spinY 10s linear infinite;margin-bottom:28px;}
-@keyframes spinY{from{transform:rotateY(0)}to{transform:rotateY(360deg)}}
-.login-title{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:0.06em;margin-bottom:6px;}
-.login-sub{font-size:12px;color:var(--sub);margin-bottom:28px;}
-.login-input{width:100%;background:#080808;border:1px solid rgba(255,255,255,0.1);border-radius:12px;color:#fff;font-size:15px;padding:14px 18px;font-family:'Inter',sans-serif;outline:none;text-align:center;letter-spacing:0.2em;margin-bottom:14px;transition:border-color .2s;}
-.login-input:focus{border-color:rgba(255,255,255,0.3);}
-.login-btn{width:100%;padding:14px;background:#fff;color:#000;font-size:12px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;border:none;border-radius:12px;cursor:pointer;transition:all .2s;}
+#loginScreen{display:flex;align-items:center;justify-content:center;min-height:100vh;}
+.login-box{background:#111;border:1px solid rgba(255,255,255,0.1);border-radius:24px;padding:44px 36px;max-width:360px;width:90%;text-align:center;}
+.login-logo{height:56px;margin-bottom:24px;display:block;margin-left:auto;margin-right:auto;}
+.login-title{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:0.06em;margin-bottom:6px;}
+.login-sub{font-size:12px;color:#555;margin-bottom:28px;}
+.login-input{width:100%;background:#080808;border:1px solid rgba(255,255,255,0.12);border-radius:12px;color:#fff;font-size:16px;padding:14px 18px;font-family:'Inter',sans-serif;outline:none;text-align:center;letter-spacing:0.15em;margin-bottom:12px;display:block;}
+.login-input:focus{border-color:rgba(255,255,255,0.35);}
+.login-btn{width:100%;padding:14px;background:#fff;color:#000;font-size:12px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;border:none;border-radius:12px;cursor:pointer;}
 .login-btn:hover{background:#eee;}
-.login-err{font-size:11px;color:var(--red);margin-top:10px;display:none;}
+.login-err{font-size:11px;color:#ef4444;margin-top:12px;display:none;}
 
-/* APP SHELL */
 #app{display:none;}
 .shell{display:flex;min-height:100vh;}
-
-/* SIDEBAR */
-.sidebar{width:200px;background:#0a0a0a;border-right:1px solid var(--border);padding:20px 0;flex-shrink:0;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;}
-.sb-logo{height:40px;mix-blend-mode:screen;animation:spinY 10s linear infinite;display:block;margin:0 auto 24px;}
-.sb-nav{flex:1;}
-.sb-item{display:flex;align-items:center;gap:10px;padding:11px 20px;font-size:12px;font-weight:600;letter-spacing:0.04em;color:var(--sub);cursor:pointer;transition:all .2s;border-left:2px solid transparent;}
+.sidebar{width:196px;background:#0a0a0a;border-right:1px solid rgba(255,255,255,0.07);padding:20px 0;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;flex-shrink:0;}
+.sb-logo{height:38px;display:block;margin:0 auto 24px;}
+.sb-item{display:flex;align-items:center;gap:10px;padding:11px 20px;font-size:12px;font-weight:600;letter-spacing:0.03em;color:#555;cursor:pointer;transition:all .15s;border-left:2px solid transparent;}
 .sb-item:hover{color:#fff;background:rgba(255,255,255,0.03);}
 .sb-item.active{color:#fff;border-left-color:#fff;background:rgba(255,255,255,0.04);}
-.sb-item .icon{font-size:15px;width:20px;text-align:center;}
-.sb-role{font-size:9px;color:#333;letter-spacing:0.12em;text-transform:uppercase;padding:0 20px;margin-bottom:6px;}
-.sb-footer{padding:16px 20px;border-top:1px solid var(--border);}
-.sb-user{font-size:11px;color:var(--sub);}
-.sb-user strong{color:#ccc;display:block;margin-bottom:2px;}
-.sb-logout{font-size:10px;color:#333;cursor:pointer;letter-spacing:0.04em;}
+.sb-footer{margin-top:auto;padding:16px 20px;border-top:1px solid rgba(255,255,255,0.06);}
+.sb-user-name{font-size:12px;font-weight:700;color:#ccc;}
+.sb-user-role{font-size:10px;color:#444;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px;}
+.sb-logout{font-size:11px;color:#333;cursor:pointer;}
 .sb-logout:hover{color:#fff;}
 
-/* MAIN */
-.main{flex:1;padding:28px 32px;overflow-x:hidden;}
-.page-section{display:none;}
-.page-section.active{display:block;}
-.page-title{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:0.04em;margin-bottom:6px;}
-.page-sub{font-size:12px;color:var(--sub);margin-bottom:28px;}
+.main{flex:1;padding:32px;overflow-x:hidden;}
+.page{display:none;}
+.page.active{display:block;}
+.page-title{font-family:'Bebas Neue',sans-serif;font-size:34px;letter-spacing:0.04em;margin-bottom:4px;}
+.page-sub{font-size:12px;color:#555;margin-bottom:28px;}
 
-/* STAT CARDS */
-.stats-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;margin-bottom:28px;}
-.stat-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px 20px;}
-.stat-label{font-size:10px;color:var(--sub);letter-spacing:0.1em;text-transform:uppercase;font-weight:600;margin-bottom:8px;}
+.stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px;margin-bottom:28px;}
+.stat{background:#111;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:18px;}
+.stat-label{font-size:10px;color:#555;text-transform:uppercase;letter-spacing:0.1em;font-weight:600;margin-bottom:8px;}
 .stat-val{font-size:26px;font-weight:800;}
-.stat-val.green{color:var(--green);}
-.stat-val.red{color:var(--red);}
-.stat-val.yellow{color:var(--yellow);}
+.green{color:#22c55e;} .red{color:#ef4444;} .yellow{color:#f59e0b;}
 
-/* TABLE */
-.table-wrap{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:24px;}
-.table-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);}
-.table-title{font-size:13px;font-weight:700;letter-spacing:0.02em;}
-.table-actions{display:flex;gap:8px;align-items:center;}
-.search-input{background:#080808;border:1px solid rgba(255,255,255,0.08);border-radius:8px;color:#fff;font-size:11px;padding:7px 12px;font-family:'Inter',sans-serif;outline:none;width:180px;}
-.search-input:focus{border-color:rgba(255,255,255,0.2);}
+.card{background:#111;border:1px solid rgba(255,255,255,0.07);border-radius:16px;overflow:hidden;margin-bottom:20px;}
+.card-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.06);}
+.card-title{font-size:13px;font-weight:700;}
+.search{background:#080808;border:1px solid rgba(255,255,255,0.08);border-radius:8px;color:#fff;font-size:11px;padding:7px 12px;font-family:'Inter',sans-serif;outline:none;width:170px;}
+.search:focus{border-color:rgba(255,255,255,0.2);}
+
 table{width:100%;border-collapse:collapse;}
-th{font-size:10px;letter-spacing:0.1em;color:var(--sub);text-transform:uppercase;font-weight:600;padding:10px 16px;text-align:left;border-bottom:1px solid var(--border);}
-td{font-size:12px;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.03);color:#ccc;vertical-align:middle;}
+th{font-size:10px;letter-spacing:0.1em;color:#444;text-transform:uppercase;padding:10px 16px;text-align:left;border-bottom:1px solid rgba(255,255,255,0.06);}
+td{font-size:12px;padding:11px 16px;border-bottom:1px solid rgba(255,255,255,0.03);color:#bbb;vertical-align:middle;}
 tr:last-child td{border-bottom:none;}
-tr:hover td{background:rgba(255,255,255,0.02);}
+tr:hover td{background:rgba(255,255,255,0.015);}
 
-/* STATUS BADGE */
-.status{display:inline-block;padding:3px 10px;border-radius:50px;font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;}
-.status.New{background:rgba(99,102,241,0.15);color:#818cf8;}
-.status.Contacted{background:rgba(245,158,11,0.15);color:#f59e0b;}
-.status.Paid{background:rgba(34,197,94,0.15);color:#22c55e;}
-.status.Shipped{background:rgba(59,130,246,0.15);color:#60a5fa;}
-.status.Done{background:rgba(255,255,255,0.06);color:#666;}
-.status.Cancelled{background:rgba(239,68,68,0.1);color:#ef4444;}
+.badge{display:inline-block;padding:3px 9px;border-radius:50px;font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;}
+.badge-new{background:rgba(129,140,248,0.15);color:#818cf8;}
+.badge-contacted{background:rgba(245,158,11,0.15);color:#f59e0b;}
+.badge-paid{background:rgba(34,197,94,0.15);color:#22c55e;}
+.badge-shipped{background:rgba(59,130,246,0.15);color:#60a5fa;}
+.badge-done{background:rgba(255,255,255,0.06);color:#555;}
+.badge-cancelled{background:rgba(239,68,68,0.1);color:#ef4444;}
 
-/* SELECT IN TABLE */
-select.inline{background:#111;border:1px solid rgba(255,255,255,0.1);border-radius:6px;color:#fff;font-size:11px;padding:4px 8px;font-family:'Inter',sans-serif;outline:none;cursor:pointer;}
+select.sel{background:#111;border:1px solid rgba(255,255,255,0.1);border-radius:6px;color:#fff;font-size:11px;padding:4px 8px;font-family:'Inter',sans-serif;outline:none;cursor:pointer;}
+input.note-in{background:#080808;border:1px solid rgba(255,255,255,0.06);border-radius:6px;color:#777;font-size:10px;padding:4px 8px;width:130px;font-family:inherit;outline:none;}
+.reply-btn{padding:4px 12px;border-radius:6px;border:1px solid rgba(255,255,255,0.12);background:transparent;color:#ccc;font-size:10px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block;}
+.reply-btn:hover{border-color:#fff;color:#fff;}
 
-/* BUTTONS */
-.btn{padding:8px 18px;border-radius:8px;font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;border:none;cursor:pointer;transition:all .2s;}
+.btn{padding:8px 18px;border-radius:8px;font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;border:none;cursor:pointer;}
 .btn-white{background:#fff;color:#000;}
 .btn-white:hover{background:#eee;}
 .btn-outline{background:transparent;border:1px solid rgba(255,255,255,0.15);color:#fff;}
-.btn-outline:hover{background:rgba(255,255,255,0.06);}
-.btn-red{background:rgba(239,68,68,0.12);color:#ef4444;border:1px solid rgba(239,68,68,0.2);}
-.btn-red:hover{background:rgba(239,68,68,0.2);}
-.btn-green{background:rgba(34,197,94,0.12);color:#22c55e;border:1px solid rgba(34,197,94,0.2);}
 .btn-sm{padding:5px 12px;font-size:10px;}
 
-/* TOGGLE */
-.toggle{position:relative;display:inline-block;width:36px;height:20px;}
+.toggle{position:relative;display:inline-block;width:34px;height:18px;vertical-align:middle;}
 .toggle input{opacity:0;width:0;height:0;}
-.toggle-slider{position:absolute;inset:0;background:rgba(255,255,255,0.1);border-radius:20px;cursor:pointer;transition:.2s;}
-.toggle-slider:before{content:'';position:absolute;width:14px;height:14px;left:3px;top:3px;background:#666;border-radius:50%;transition:.2s;}
-input:checked + .toggle-slider{background:rgba(34,197,94,0.3);}
-input:checked + .toggle-slider:before{transform:translateX(16px);background:#22c55e;}
+.tslider{position:absolute;inset:0;background:rgba(255,255,255,0.08);border-radius:18px;cursor:pointer;transition:.2s;}
+.tslider:before{content:'';position:absolute;width:12px;height:12px;left:3px;top:3px;background:#555;border-radius:50%;transition:.2s;}
+input:checked + .tslider{background:rgba(34,197,94,0.3);}
+input:checked + .tslider:before{transform:translateX(16px);background:#22c55e;}
 
-/* MODAL */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:1000;align-items:center;justify-content:center;padding:20px;}
-.modal-overlay.open{display:flex;}
-.modal{background:#111;border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:30px;max-width:500px;width:100%;max-height:90vh;overflow-y:auto;position:relative;}
-.modal-close{position:absolute;top:14px;right:16px;background:none;border:none;color:#555;font-size:20px;cursor:pointer;}
-.modal-close:hover{color:#fff;}
-.modal-title{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:0.05em;margin-bottom:20px;}
-.form-row{margin-bottom:14px;}
-.form-row label{display:block;font-size:10px;letter-spacing:0.1em;color:var(--sub);text-transform:uppercase;font-weight:600;margin-bottom:5px;}
-.form-row input,.form-row select,.form-row textarea{width:100%;background:#0a0a0a;border:1px solid rgba(255,255,255,0.08);border-radius:10px;color:#fff;font-size:13px;padding:10px 14px;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s;}
-.form-row input:focus,.form-row select:focus,.form-row textarea:focus{border-color:rgba(255,255,255,0.25);}
-.form-row textarea{resize:vertical;min-height:70px;}
-.form-row select option{background:#111;}
-.modal-actions{display:flex;gap:10px;margin-top:20px;justify-content:flex-end;}
-
-/* TREND CHART */
-.trend-wrap{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:24px;}
-.trend-title{font-size:12px;font-weight:700;margin-bottom:16px;}
-.trend-bars{display:flex;align-items:flex-end;gap:8px;height:80px;}
-.trend-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;}
-.trend-bar{width:100%;background:rgba(255,255,255,0.08);border-radius:4px 4px 0 0;transition:height .4s;min-height:4px;}
-.trend-bar.has-data{background:rgba(255,255,255,0.5);}
-.trend-label{font-size:9px;color:var(--sub);letter-spacing:0.06em;}
-.trend-count{font-size:9px;color:#ccc;font-weight:600;}
-
-/* INVENTORY GRID */
-.inv-product{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;margin-bottom:12px;}
-.inv-product-name{font-size:13px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;}
+.inv-block{background:#111;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:18px 20px;margin-bottom:12px;}
+.inv-name{font-size:13px;font-weight:700;margin-bottom:12px;}
 .inv-sizes{display:flex;flex-wrap:wrap;gap:8px;}
-.inv-size{display:flex;align-items:center;gap:6px;background:#111;border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:6px 10px;}
-.inv-size-label{font-size:11px;font-weight:700;color:#ccc;min-width:24px;}
-.inv-qty{background:#0a0a0a;border:1px solid rgba(255,255,255,0.08);border-radius:6px;color:#fff;font-size:11px;padding:3px 7px;width:48px;font-family:'Inter',sans-serif;outline:none;text-align:center;}
+.inv-sz{display:flex;align-items:center;gap:7px;background:#0a0a0a;border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:6px 10px;}
+.sz-label{font-size:11px;font-weight:700;color:#ccc;min-width:22px;}
+.qty-in{background:#080808;border:1px solid rgba(255,255,255,0.08);border-radius:5px;color:#fff;font-size:11px;padding:3px 6px;width:44px;font-family:inherit;outline:none;text-align:center;}
 
-/* TOP PRODUCTS */
-.top-product-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);}
-.top-product-row:last-child{border-bottom:none;}
-.top-product-name{flex:1;font-size:12px;color:#ccc;}
-.top-product-bar{flex:2;height:4px;background:rgba(255,255,255,0.05);border-radius:2px;overflow:hidden;}
-.top-product-fill{height:100%;background:rgba(255,255,255,0.35);border-radius:2px;}
-.top-product-count{font-size:11px;font-weight:700;color:#888;min-width:24px;text-align:right;}
+.drop-row{background:#111;border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:16px 20px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.drop-name{font-size:13px;font-weight:700;}
+.drop-meta{font-size:11px;color:#555;margin-top:3px;}
 
-/* TOAST */
-.toast{position:fixed;top:20px;right:20px;background:#22c55e;color:#fff;font-size:11px;font-weight:700;letter-spacing:0.08em;padding:10px 20px;border-radius:10px;opacity:0;transition:opacity .3s;z-index:9999;pointer-events:none;}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:999;align-items:center;justify-content:center;padding:20px;}
+.modal-bg.open{display:flex;}
+.modal{background:#111;border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:28px;max-width:480px;width:100%;max-height:90vh;overflow-y:auto;position:relative;}
+.modal-x{position:absolute;top:14px;right:16px;background:none;border:none;color:#555;font-size:20px;cursor:pointer;line-height:1;}
+.modal-x:hover{color:#fff;}
+.modal-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:0.05em;margin-bottom:18px;}
+.frow{margin-bottom:13px;}
+.frow label{display:block;font-size:10px;color:#555;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;margin-bottom:5px;}
+.frow input,.frow select,.frow textarea{width:100%;background:#0a0a0a;border:1px solid rgba(255,255,255,0.08);border-radius:9px;color:#fff;font-size:13px;padding:10px 13px;font-family:'Inter',sans-serif;outline:none;}
+.frow input:focus,.frow select:focus,.frow textarea:focus{border-color:rgba(255,255,255,0.25);}
+.frow textarea{resize:vertical;min-height:65px;}
+.modal-btns{display:flex;gap:8px;justify-content:flex-end;margin-top:18px;}
+
+.trend{background:#111;border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:20px;margin-bottom:20px;}
+.trend-title{font-size:12px;font-weight:700;margin-bottom:14px;}
+.bars{display:flex;align-items:flex-end;gap:8px;height:70px;}
+.bar-w{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.bar{width:100%;background:rgba(255,255,255,0.07);border-radius:3px 3px 0 0;min-height:3px;transition:height .4s;}
+.bar.lit{background:rgba(255,255,255,0.45);}
+.bar-lbl{font-size:9px;color:#444;letter-spacing:0.05em;}
+.bar-cnt{font-size:9px;color:#888;font-weight:600;}
+
+.toast{position:fixed;bottom:24px;right:24px;background:#22c55e;color:#fff;font-size:11px;font-weight:700;letter-spacing:0.08em;padding:10px 20px;border-radius:10px;opacity:0;transition:opacity .25s;z-index:9999;pointer-events:none;}
 .toast.show{opacity:1;}
 
-/* MOBILE */
-@media(max-width:700px){
+#teamNav{display:none;}
+
+@media(max-width:680px){
   .sidebar{display:none;}
-  .main{padding:20px 16px;}
-  .stats-row{grid-template-columns:repeat(2,1fr);}
+  .main{padding:16px;}
+  .stats{grid-template-columns:1fr 1fr;}
 }
 </style>
 </head>
 <body>
 
-<!-- LOGIN -->
 <div id="loginScreen">
   <div class="login-box">
     <img class="login-logo" src="https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/409f6a116_918D9A7E-D61E-4658-A7B6-5DF1F8B5AC78.png"/>
     <div class="login-title">ADMIN ACCESS</div>
     <div class="login-sub">Enter your passcode to continue</div>
-    <input class="login-input" type="password" id="passcodeInput" placeholder="Enter passcode" onkeydown="if(event.key==='Enter')doLogin()"/>
-    <button class="login-btn" onclick="doLogin()">ENTER →</button>
+    <input class="login-input" type="password" id="pc" placeholder="Passcode" autocomplete="off"/>
+    <button class="login-btn" id="enterBtn">ENTER &rarr;</button>
     <div class="login-err" id="loginErr">Invalid passcode. Try again.</div>
   </div>
 </div>
 
-<!-- APP -->
 <div id="app">
   <div class="shell">
     <div class="sidebar">
       <img class="sb-logo" src="https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/409f6a116_918D9A7E-D61E-4658-A7B6-5DF1F8B5AC78.png"/>
-      <div class="sb-nav">
-        <div class="sb-item active" onclick="nav('analytics')" id="nav-analytics"><span class="icon">📊</span>Analytics</div>
-        <div class="sb-item" onclick="nav('inquiries')" id="nav-inquiries"><span class="icon">📥</span>Inquiries</div>
-        <div class="sb-item" onclick="nav('inventory')" id="nav-inventory"><span class="icon">📦</span>Inventory</div>
-        <div class="sb-item" onclick="nav('customers')" id="nav-customers"><span class="icon">👥</span>Customers</div>
-        <div class="sb-item" onclick="nav('drops')" id="nav-drops"><span class="icon">🔥</span>Drops</div>
-        <div id="teamNav" style="display:none;">
-          <div class="sb-role">Owner Only</div>
-          <div class="sb-item" onclick="nav('team')" id="nav-team"><span class="icon">🔑</span>Team</div>
-        </div>
-      </div>
+      <div class="sb-item active" id="nav-dash" onclick="goTo('dash')">📊 &nbsp;Analytics</div>
+      <div class="sb-item" id="nav-inq" onclick="goTo('inq')">📥 &nbsp;Inquiries</div>
+      <div class="sb-item" id="nav-inv" onclick="goTo('inv')">📦 &nbsp;Inventory</div>
+      <div class="sb-item" id="nav-cust" onclick="goTo('cust')">👥 &nbsp;Customers</div>
+      <div class="sb-item" id="nav-drops" onclick="goTo('drops')">🔥 &nbsp;Drops</div>
+      <div id="teamNav"><div class="sb-item" id="nav-team" onclick="goTo('team')">🔑 &nbsp;Team</div></div>
       <div class="sb-footer">
-        <div class="sb-user"><strong id="sbName">—</strong><span id="sbRole" style="font-size:9px;letter-spacing:0.08em;text-transform:uppercase;color:#333;"></span></div>
-        <div class="sb-logout" onclick="logout()" style="margin-top:8px;">Sign out</div>
+        <div class="sb-user-name" id="sbName"></div>
+        <div class="sb-user-role" id="sbRole"></div>
+        <div class="sb-logout" onclick="doLogout()">Sign out</div>
       </div>
     </div>
-
     <div class="main">
-
-      <!-- ANALYTICS -->
-      <div class="page-section active" id="sec-analytics">
+      <div class="page active" id="page-dash">
         <div class="page-title">ANALYTICS</div>
-        <div class="page-sub">Live overview of your store performance</div>
-        <div class="stats-row" id="statsRow">
-          <div class="stat-card"><div class="stat-label">Total Inquiries</div><div class="stat-val" id="sTotalInq">—</div></div>
-          <div class="stat-card"><div class="stat-label">Revenue (est.)</div><div class="stat-val green" id="sRevenue">—</div></div>
-          <div class="stat-card"><div class="stat-label">Customers</div><div class="stat-val" id="sCust">—</div></div>
-          <div class="stat-card"><div class="stat-label">Repeat Buyers</div><div class="stat-val yellow" id="sRepeat">—</div></div>
-          <div class="stat-card"><div class="stat-label">OOS Sizes</div><div class="stat-val red" id="sOos">—</div></div>
-          <div class="stat-card"><div class="stat-label">New Inquiries</div><div class="stat-val" id="sNew">—</div></div>
+        <div class="page-sub">Live overview of your store</div>
+        <div class="stats">
+          <div class="stat"><div class="stat-label">Total Inquiries</div><div class="stat-val" id="sTot">—</div></div>
+          <div class="stat"><div class="stat-label">Revenue (est.)</div><div class="stat-val green" id="sRev">—</div></div>
+          <div class="stat"><div class="stat-label">Customers</div><div class="stat-val" id="sCust">—</div></div>
+          <div class="stat"><div class="stat-label">Repeat Buyers</div><div class="stat-val yellow" id="sRep">—</div></div>
+          <div class="stat"><div class="stat-label">OOS Sizes</div><div class="stat-val red" id="sOos">—</div></div>
+          <div class="stat"><div class="stat-label">New Inquiries</div><div class="stat-val" id="sNew">—</div></div>
         </div>
-        <div class="trend-wrap">
-          <div class="trend-title">Inquiries — Last 7 Days</div>
-          <div class="trend-bars" id="trendBars"></div>
-        </div>
-        <div class="table-wrap" style="padding:20px;">
-          <div class="table-title" style="margin-bottom:14px;">Top Products by Inquiries</div>
-          <div id="topProducts"></div>
-        </div>
+        <div class="trend"><div class="trend-title">Inquiries — Last 7 Days</div><div class="bars" id="trendBars"></div></div>
+        <div class="card" style="padding:20px;"><div class="card-title" style="margin-bottom:14px;">Top Products</div><div id="topProds"></div></div>
       </div>
 
-      <!-- INQUIRIES -->
-      <div class="page-section" id="sec-inquiries">
+      <div class="page" id="page-inq">
         <div class="page-title">INQUIRIES</div>
-        <div class="page-sub">All customer inquiries — update status and add notes</div>
-        <div class="table-wrap">
-          <div class="table-head">
-            <div class="table-title">All Inquiries</div>
-            <div class="table-actions">
-              <input class="search-input" type="text" placeholder="Search..." oninput="filterInquiries(this.value)"/>
-              <button class="btn btn-white btn-sm" onclick="openAddInquiry()">+ Add</button>
+        <div class="page-sub">Manage and reply to all customer inquiries</div>
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">All Inquiries</div>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <input class="search" type="text" placeholder="Search..." oninput="filterInq(this.value)"/>
+              <button class="btn btn-white btn-sm" onclick="openAddInq()">+ Add</button>
             </div>
           </div>
-          <div style="overflow-x:auto;">
-            <table id="inquiryTable">
-              <thead><tr>
-                <th>Date</th><th>Customer</th><th>Product</th><th>Size</th><th>Price</th><th>Status</th><th>Notes</th><th></th>
-              </tr></thead>
-              <tbody id="inquiryBody"></tbody>
-            </table>
-          </div>
+          <div style="overflow-x:auto;"><table><thead><tr><th>Date</th><th>Customer</th><th>Product</th><th>Size</th><th>Price</th><th>Status</th><th>Notes</th><th></th></tr></thead><tbody id="inqBody"></tbody></table></div>
         </div>
       </div>
 
-      <!-- INVENTORY -->
-      <div class="page-section" id="sec-inventory">
+      <div class="page" id="page-inv">
         <div class="page-title">INVENTORY</div>
-        <div class="page-sub">Toggle sizes in/out of stock — updates the live site</div>
-        <div id="inventoryList"></div>
+        <div class="page-sub">Toggle stock on/off per size</div>
+        <div id="invList"></div>
       </div>
 
-      <!-- CUSTOMERS -->
-      <div class="page-section" id="sec-customers">
+      <div class="page" id="page-cust">
         <div class="page-title">CUSTOMERS</div>
-        <div class="page-sub">Everyone who's ever inquired</div>
-        <div class="table-wrap">
-          <div class="table-head">
-            <div class="table-title">Customer List</div>
-            <div class="table-actions">
-              <input class="search-input" type="text" placeholder="Search..." oninput="filterCustomers(this.value)"/>
-            </div>
+        <div class="page-sub">Everyone who has ever inquired</div>
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">Customer List</div>
+            <input class="search" type="text" placeholder="Search..." oninput="filterCust(this.value)"/>
           </div>
-          <div style="overflow-x:auto;">
-            <table>
-              <thead><tr>
-                <th>Name</th><th>Email</th><th>Orders</th><th>Spent</th><th>Tag</th><th>Last Inquiry</th><th>Notes</th>
-              </tr></thead>
-              <tbody id="customerBody"></tbody>
-            </table>
-          </div>
+          <div style="overflow-x:auto;"><table><thead><tr><th>Name</th><th>Email</th><th>Orders</th><th>Spent</th><th>Tag</th><th>Last Inquiry</th></tr></thead><tbody id="custBody"></tbody></table></div>
         </div>
       </div>
 
-      <!-- DROPS -->
-      <div class="page-section" id="sec-drops">
+      <div class="page" id="page-drops">
         <div class="page-title">DROP MANAGEMENT</div>
         <div class="page-sub">Schedule upcoming product drops</div>
         <button class="btn btn-white" style="margin-bottom:20px;" onclick="openAddDrop()">+ Schedule Drop</button>
-        <div id="dropsList"></div>
+        <div id="dropList"></div>
       </div>
 
-      <!-- TEAM -->
-      <div class="page-section" id="sec-team">
+      <div class="page" id="page-team">
         <div class="page-title">TEAM ACCESS</div>
-        <div class="page-sub">Manage admin users and their passcodes</div>
-        <button class="btn btn-white" style="margin-bottom:20px;" onclick="openAddUser()">+ Add Team Member</button>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Name</th><th>Role</th><th>Email</th><th>Passcode</th><th>Status</th><th></th></tr></thead>
-            <tbody id="teamBody"></tbody>
-          </table>
-        </div>
+        <div class="page-sub">Manage admin passcodes</div>
+        <button class="btn btn-white" style="margin-bottom:20px;" onclick="openAddUser()">+ Add Member</button>
+        <div class="card"><table><thead><tr><th>Name</th><th>Role</th><th>Passcode</th><th>Active</th></tr></thead><tbody id="teamBody"></tbody></table></div>
       </div>
-
     </div>
   </div>
 </div>
 
-<!-- MODALS -->
-<div class="modal-overlay" id="modalOverlay">
-  <div class="modal" id="modalBox">
-    <button class="modal-close" onclick="closeModal()">×</button>
-    <div id="modalContent"></div>
-  </div>
+<div class="modal-bg" id="modalBg" onclick="if(event.target===this)closeModal()">
+  <div class="modal"><button class="modal-x" onclick="closeModal()">&#x2715;</button><div id="modalBody"></div></div>
 </div>
-
 <div class="toast" id="toast"></div>
 
 <script>
-const API = 'https://api.base44.com/api/apps/6a21ea02495f72afbc2ec54c/functions/adminApi';
-const VALID_CODES = { 'ILLEST2025': { name: 'Timoy', role: 'owner' }, 'STAFF2025': { name: 'Employee', role: 'employee' } };
-let currentUser = null;
-let allInquiries = [], allCustomers = [], allInventory = [];
+var API = 'https://api.base44.com/api/apps/6a21ea02495f72afbc2ec54c/functions/adminApi';
+var CODES = {'ILLEST2025':{name:'Timoy',role:'owner'},'STAFF2025':{name:'Employee',role:'employee'}};
+var me = null;
+var allInq = [], allCust = [], allInv = [];
 
-// ── AUTH ──────────────────────────────────────────────────────────────────
-window.doLogin = function doLogin() {
-  const passcode = document.getElementById('passcodeInput').value.trim().toUpperCase();
-  if(!passcode) return;
-  const user = VALID_CODES[passcode];
-  if(!user) { document.getElementById('loginErr').style.display='block'; return; }
-  currentUser = { passcode, name: user.name, role: user.role };
-  document.getElementById('loginErr').style.display = 'none';
+// LOGIN
+document.getElementById('enterBtn').addEventListener('click', function() {
+  var code = document.getElementById('pc').value.trim().toUpperCase();
+  var user = CODES[code];
+  if (!user) {
+    document.getElementById('loginErr').style.display = 'block';
+    return;
+  }
+  me = {name: user.name, role: user.role};
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('app').style.display = 'block';
-  document.getElementById('sbName').textContent = currentUser.name;
-  document.getElementById('sbRole').textContent = currentUser.role;
-  if(currentUser.role === 'owner') document.getElementById('teamNav').style.display = 'block';
+  document.getElementById('sbName').textContent = me.name;
+  document.getElementById('sbRole').textContent = me.role;
+  if (me.role === 'owner') document.getElementById('teamNav').style.display = 'block';
   loadAll();
-}
+});
 
-window.logout = function logout() {
-  currentUser = null;
+document.getElementById('pc').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') document.getElementById('enterBtn').click();
+});
+
+function doLogout() {
+  me = null;
   document.getElementById('app').style.display = 'none';
   document.getElementById('loginScreen').style.display = 'flex';
-  document.getElementById('passcodeInput').value = '';
+  document.getElementById('pc').value = '';
+  document.getElementById('loginErr').style.display = 'none';
 }
 
-// ── NAV ───────────────────────────────────────────────────────────────────
-window.nav = function nav(page) {
-  document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.sb-item').forEach(s => s.classList.remove('active'));
-  document.getElementById('sec-' + page).classList.add('active');
-  document.getElementById('nav-' + page)?.classList.add('active');
+// NAV
+function goTo(p) {
+  document.querySelectorAll('.page').forEach(function(el){el.classList.remove('active');});
+  document.querySelectorAll('.sb-item').forEach(function(el){el.classList.remove('active');});
+  document.getElementById('page-'+p).classList.add('active');
+  var nav = document.getElementById('nav-'+p);
+  if (nav) nav.classList.add('active');
 }
 
-// ── LOAD ALL ──────────────────────────────────────────────────────────────
-async function loadAll() {
-  await Promise.all([loadAnalytics(), loadInquiries(), loadInventory(), loadCustomers(), loadDrops()]);
-  if(currentUser.role === 'owner') loadTeam();
+// LOAD ALL
+function loadAll() {
+  loadDash();
+  loadInq();
+  loadInv();
+  loadCust();
+  loadDrops();
+  if (me && me.role === 'owner') loadTeam();
 }
 
-// ── ANALYTICS ─────────────────────────────────────────────────────────────
-async function loadAnalytics() {
-  const res = await fetch(API + '?action=getAnalytics');
-  const d = await res.json();
-  document.getElementById('sTotalInq').textContent = d.total_inquiries;
-  document.getElementById('sRevenue').textContent = '$' + d.estimated_revenue.toFixed(0);
-  document.getElementById('sCust').textContent = d.total_customers;
-  document.getElementById('sRepeat').textContent = d.repeat_buyers;
-  document.getElementById('sOos').textContent = d.oos_sizes;
-  document.getElementById('sNew').textContent = d.by_status?.New || 0;
-
-  // Trend bars
-  const max = Math.max(...d.trend.map((t) => t.count), 1);
-  document.getElementById('trendBars').innerHTML = d.trend.map((t) => `
-    <div class="trend-bar-wrap">
-      <div class="trend-count">${t.count || ''}</div>
-      <div class="trend-bar ${t.count>0?'has-data':''}" style="height:${Math.max(4, (t.count/max)*70)}px;"></div>
-      <div class="trend-label">${t.label}</div>
-    </div>`).join('');
-
-  // Top products
-  const topMax = d.top_products[0]?.count || 1;
-  document.getElementById('topProducts').innerHTML = d.top_products.length
-    ? d.top_products.map((p) => `
-      <div class="top-product-row">
-        <div class="top-product-name">${p.name}</div>
-        <div class="top-product-bar"><div class="top-product-fill" style="width:${(p.count/topMax)*100}%"></div></div>
-        <div class="top-product-count">${p.count}</div>
-      </div>`).join('')
-    : '<div style="font-size:12px;color:#444;padding:10px 0;">No inquiry data yet</div>';
+// ANALYTICS
+function loadDash() {
+  fetch(API + '?action=getAnalytics').then(function(r){return r.json();}).then(function(d) {
+    document.getElementById('sTot').textContent = d.total_inquiries || 0;
+    document.getElementById('sRev').textContent = '$' + (d.estimated_revenue || 0).toFixed(0);
+    document.getElementById('sCust').textContent = d.total_customers || 0;
+    document.getElementById('sRep').textContent = d.repeat_buyers || 0;
+    document.getElementById('sOos').textContent = d.oos_sizes || 0;
+    document.getElementById('sNew').textContent = (d.by_status && d.by_status.New) || 0;
+    var trend = d.trend || [];
+    var maxV = Math.max.apply(null, trend.map(function(t){return t.count;})) || 1;
+    document.getElementById('trendBars').innerHTML = trend.map(function(t) {
+      var h = Math.max(3, Math.round((t.count / maxV) * 60));
+      return '<div class="bar-w"><div class="bar-cnt">'+(t.count||'')+'</div><div class="bar '+(t.count>0?'lit':'')+'" style="height:'+h+'px;"></div><div class="bar-lbl">'+t.label+'</div></div>';
+    }).join('');
+    var top = d.top_products || [];
+    var topMax = top.length ? top[0].count : 1;
+    document.getElementById('topProds').innerHTML = top.length ? top.map(function(p) {
+      var pct = Math.round((p.count/topMax)*100);
+      return '<div style="display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,0.04);">'
+        +'<div style="flex:1;font-size:12px;color:#ccc;">'+p.name+'</div>'
+        +'<div style="flex:2;height:4px;background:rgba(255,255,255,0.05);border-radius:2px;overflow:hidden;"><div style="width:'+pct+'%;height:100%;background:rgba(255,255,255,0.3);border-radius:2px;"></div></div>'
+        +'<div style="font-size:11px;font-weight:700;color:#666;min-width:20px;text-align:right;">'+p.count+'</div></div>';
+    }).join('') : '<div style="font-size:12px;color:#444;padding:10px 0;">No data yet</div>';
+  }).catch(function(){});
 }
 
-// ── INQUIRIES ─────────────────────────────────────────────────────────────
-async function loadInquiries() {
-  const res = await fetch(API + '?action=getInquiries');
-  allInquiries = await res.json();
-  renderInquiries(allInquiries);
+// INQUIRIES
+function loadInq() {
+  fetch(API + '?action=getInquiries').then(function(r){return r.json();}).then(function(data) {
+    allInq = data;
+    renderInq(allInq);
+  }).catch(function(){});
 }
 
-function renderInquiries(list) {
-  const statuses = ['New','Contacted','Paid','Shipped','Done','Cancelled'];
-  document.getElementById('inquiryBody').innerHTML = list.map(i => `
-    <tr>
-      <td style="color:#555;white-space:nowrap;">${new Date(i.created_date).toLocaleDateString()}</td>
-      <td>
-        <div style="font-weight:700;font-size:12px;">${i.customer_name||'—'}</div>
-        <div style="font-size:10px;color:#555;">${i.customer_email||''}</div>
-      </td>
-      <td style="font-size:11px;">${i.product_name||'—'}</td>
-      <td style="font-size:11px;">${i.size||'—'}</td>
-      <td style="font-size:12px;font-weight:700;">$${i.price||0}</td>
-      <td>
-        <select class="inline" onchange="updateInquiryStatus('${i.id}',this.value)">
-          ${statuses.map(s=>`<option ${i.status===s?'selected':''}>${s}</option>`).join('')}
-        </select>
-      </td>
-      <td>
-        <input style="background:#080808;border:1px solid rgba(255,255,255,0.06);border-radius:6px;color:#888;font-size:10px;padding:4px 8px;width:140px;font-family:inherit;outline:none;" 
-          value="${i.notes||''}" placeholder="Add note..." 
-          onblur="updateInquiryNote('${i.id}',this.value)"/>
-      </td>
-      <td>
-        <a href="mailto:${i.customer_email}?subject=Re: Your ${i.product_name} inquiry&body=Hi ${i.customer_name},%0A%0AThanks for your inquiry about the ${i.product_name} (Size: ${i.size}).%0A%0A" 
-          class="btn btn-outline btn-sm">Reply</a>
-      </td>
-    </tr>`).join('') || '<tr><td colspan="8" style="text-align:center;color:#333;padding:30px;">No inquiries yet</td></tr>';
+function renderInq(list) {
+  var statuses = ['New','Contacted','Paid','Shipped','Done','Cancelled'];
+  document.getElementById('inqBody').innerHTML = list.length ? list.map(function(i) {
+    var opts = statuses.map(function(s){return '<option'+(i.status===s?' selected':'')+'>'+s+'</option>';}).join('');
+    var d = i.created_date ? new Date(i.created_date).toLocaleDateString() : '—';
+    return '<tr>'
+      +'<td style="color:#555;white-space:nowrap;">'+d+'</td>'
+      +'<td><div style="font-weight:700;">'+( i.customer_name||'—')+'</div><div style="font-size:10px;color:#555;">'+( i.customer_email||'')+'</div></td>'
+      +'<td style="font-size:11px;">'+(i.product_name||'—')+'</td>'
+      +'<td style="font-size:11px;">'+(i.size||'—')+'</td>'
+      +'<td style="font-weight:700;">$'+(i.price||0)+'</td>'
+      +'<td><select class="sel" onchange="setStatus(\''+i.id+'\',this.value)">'+opts+'</select></td>'
+      +'<td><input class="note-in" value="'+(i.notes||'')+'" placeholder="Note..." onblur="setNote(\''+i.id+'\',this.value)"/></td>'
+      +'<td><a class="reply-btn" href="mailto:'+( i.customer_email||'')+'?subject=Re: '+(i.product_name||'')+'&body=Hi '+(i.customer_name||'')+',">Reply</a></td>'
+      +'</tr>';
+  }).join('') : '<tr><td colspan="8" style="text-align:center;color:#444;padding:28px;">No inquiries yet</td></tr>';
 }
 
-function filterInquiries(q) {
-  const f = allInquiries.filter((i) => [i.customer_name, i.customer_email, i.product_name, i.status].join(' ').toLowerCase().includes(q.toLowerCase()));
-  renderInquiries(f);
+function filterInq(q) {
+  renderInq(allInq.filter(function(i){return (i.customer_name+' '+i.customer_email+' '+i.product_name+' '+i.status).toLowerCase().indexOf(q.toLowerCase())>-1;}));
 }
 
-async function updateInquiryStatus(id, status) {
-  await fetch(API + '?action=updateInquiry', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id, status}) });
-  showToast('Status updated ✓');
-  loadAnalytics();
+function setStatus(id, status) {
+  fetch(API+'?action=updateInquiry',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id,status:status})});
+  toast('Status updated ✓');
+  loadDash();
 }
 
-async function updateInquiryNote(id, notes) {
-  await fetch(API + '?action=updateInquiry', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id, notes}) });
+function setNote(id, notes) {
+  fetch(API+'?action=updateInquiry',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id,notes:notes})});
 }
 
-function openAddInquiry() {
-  document.getElementById('modalContent').innerHTML = `
-    <div class="modal-title">ADD INQUIRY</div>
-    <div class="form-row"><label>Customer Name</label><input id="mCname" placeholder="Name"/></div>
-    <div class="form-row"><label>Email</label><input id="mCemail" type="email" placeholder="email@example.com"/></div>
-    <div class="form-row"><label>Product</label><input id="mProd" placeholder="Product name"/></div>
-    <div class="form-row"><label>Size</label><input id="mSize" placeholder="e.g. 10 or M"/></div>
-    <div class="form-row"><label>Price ($)</label><input id="mPrice" type="number" placeholder="0"/></div>
-    <div class="form-row"><label>Message</label><textarea id="mMsg" placeholder="Notes..."></textarea></div>
-    <div class="modal-actions">
-      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-white" onclick="submitAddInquiry()">Save</button>
-    </div>`;
-  document.getElementById('modalOverlay').classList.add('open');
+function openAddInq() {
+  document.getElementById('modalBody').innerHTML = '<div class="modal-title">ADD INQUIRY</div>'
+    +'<div class="frow"><label>Customer Name</label><input id="f1" placeholder="Name"/></div>'
+    +'<div class="frow"><label>Email</label><input id="f2" type="email" placeholder="email@example.com"/></div>'
+    +'<div class="frow"><label>Product</label><input id="f3" placeholder="Product name"/></div>'
+    +'<div class="frow"><label>Size</label><input id="f4" placeholder="e.g. 10 or M"/></div>'
+    +'<div class="frow"><label>Price ($)</label><input id="f5" type="number" placeholder="0"/></div>'
+    +'<div class="frow"><label>Message</label><textarea id="f6" placeholder="Notes..."></textarea></div>'
+    +'<div class="modal-btns"><button class="btn btn-outline" onclick="closeModal()">Cancel</button><button class="btn btn-white" onclick="saveInq()">Save</button></div>';
+  document.getElementById('modalBg').classList.add('open');
 }
 
-async function submitAddInquiry() {
-  const data = { customer_name: (document.getElementById('mCname') as HTMLInputElement).value, customer_email: (document.getElementById('mCemail') as HTMLInputElement).value, product_name: (document.getElementById('mProd') as HTMLInputElement).value, size: (document.getElementById('mSize') as HTMLInputElement).value, price: parseFloat((document.getElementById('mPrice') as HTMLInputElement).value)||0, message: (document.getElementById('mMsg') as HTMLTextAreaElement).value, source: 'manual' };
-  await fetch(API + '?action=createInquiry', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data) });
-  closeModal(); loadInquiries(); loadCustomers(); loadAnalytics(); showToast('Inquiry added ✓');
+function saveInq() {
+  var data = {customer_name:document.getElementById('f1').value,customer_email:document.getElementById('f2').value,product_name:document.getElementById('f3').value,size:document.getElementById('f4').value,price:parseFloat(document.getElementById('f5').value)||0,message:document.getElementById('f6').value,source:'manual'};
+  fetch(API+'?action=createInquiry',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)}).then(function(){loadInq();loadCust();loadDash();toast('Inquiry added ✓');closeModal();});
 }
 
-// ── INVENTORY ─────────────────────────────────────────────────────────────
-async function loadInventory() {
-  const res = await fetch(API + '?action=getInventory');
-  allInventory = await res.json();
-  const byProduct = {};
-  allInventory.forEach((item) => {
-    if(!byProduct[item.product_name]) byProduct[item.product_name] = [];
-    byProduct[item.product_name].push(item);
-  });
-  document.getElementById('inventoryList').innerHTML = Object.entries(byProduct).map(([name, sizes]) => `
-    <div class="inv-product">
-      <div class="inv-product-name">${name} <span style="font-size:10px;color:#444;">${sizes.filter((s)=>s.in_stock).length}/${sizes.length} in stock</span></div>
-      <div class="inv-sizes">
-        ${sizes.map((s) => `
-          <div class="inv-size">
-            <div class="inv-size-label">${s.size}</div>
-            <label class="toggle"><input type="checkbox" ${s.in_stock?'checked':''} onchange="toggleStock('${s.id}',this.checked,${s.quantity})"><span class="toggle-slider"></span></label>
-            <input class="inv-qty" type="number" value="${s.quantity||0}" min="0" onblur="updateQty('${s.id}',${s.in_stock},this.value)" title="Qty"/>
-          </div>`).join('')}
-      </div>
-    </div>`).join('') || '<div style="color:#444;padding:20px;">No inventory data</div>';
+// INVENTORY
+function loadInv() {
+  fetch(API+'?action=getInventory').then(function(r){return r.json();}).then(function(data) {
+    allInv = data;
+    var byProd = {};
+    data.forEach(function(item){if(!byProd[item.product_name])byProd[item.product_name]=[];byProd[item.product_name].push(item);});
+    document.getElementById('invList').innerHTML = Object.keys(byProd).map(function(name) {
+      var sizes = byProd[name];
+      var inStock = sizes.filter(function(s){return s.in_stock;}).length;
+      return '<div class="inv-block">'
+        +'<div class="inv-name">'+name+' <span style="font-size:10px;color:#444;font-weight:400;">'+inStock+'/'+sizes.length+' in stock</span></div>'
+        +'<div class="inv-sizes">'+sizes.map(function(s){
+          return '<div class="inv-sz">'
+            +'<div class="sz-label">'+s.size+'</div>'
+            +'<label class="toggle"><input type="checkbox"'+(s.in_stock?' checked':'')+' onchange="toggleStk(\''+s.id+'\',this.checked,'+s.quantity+')"><span class="tslider"></span></label>'
+            +'<input class="qty-in" type="number" value="'+(s.quantity||0)+'" min="0" title="Qty" onblur="updateQty(\''+s.id+'\','+s.in_stock+',this.value)"/>'
+            +'</div>';
+        }).join('')+'</div></div>';
+    }).join('') || '<div style="color:#444;padding:20px;">No inventory found</div>';
+  }).catch(function(){});
 }
 
-async function toggleStock(id, in_stock, quantity) {
-  await fetch(API + '?action=updateInventory', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id, in_stock, quantity}) });
-  showToast(in_stock ? 'Marked in stock ✓' : 'Marked out of stock ✓');
+function toggleStk(id, in_stock, quantity) {
+  fetch(API+'?action=updateInventory',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id,in_stock:in_stock,quantity:quantity})});
+  toast(in_stock?'Marked in stock ✓':'Marked out of stock');
 }
 
-async function updateQty(id, in_stock, qty) {
-  const quantity = parseInt(qty) || 0;
-  await fetch(API + '?action=updateInventory', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id, in_stock, quantity}) });
+function updateQty(id, in_stock, qty) {
+  fetch(API+'?action=updateInventory',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id,in_stock:in_stock,quantity:parseInt(qty)||0})});
 }
 
-// ── CUSTOMERS ─────────────────────────────────────────────────────────────
-async function loadCustomers() {
-  const res = await fetch(API + '?action=getCustomers');
-  allCustomers = await res.json();
-  renderCustomers(allCustomers);
+// CUSTOMERS
+function loadCust() {
+  fetch(API+'?action=getCustomers').then(function(r){return r.json();}).then(function(data){allCust=data;renderCust(allCust);}).catch(function(){});
 }
 
-function renderCustomers(list) {
-  const tagColors = { 'VIP': '#f59e0b', 'Repeat Buyer': '#22c55e', 'New': '#818cf8' };
-  document.getElementById('customerBody').innerHTML = list.map(c => `
-    <tr>
-      <td style="font-weight:700;">${c.name||'—'}</td>
-      <td style="font-size:11px;color:#555;">${c.email||'—'}</td>
-      <td style="font-weight:700;text-align:center;">${c.total_orders||0}</td>
-      <td style="color:#22c55e;font-weight:700;">$${(c.total_spent||0).toFixed(0)}</td>
-      <td>
-        <select class="inline" onchange="updateCustomerTag('${c.id}',this.value)">
-          ${['New','Repeat Buyer','VIP','Blocked'].map(t=>`<option ${c.tags===t?'selected':''}>${t}</option>`).join('')}
-        </select>
-      </td>
-      <td style="font-size:11px;color:#555;">${c.last_inquiry_date||'—'}</td>
-      <td><input style="background:#080808;border:1px solid rgba(255,255,255,0.06);border-radius:6px;color:#888;font-size:10px;padding:4px 8px;width:120px;font-family:inherit;outline:none;" value="${c.notes||''}" placeholder="Notes..." onblur="updateCustomerNote('${c.id}',this.value)"/></td>
-    </tr>`).join('') || '<tr><td colspan="7" style="text-align:center;color:#333;padding:30px;">No customers yet</td></tr>';
+function renderCust(list) {
+  var tagOpts = ['New','Repeat Buyer','VIP','Blocked'];
+  document.getElementById('custBody').innerHTML = list.length ? list.map(function(c) {
+    var opts = tagOpts.map(function(t){return '<option'+(c.tags===t?' selected':'')+'>'+t+'</option>';}).join('');
+    return '<tr>'
+      +'<td style="font-weight:700;">'+(c.name||'—')+'</td>'
+      +'<td style="font-size:11px;color:#555;">'+(c.email||'—')+'</td>'
+      +'<td style="font-weight:700;text-align:center;">'+(c.total_orders||0)+'</td>'
+      +'<td class="green" style="font-weight:700;">$'+((c.total_spent||0).toFixed(0))+'</td>'
+      +'<td><select class="sel" onchange="setCustTag(\''+c.id+'\',this.value)">'+opts+'</select></td>'
+      +'<td style="font-size:11px;color:#555;">'+(c.last_inquiry_date||'—')+'</td>'
+      +'</tr>';
+  }).join('') : '<tr><td colspan="6" style="text-align:center;color:#444;padding:28px;">No customers yet</td></tr>';
 }
 
-function filterCustomers(q) {
-  renderCustomers(allCustomers.filter((c) => [c.name,c.email,c.tags].join(' ').toLowerCase().includes(q.toLowerCase())));
+function filterCust(q) {
+  renderCust(allCust.filter(function(c){return (c.name+' '+c.email+' '+c.tags).toLowerCase().indexOf(q.toLowerCase())>-1;}));
 }
 
-async function updateCustomerTag(id, tags) {
-  await fetch(API + '?action=updateCustomer', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id, tags}) });
-  showToast('Tag updated ✓');
+function setCustTag(id, tags) {
+  fetch(API+'?action=updateCustomer',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id,tags:tags})});
+  toast('Tag updated ✓');
 }
 
-async function updateCustomerNote(id, notes) {
-  await fetch(API + '?action=updateCustomer', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id, notes}) });
-}
-
-// ── DROPS ─────────────────────────────────────────────────────────────────
-async function loadDrops() {
-  const res = await fetch(API + '?action=getDrops');
-  const drops = await res.json();
-  document.getElementById('dropsList').innerHTML = drops.length
-    ? drops.map((d) => `
-      <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
-        <div>
-          <div style="font-size:14px;font-weight:700;">${d.product_name}</div>
-          <div style="font-size:11px;color:#555;margin-top:3px;">📅 ${d.drop_date} at ${d.drop_time} · ${d.hype_text||''}</div>
-        </div>
-        <div style="display:flex;gap:8px;align-items:center;">
-          <label class="toggle"><input type="checkbox" ${d.is_live?'checked':''} onchange="toggleDrop('${d.id}',this.checked)"><span class="toggle-slider"></span></label>
-          <span style="font-size:10px;color:#555;">${d.is_live?'LIVE':'SCHEDULED'}</span>
-          <button class="btn btn-red btn-sm" onclick="deleteDrop('${d.id}')">Delete</button>
-        </div>
-      </div>`).join('')
-    : '<div style="color:#444;font-size:12px;padding:20px 0;">No drops scheduled yet</div>';
+// DROPS
+function loadDrops() {
+  fetch(API+'?action=getDrops').then(function(r){return r.json();}).then(function(data) {
+    document.getElementById('dropList').innerHTML = data.length ? data.map(function(d) {
+      return '<div class="drop-row">'
+        +'<div><div class="drop-name">'+d.product_name+'</div><div class="drop-meta">'+d.drop_date+' at '+d.drop_time+(d.hype_text?' · '+d.hype_text:'')+'</div></div>'
+        +'<div style="display:flex;align-items:center;gap:10px;">'
+        +'<label class="toggle"><input type="checkbox"'+(d.is_live?' checked':'')+' onchange="toggleDrop(\''+d.id+'\',this.checked)"><span class="tslider"></span></label>'
+        +'<span style="font-size:10px;color:#555;">'+(d.is_live?'LIVE':'SCHED')+'</span>'
+        +'<button class="btn btn-sm" style="background:rgba(239,68,68,0.1);color:#ef4444;border:1px solid rgba(239,68,68,0.2);" onclick="delDrop(\''+d.id+'\')">Delete</button>'
+        +'</div></div>';
+    }).join('') : '<div style="color:#444;font-size:12px;">No drops scheduled yet</div>';
+  }).catch(function(){});
 }
 
 function openAddDrop() {
-  document.getElementById('modalContent').innerHTML = `
-    <div class="modal-title">SCHEDULE DROP</div>
-    <div class="form-row"><label>Product Name</label><input id="dName" placeholder="e.g. Balenciaga Slides"/></div>
-    <div class="form-row"><label>Drop Date</label><input id="dDate" type="date"/></div>
-    <div class="form-row"><label>Drop Time</label><input id="dTime" type="time" value="12:00"/></div>
-    <div class="form-row"><label>Hype Text</label><input id="dHype" placeholder="e.g. Most Limited Drop Yet 🔥"/></div>
-    <div class="modal-actions">
-      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-white" onclick="submitDrop()">Schedule</button>
-    </div>`;
-  document.getElementById('modalOverlay').classList.add('open');
+  document.getElementById('modalBody').innerHTML = '<div class="modal-title">SCHEDULE DROP</div>'
+    +'<div class="frow"><label>Product Name</label><input id="d1" placeholder="e.g. Balenciaga Slides"/></div>'
+    +'<div class="frow"><label>Drop Date</label><input id="d2" type="date"/></div>'
+    +'<div class="frow"><label>Drop Time</label><input id="d3" type="time" value="12:00"/></div>'
+    +'<div class="frow"><label>Hype Text</label><input id="d4" placeholder="e.g. Most Limited Drop Yet"/></div>'
+    +'<div class="modal-btns"><button class="btn btn-outline" onclick="closeModal()">Cancel</button><button class="btn btn-white" onclick="saveDrop()">Schedule</button></div>';
+  document.getElementById('modalBg').classList.add('open');
 }
 
-async function submitDrop() {
-  const data = { product_name: (document.getElementById('dName') as HTMLInputElement).value, drop_date: (document.getElementById('dDate') as HTMLInputElement).value, drop_time: (document.getElementById('dTime') as HTMLInputElement).value, hype_text: (document.getElementById('dHype') as HTMLInputElement).value };
-  await fetch(API + '?action=createDrop', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data) });
-  closeModal(); loadDrops(); showToast('Drop scheduled ✓');
+function saveDrop() {
+  var data={product_name:document.getElementById('d1').value,drop_date:document.getElementById('d2').value,drop_time:document.getElementById('d3').value,hype_text:document.getElementById('d4').value};
+  fetch(API+'?action=createDrop',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)}).then(function(){closeModal();loadDrops();toast('Drop scheduled ✓');});
 }
 
-async function toggleDrop(id, is_live) {
-  await fetch(API + '?action=updateDrop', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id, is_live}) });
-  showToast(is_live ? 'Drop is LIVE ✓' : 'Drop paused');
+function toggleDrop(id, is_live) {
+  fetch(API+'?action=updateDrop',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id,is_live:is_live})});
+  toast(is_live?'Drop is LIVE ✓':'Drop paused');
 }
 
-async function deleteDrop(id) {
-  if(!confirm('Delete this drop?')) return;
-  await fetch(API + '?action=deleteDrop', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id}) });
-  loadDrops(); showToast('Drop deleted');
+function delDrop(id) {
+  if (!confirm('Delete this drop?')) return;
+  fetch(API+'?action=deleteDrop',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id})}).then(function(){loadDrops();toast('Drop deleted');});
 }
 
-// ── TEAM ──────────────────────────────────────────────────────────────────
-async function loadTeam() {
-  const res = await fetch(API + '?action=getAdminUsers');
-  const users = await res.json();
-  document.getElementById('teamBody').innerHTML = users.map((u) => `
-    <tr>
-      <td style="font-weight:700;">${u.name}</td>
-      <td><span class="status ${u.role==='owner'?'Paid':'Contacted'}">${u.role}</span></td>
-      <td style="font-size:11px;color:#555;">${u.email||'—'}</td>
-      <td>
-        <input style="background:#080808;border:1px solid rgba(255,255,255,0.08);border-radius:6px;color:#ccc;font-size:11px;padding:4px 10px;font-family:inherit;outline:none;width:120px;letter-spacing:0.12em;" 
-          value="${u.passcode||''}" onblur="updatePasscode('${u.id}',this.value)"/>
-      </td>
-      <td><label class="toggle"><input type="checkbox" ${u.active?'checked':''} onchange="toggleUser('${u.id}',this.checked)"><span class="toggle-slider"></span></label></td>
-      <td></td>
-    </tr>`).join('');
+// TEAM
+function loadTeam() {
+  fetch(API+'?action=getAdminUsers').then(function(r){return r.json();}).then(function(data) {
+    document.getElementById('teamBody').innerHTML = data.map(function(u) {
+      return '<tr>'
+        +'<td style="font-weight:700;">'+(u.name||'—')+'</td>'
+        +'<td><span class="badge '+(u.role==='owner'?'badge-paid':'badge-contacted')+'">'+u.role+'</span></td>'
+        +'<td><input class="note-in" style="width:130px;letter-spacing:0.1em;" value="'+(u.passcode||'')+'" onblur="setPasscode(\''+u.id+'\',this.value)"/></td>'
+        +'<td><label class="toggle"><input type="checkbox"'+(u.active?' checked':'')+' onchange="toggleUser(\''+u.id+'\',this.checked)"><span class="tslider"></span></label></td>'
+        +'</tr>';
+    }).join('');
+  }).catch(function(){});
 }
 
 function openAddUser() {
-  document.getElementById('modalContent').innerHTML = `
-    <div class="modal-title">ADD TEAM MEMBER</div>
-    <div class="form-row"><label>Name</label><input id="uName" placeholder="e.g. Alex"/></div>
-    <div class="form-row"><label>Role</label><select id="uRole"><option value="employee">Employee</option><option value="owner">Owner</option></select></div>
-    <div class="form-row"><label>Email (optional)</label><input id="uEmail" type="email" placeholder="team@email.com"/></div>
-    <div class="form-row"><label>Passcode</label><input id="uPass" placeholder="e.g. STAFF9999" style="letter-spacing:0.1em;"/></div>
-    <div class="modal-actions">
-      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-white" onclick="submitAddUser()">Add Member</button>
-    </div>`;
-  document.getElementById('modalOverlay').classList.add('open');
+  document.getElementById('modalBody').innerHTML = '<div class="modal-title">ADD TEAM MEMBER</div>'
+    +'<div class="frow"><label>Name</label><input id="u1" placeholder="Name"/></div>'
+    +'<div class="frow"><label>Role</label><select id="u2"><option value="employee">Employee</option><option value="owner">Owner</option></select></div>'
+    +'<div class="frow"><label>Passcode</label><input id="u3" placeholder="e.g. STAFF9999"/></div>'
+    +'<div class="modal-btns"><button class="btn btn-outline" onclick="closeModal()">Cancel</button><button class="btn btn-white" onclick="saveUser()">Add</button></div>';
+  document.getElementById('modalBg').classList.add('open');
 }
 
-async function submitAddUser() {
-  const data = { name: (document.getElementById('uName') as HTMLInputElement).value, role: (document.getElementById('uRole') as HTMLSelectElement).value, email: (document.getElementById('uEmail') as HTMLInputElement).value, passcode: (document.getElementById('uPass') as HTMLInputElement).value };
-  await fetch(API + '?action=createAdminUser', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data) });
-  closeModal(); loadTeam(); showToast('Team member added ✓');
+function saveUser() {
+  var data={name:document.getElementById('u1').value,role:document.getElementById('u2').value,passcode:document.getElementById('u3').value,active:true};
+  fetch(API+'?action=createAdminUser',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)}).then(function(){closeModal();loadTeam();toast('Member added ✓');});
 }
 
-async function updatePasscode(id, passcode) {
-  await fetch(API + '?action=updateAdminUser', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id, passcode}) });
-  showToast('Passcode updated ✓');
+function setPasscode(id, passcode) {
+  fetch(API+'?action=updateAdminUser',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id,passcode:passcode})});
+  toast('Passcode updated ✓');
 }
 
-async function toggleUser(id, active) {
-  await fetch(API + '?action=updateAdminUser', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id, active}) });
-  showToast(active ? 'User activated ✓' : 'User deactivated');
+function toggleUser(id, active) {
+  fetch(API+'?action=updateAdminUser',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id,active:active})});
 }
 
-// ── UTILS ─────────────────────────────────────────────────────────────────
-function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
-document.getElementById('modalOverlay').addEventListener('click', function(e) { if(e.target === this) closeModal(); });
-
-function showToast(msg) {
-  const t = document.getElementById('toast');
+// UTILS
+function closeModal() { document.getElementById('modalBg').classList.remove('open'); }
+function toast(msg) {
+  var t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
+  setTimeout(function(){t.classList.remove('show');}, 2500);
 }
 </script>
 </body>
