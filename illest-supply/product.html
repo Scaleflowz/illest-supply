@@ -82,6 +82,20 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:18px 2
 }
 
 /* OOS NOTIFY */
+
+/* SOCIAL PROOF */
+.social-proof-bar{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:9px 14px;margin-bottom:18px;font-size:11px;color:#aaa;}
+.social-proof-bar .dot{width:7px;height:7px;border-radius:50%;background:#22c55e;box-shadow:0 0 6px #22c55e;flex-shrink:0;animation:pulse-dot 2s ease-in-out infinite;}
+@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.5;transform:scale(0.8);}}
+.social-proof-bar strong{color:#fff;font-weight:700;}
+
+.sold-ticker{background:rgba(239,68,68,0.07);border:1px solid rgba(239,68,68,0.15);border-radius:10px;padding:9px 14px;margin-bottom:18px;font-size:11px;color:#f87171;display:flex;align-items:center;gap:8px;}
+.sold-ticker .fire{font-size:14px;}
+
+.trust-strip{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:22px;}
+.trust-chip{display:flex;align-items:center;gap:5px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:6px 10px;font-size:10px;color:#888;}
+.trust-chip span{font-size:12px;}
+
 .oos-notify-box{display:none;background:#0e0e0e;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:16px 18px;margin-bottom:16px;}
 .oos-notify-box.show{display:block;}
 .oos-notify-box .label{font-size:10px;letter-spacing:0.12em;color:#555;text-transform:uppercase;font-weight:600;margin-bottom:8px;}
@@ -310,10 +324,24 @@ function render() {
       <span class="price-original">$${p.origPrice}</span>
       <span class="price-save">SAVE ${save}%</span>
     </div>
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;flex-wrap:wrap;">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
       <span style="font-size:11px;color:#22c55e;font-weight:600;letter-spacing:0.04em;">📦 Ships in 1–3 days</span>
       <span style="color:#333;">·</span>
       <a href="size-chart.html" style="font-size:11px;color:#888;text-decoration:none;letter-spacing:0.04em;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#888'">📏 Size Chart</a>
+    </div>
+    <div class="social-proof-bar" id="viewerBar">
+      <div class="dot"></div>
+      <span><strong id="viewerCount">—</strong> people are viewing this right now</span>
+    </div>
+    <div class="sold-ticker" id="soldTicker" style="display:none;">
+      <span class="fire">🔥</span>
+      <span id="soldTickerText"></span>
+    </div>
+    <div class="trust-strip">
+      <div class="trust-chip"><span>✓</span> Authenticated</div>
+      <div class="trust-chip"><span>🔒</span> Secure Inquiry</div>
+      <div class="trust-chip"><span>⭐</span> 2,000+ Sales</div>
+      <div class="trust-chip"><span>⚡</span> Fast Replies</div>
     </div>
     ${sizeHTML}
     ${colorHTML}
@@ -348,6 +376,8 @@ function render() {
 
   // Store media for switching
   window._media = allMedia;
+  // Init social proof
+  initSocialProof(p.name);
 }
 
 function switchMedia(i) {
@@ -445,6 +475,51 @@ function submitOosNotify() {
     box.querySelector('.oos-success').style.display = 'block';
     box.querySelector('.oos-row').style.display = 'none';
   });
+}
+
+
+// ── SOCIAL PROOF ──────────────────────────────────────────────────────────
+function initSocialProof(productName) {
+  // Viewer count — random between 3-12, fluctuates
+  var base = 3 + Math.floor(Math.abs(hashStr(productName)) % 9);
+  var current = base;
+  function setViewers() {
+    var delta = Math.floor(Math.random() * 3) - 1; // -1, 0, or +1
+    current = Math.max(2, Math.min(18, current + delta));
+    var el = document.getElementById('viewerCount');
+    if (el) el.textContent = current;
+  }
+  setViewers();
+  setInterval(setViewers, 4500);
+
+  // Sold ticker — random "sold X hours ago" messages
+  var soldMessages = [
+    'Someone in New York just ordered this',
+    'Last sold 2 hours ago',
+    'Last sold 4 hours ago',
+    '3 people bought this today',
+    'Sold twice this week',
+    'Last sold 6 hours ago',
+    'Someone just copped a size 9',
+    'Selling fast — 4 sold this week',
+  ];
+  var msg = soldMessages[Math.abs(hashStr(productName + 'sold')) % soldMessages.length];
+  var ticker = document.getElementById('soldTicker');
+  var tickerText = document.getElementById('soldTickerText');
+  if (ticker && tickerText) {
+    tickerText.textContent = msg;
+    // Show after a 1.5s delay for effect
+    setTimeout(function() { ticker.style.display = 'flex'; }, 1500);
+  }
+}
+
+function hashStr(str) {
+  var hash = 0;
+  for (var i = 0; i < str.length; i++) {
+    hash = ((hash << 5) - hash) + str.charCodeAt(i);
+    hash |= 0;
+  }
+  return hash;
 }
 
 </script>
