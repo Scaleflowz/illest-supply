@@ -117,10 +117,16 @@ Deno.serve(async (req: Request): Promise<Response> => {
         return { label, count };
       });
 
+      const topCustomers = [...customers]
+        .sort((a: any, b: any) => (b.total_spent || 0) - (a.total_spent || 0))
+        .slice(0, 5)
+        .map((c: any) => ({ name: c.name, email: c.email, total_orders: c.total_orders || 0, total_spent: c.total_spent || 0 }));
+
       return Response.json({
         total_inquiries: inquiries.length,
         by_status: byStatus,
         top_products: topProducts,
+        top_customers: topCustomers,
         estimated_revenue: revenue,
         total_customers: customers.length,
         repeat_buyers: customers.filter((c: any) => (c.total_orders || 0) >= 2).length,
@@ -147,6 +153,22 @@ Deno.serve(async (req: Request): Promise<Response> => {
       const { id } = await req.json();
       await db.ScheduledDrop.delete(id);
       return Response.json({ success: true }, { headers: cors });
+    }
+
+
+    // ── EMAIL BLAST ───────────────────────────────────────────────────────
+    if (action === "emailBlast") {
+      const { subject, body, emails } = await req.json();
+      // Send via the inquiry email mechanism — fire and forget to each
+      const sendResults = await Promise.allSettled(emails.map((email: string) =>
+        fetch("https://api.base44.com/api/apps/6a21ea02495f72afbc2ec54c/functions/sendInquiry", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ to: email, subject, body, type: "blast" })
+        })
+      ));
+      const sent = sendResults.filter(r => r.status === "fulfilled").length;
+      return Response.json({ success: true, sent }, { headers: cors });
     }
 
     // ── ADMIN USERS ───────────────────────────────────────────────────────
