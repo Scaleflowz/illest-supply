@@ -165,6 +165,37 @@ Deno.serve(async (req: Request): Promise<Response> => {
       return Response.json({ success: true }, { headers: cors });
     }
 
+
+    // ── NOTIFICATIONS ─────────────────────────────────────────────────────
+    if (action === "notifyDrop") {
+      const { product_name, email } = await req.json();
+      // Add email to the drop's notify_list
+      const drops = await db.ScheduledDrop.list();
+      const drop = drops.find((d: any) => d.product_name === product_name);
+      if (drop) {
+        const existing = drop.notify_list ? drop.notify_list.split(',').filter(Boolean) : [];
+        if (!existing.includes(email)) {
+          existing.push(email);
+          await db.ScheduledDrop.update(drop.id, { notify_list: existing.join(',') });
+        }
+      }
+      return Response.json({ success: true }, { headers: cors });
+    }
+    if (action === "notifyOos") {
+      const { product_name, size, email } = await req.json();
+      // Find inventory item and add to notify list
+      const items = await db.InventoryItem.list();
+      const item = items.find((i: any) => i.product_name === product_name && i.size === size);
+      if (item) {
+        const existing = item.notes ? item.notes.split(',').filter(Boolean) : [];
+        if (!existing.includes(email)) {
+          existing.push(email);
+          await db.InventoryItem.update(item.id, { notes: 'notify:' + existing.join(',') });
+        }
+      }
+      return Response.json({ success: true }, { headers: cors });
+    }
+
     return Response.json({ error: "Unknown action" }, { status: 400, headers: cors });
 
   } catch (e: any) {
