@@ -80,6 +80,22 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:18px 2
   .page{padding:20px 14px 120px;}
   .product-name{font-size:22px;}
 }
+
+/* OOS NOTIFY */
+.oos-notify-box{display:none;background:#0e0e0e;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:16px 18px;margin-bottom:16px;}
+.oos-notify-box.show{display:block;}
+.oos-notify-box .label{font-size:10px;letter-spacing:0.12em;color:#555;text-transform:uppercase;font-weight:600;margin-bottom:8px;}
+.oos-notify-box .hint{font-size:11px;color:#444;margin-bottom:10px;}
+.oos-row{display:flex;gap:8px;}
+.oos-email{flex:1;background:#080808;border:1px solid rgba(255,255,255,0.1);border-radius:9px;color:#fff;font-size:13px;padding:9px 13px;font-family:inherit;outline:none;}
+.oos-email:focus{border-color:rgba(255,255,255,0.3);}
+.oos-submit{padding:9px 18px;border-radius:9px;background:#fff;color:#000;font-size:11px;font-weight:700;letter-spacing:0.08em;border:none;cursor:pointer;white-space:nowrap;}
+.oos-submit:hover{background:#eee;}
+.oos-success{font-size:12px;color:#22c55e;font-weight:600;margin-top:8px;display:none;}
+.oos-trigger{font-size:11px;color:#555;cursor:pointer;letter-spacing:0.06em;margin-top:-14px;margin-bottom:18px;display:block;}
+.oos-trigger:hover{color:#fff;}
+.oos-trigger span{text-decoration:underline;}
+
 </style>
 </head>
 <body>
@@ -302,6 +318,15 @@ function render() {
     ${sizeHTML}
     ${colorHTML}
     ${stockHTML}
+    <div class="oos-notify-box" id="oosNotifyBox">
+      <div class="label">🔔 Notify When Back In Stock</div>
+      <div class="hint">We\'ll email you when your size is available.</div>
+      <div class="oos-row">
+        <input class="oos-email" id="oosEmail" type="email" placeholder="your@email.com"/>
+        <button class="oos-submit" onclick="submitOosNotify()">Notify Me</button>
+      </div>
+      <div class="oos-success">✓ You\'re on the list!</div>
+    </div>
 
     <div class="form-section" id="inquiryForm">
       <div class="form-title">INQUIRE / ORDER</div>
@@ -389,6 +414,39 @@ async function submitInquiry() {
 }
 
 init();
+
+// OOS NOTIFY
+function showOosNotify(productName, size) {
+  var box = document.getElementById('oosNotifyBox');
+  if (!box) return;
+  box.classList.add('show');
+  box.querySelector('.hint').textContent = 'Get notified when ' + productName + ' (' + size + ') is back in stock.';
+  box.dataset.product = productName;
+  box.dataset.size = size;
+  box.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+function submitOosNotify() {
+  var box = document.getElementById('oosNotifyBox');
+  var email = document.getElementById('oosEmail').value.trim();
+  if (!email || !email.includes('@')) { alert('Enter a valid email'); return; }
+  var btn = box.querySelector('.oos-submit');
+  btn.textContent = 'Saving...';
+  btn.disabled = true;
+  fetch('https://api.base44.com/api/apps/6a21ea02495f72afbc2ec54c/functions/adminApi?action=notifyOos', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({product_name: box.dataset.product, size: box.dataset.size, email: email})
+  }).then(function(){
+    box.querySelector('.oos-success').style.display = 'block';
+    box.querySelector('.oos-row').style.display = 'none';
+    box.querySelector('.hint').textContent = "We'll email you as soon as it\'s back!";
+  }).catch(function(){
+    box.querySelector('.oos-success').style.display = 'block';
+    box.querySelector('.oos-row').style.display = 'none';
+  });
+}
+
 </script>
 </body>
 </html>

@@ -216,6 +216,39 @@ select option:disabled{color:#444;}
 .rv-card-orig{font-size:10px;color:#444;text-decoration:line-through;margin-left:4px;}
 .rv-empty{color:#444;font-size:13px;text-align:center;padding:30px;}
 
+
+/* VIDEO HERO */
+.hero{position:relative;overflow:hidden;}
+.hero-video-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.18;z-index:0;pointer-events:none;}
+.hero-content{position:relative;z-index:1;}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,8,8,0.3) 0%,rgba(8,8,8,0.7) 100%);z-index:0;pointer-events:none;}
+
+/* DROP BANNER */
+.drop-banner{background:linear-gradient(135deg,#0f0f0f 0%,#1a0a0a 100%);border-top:1px solid rgba(239,68,68,0.2);border-bottom:1px solid rgba(239,68,68,0.2);padding:18px 20px;text-align:center;}
+.drop-banner-inner{max-width:700px;margin:0 auto;display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap;}
+.drop-banner-label{font-size:10px;letter-spacing:0.2em;color:#ef4444;text-transform:uppercase;font-weight:700;}
+.drop-banner-name{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:0.06em;color:#fff;}
+.drop-banner-hype{font-size:11px;color:#888;letter-spacing:0.08em;}
+.countdown{display:flex;gap:10px;align-items:center;}
+.countdown-unit{text-align:center;}
+.countdown-num{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:0.04em;color:#fff;line-height:1;min-width:38px;display:block;}
+.countdown-lbl{font-size:8px;letter-spacing:0.14em;color:#555;text-transform:uppercase;font-weight:600;}
+.countdown-sep{font-family:'Bebas Neue',sans-serif;font-size:28px;color:#333;margin-top:-4px;}
+.drop-notify-btn{padding:9px 22px;border-radius:50px;border:1px solid rgba(239,68,68,0.4);background:rgba(239,68,68,0.08);color:#ef4444;font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.drop-notify-btn:hover,.drop-notify-btn.notified{background:rgba(239,68,68,0.2);border-color:#ef4444;}
+.drop-notify-btn.notified{color:#f87171;cursor:default;}
+
+/* OOS NOTIFY */
+.oos-notify{display:none;background:#0e0e0e;border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:14px 16px;margin-top:10px;}
+.oos-notify.show{display:block;}
+.oos-notify label{font-size:10px;letter-spacing:0.1em;color:#555;text-transform:uppercase;font-weight:600;margin-bottom:6px;display:block;}
+.oos-notify-row{display:flex;gap:8px;}
+.oos-notify-in{flex:1;background:#080808;border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#fff;font-size:13px;padding:9px 12px;font-family:inherit;outline:none;}
+.oos-notify-in:focus{border-color:rgba(255,255,255,0.25);}
+.oos-notify-submit{padding:9px 18px;border-radius:8px;background:#fff;color:#000;font-size:11px;font-weight:700;letter-spacing:0.08em;border:none;cursor:pointer;white-space:nowrap;}
+.oos-notify-submit:hover{background:#eee;}
+.oos-done{font-size:12px;color:#22c55e;font-weight:600;display:none;padding:6px 0;}
+
 </style>
 </head>
 <body>
@@ -274,12 +307,21 @@ select option:disabled{color:#444;}
 </div>
 
 <section class="hero">
-  <div class="hero-eyebrow">Est. The Illest Supply — Curated Luxury</div>
-  <img class="hero-brand-logo" src="https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/409f6a116_918D9A7E-D61E-4658-A7B6-5DF1F8B5AC78.png" alt="Illest Supply Logo" />
-  <h1>DRESS <em>DIFFERENT</em><br>STAY <em>ILLEST</em></h1>
-  <p class="hero-sub">Authenticated designer pieces. Real price. Real heat.</p>
-  <div class="hero-badge"><span class="dot"></span> Secure checkout · Verified seller · Ships fast</div>
+  <video class="hero-video-bg" autoplay muted loop playsinline id="heroBg">
+    <source src="https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/3a44c0ebc_d411fd6a5_IMG_3816.mov" type="video/mp4"/>
+  </video>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Est. The Illest Supply — Curated Luxury</div>
+    <img class="hero-brand-logo" src="https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/409f6a116_918D9A7E-D61E-4658-A7B6-5DF1F8B5AC78.png" alt="Illest Supply Logo" />
+    <h1>DRESS <em>DIFFERENT</em><br>STAY <em>ILLEST</em></h1>
+    <p class="hero-sub">Authenticated designer pieces. Real price. Real heat.</p>
+    <div class="hero-badge"><span class="dot"></span> Secure checkout · Verified seller · Ships fast</div>
+  </div>
 </section>
+
+<!-- DROP COUNTDOWN BANNER — loaded dynamically -->
+<div id="dropBanner" style="display:none;"></div>
 
 <div class="filters">
   <button class="filter-btn active" onclick="filterProducts('ALL',this)">All</button>
@@ -658,6 +700,80 @@ function renderRecentlyViewed() {
 }
 
 renderProducts('ALL');
+
+// ── DROP COUNTDOWN ────────────────────────────────────────────────────────
+var countdownInterval = null;
+
+function loadDropBanner() {
+  fetch('https://api.base44.com/api/apps/6a21ea02495f72afbc2ec54c/functions/adminApi?action=getDrops')
+    .then(function(r){return r.json();})
+    .then(function(drops) {
+      // find next live or upcoming drop
+      var now = new Date();
+      var upcoming = drops.filter(function(d) {
+        if (!d.drop_date || !d.drop_time) return false;
+        var dt = new Date(d.drop_date + 'T' + d.drop_time);
+        return dt > now;
+      }).sort(function(a,b){
+        return new Date(a.drop_date+'T'+a.drop_time) - new Date(b.drop_date+'T'+b.drop_time);
+      });
+      if (!upcoming.length) return;
+      var drop = upcoming[0];
+      var target = new Date(drop.drop_date + 'T' + drop.drop_time);
+      var banner = document.getElementById('dropBanner');
+      banner.style.display = 'block';
+      banner.innerHTML = '<div class="drop-banner"><div class="drop-banner-inner">'
+        + '<div style="text-align:left;">'
+        + '<div class="drop-banner-label">🔥 Next Drop</div>'
+        + '<div class="drop-banner-name">' + drop.product_name + '</div>'
+        + (drop.hype_text ? '<div class="drop-banner-hype">' + drop.hype_text + '</div>' : '')
+        + '</div>'
+        + '<div class="countdown" id="countdown"></div>'
+        + '<button class="drop-notify-btn" id="dropNotifyBtn" onclick="notifyDrop('' + drop.product_name + '')">🔔 Notify Me</button>'
+        + '</div></div>';
+      // start countdown
+      if (countdownInterval) clearInterval(countdownInterval);
+      function tick() {
+        var diff = target - new Date();
+        if (diff <= 0) { clearInterval(countdownInterval); document.getElementById('dropBanner').style.display='none'; return; }
+        var d = Math.floor(diff/86400000);
+        var h = Math.floor((diff%86400000)/3600000);
+        var m = Math.floor((diff%3600000)/60000);
+        var s = Math.floor((diff%60000)/1000);
+        var el = document.getElementById('countdown');
+        if (!el) return;
+        el.innerHTML = (d > 0 ? '<div class="countdown-unit"><span class="countdown-num">'+pad(d)+'</span><span class="countdown-lbl">Days</span></div><div class="countdown-sep">:</div>' : '')
+          + '<div class="countdown-unit"><span class="countdown-num">'+pad(h)+'</span><span class="countdown-lbl">Hrs</span></div>'
+          + '<div class="countdown-sep">:</div>'
+          + '<div class="countdown-unit"><span class="countdown-num">'+pad(m)+'</span><span class="countdown-lbl">Min</span></div>'
+          + '<div class="countdown-sep">:</div>'
+          + '<div class="countdown-unit"><span class="countdown-num">'+pad(s)+'</span><span class="countdown-lbl">Sec</span></div>';
+      }
+      tick();
+      countdownInterval = setInterval(tick, 1000);
+    }).catch(function(){});
+}
+
+function pad(n) { return n < 10 ? '0'+n : ''+n; }
+
+function notifyDrop(name) {
+  var btn = document.getElementById('dropNotifyBtn');
+  if (!btn || btn.classList.contains('notified')) return;
+  var email = prompt('Enter your email to get notified when the ' + name + ' drops:');
+  if (!email || !email.includes('@')) return;
+  btn.textContent = '✓ You\'re on the list!';
+  btn.classList.add('notified');
+  // save to entity via adminApi
+  fetch('https://api.base44.com/api/apps/6a21ea02495f72afbc2ec54c/functions/adminApi?action=notifyDrop', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({product_name: name, email: email})
+  }).catch(function(){});
+}
+
+// load drop banner on page load
+loadDropBanner();
+
 </script>
 
 <!-- STICKY BUY BAR -->
