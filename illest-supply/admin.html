@@ -358,8 +358,8 @@ async function loadAnalytics() {
   document.getElementById('sNew').textContent = d.by_status?.New || 0;
 
   // Trend bars
-  const max = Math.max(...d.trend.map((t:any) => t.count), 1);
-  document.getElementById('trendBars').innerHTML = d.trend.map((t: any) => `
+  const max = Math.max(...d.trend.map((t) => t.count), 1);
+  document.getElementById('trendBars').innerHTML = d.trend.map((t) => `
     <div class="trend-bar-wrap">
       <div class="trend-count">${t.count || ''}</div>
       <div class="trend-bar ${t.count>0?'has-data':''}" style="height:${Math.max(4, (t.count/max)*70)}px;"></div>
@@ -369,7 +369,7 @@ async function loadAnalytics() {
   // Top products
   const topMax = d.top_products[0]?.count || 1;
   document.getElementById('topProducts').innerHTML = d.top_products.length
-    ? d.top_products.map((p: any) => `
+    ? d.top_products.map((p) => `
       <div class="top-product-row">
         <div class="top-product-name">${p.name}</div>
         <div class="top-product-bar"><div class="top-product-fill" style="width:${(p.count/topMax)*100}%"></div></div>
@@ -385,7 +385,7 @@ async function loadInquiries() {
   renderInquiries(allInquiries);
 }
 
-function renderInquiries(list: any[]) {
+function renderInquiries(list) {
   const statuses = ['New','Contacted','Paid','Shipped','Done','Cancelled'];
   document.getElementById('inquiryBody').innerHTML = list.map(i => `
     <tr>
@@ -414,18 +414,18 @@ function renderInquiries(list: any[]) {
     </tr>`).join('') || '<tr><td colspan="8" style="text-align:center;color:#333;padding:30px;">No inquiries yet</td></tr>';
 }
 
-function filterInquiries(q: string) {
-  const f = allInquiries.filter((i: any) => [i.customer_name, i.customer_email, i.product_name, i.status].join(' ').toLowerCase().includes(q.toLowerCase()));
+function filterInquiries(q) {
+  const f = allInquiries.filter((i) => [i.customer_name, i.customer_email, i.product_name, i.status].join(' ').toLowerCase().includes(q.toLowerCase()));
   renderInquiries(f);
 }
 
-async function updateInquiryStatus(id: string, status: string) {
+async function updateInquiryStatus(id, status) {
   await fetch(API + '?action=updateInquiry', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id, status}) });
   showToast('Status updated ✓');
   loadAnalytics();
 }
 
-async function updateInquiryNote(id: string, notes: string) {
+async function updateInquiryNote(id, notes) {
   await fetch(API + '?action=updateInquiry', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id, notes}) });
 }
 
@@ -455,16 +455,16 @@ async function submitAddInquiry() {
 async function loadInventory() {
   const res = await fetch(API + '?action=getInventory');
   allInventory = await res.json();
-  const byProduct: any = {};
-  allInventory.forEach((item: any) => {
+  const byProduct = {};
+  allInventory.forEach((item) => {
     if(!byProduct[item.product_name]) byProduct[item.product_name] = [];
     byProduct[item.product_name].push(item);
   });
-  document.getElementById('inventoryList').innerHTML = Object.entries(byProduct).map(([name, sizes]: any) => `
+  document.getElementById('inventoryList').innerHTML = Object.entries(byProduct).map(([name, sizes]) => `
     <div class="inv-product">
-      <div class="inv-product-name">${name} <span style="font-size:10px;color:#444;">${sizes.filter((s:any)=>s.in_stock).length}/${sizes.length} in stock</span></div>
+      <div class="inv-product-name">${name} <span style="font-size:10px;color:#444;">${sizes.filter((s)=>s.in_stock).length}/${sizes.length} in stock</span></div>
       <div class="inv-sizes">
-        ${sizes.map((s: any) => `
+        ${sizes.map((s) => `
           <div class="inv-size">
             <div class="inv-size-label">${s.size}</div>
             <label class="toggle"><input type="checkbox" ${s.in_stock?'checked':''} onchange="toggleStock('${s.id}',this.checked,${s.quantity})"><span class="toggle-slider"></span></label>
@@ -474,12 +474,12 @@ async function loadInventory() {
     </div>`).join('') || '<div style="color:#444;padding:20px;">No inventory data</div>';
 }
 
-async function toggleStock(id: string, in_stock: boolean, quantity: number) {
+async function toggleStock(id, in_stock, quantity) {
   await fetch(API + '?action=updateInventory', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id, in_stock, quantity}) });
   showToast(in_stock ? 'Marked in stock ✓' : 'Marked out of stock ✓');
 }
 
-async function updateQty(id: string, in_stock: boolean, qty: string) {
+async function updateQty(id, in_stock, qty) {
   const quantity = parseInt(qty) || 0;
   await fetch(API + '?action=updateInventory', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id, in_stock, quantity}) });
 }
@@ -491,8 +491,8 @@ async function loadCustomers() {
   renderCustomers(allCustomers);
 }
 
-function renderCustomers(list: any[]) {
-  const tagColors: any = { 'VIP': '#f59e0b', 'Repeat Buyer': '#22c55e', 'New': '#818cf8' };
+function renderCustomers(list) {
+  const tagColors = { 'VIP': '#f59e0b', 'Repeat Buyer': '#22c55e', 'New': '#818cf8' };
   document.getElementById('customerBody').innerHTML = list.map(c => `
     <tr>
       <td style="font-weight:700;">${c.name||'—'}</td>
@@ -509,16 +509,16 @@ function renderCustomers(list: any[]) {
     </tr>`).join('') || '<tr><td colspan="7" style="text-align:center;color:#333;padding:30px;">No customers yet</td></tr>';
 }
 
-function filterCustomers(q: string) {
-  renderCustomers(allCustomers.filter((c: any) => [c.name,c.email,c.tags].join(' ').toLowerCase().includes(q.toLowerCase())));
+function filterCustomers(q) {
+  renderCustomers(allCustomers.filter((c) => [c.name,c.email,c.tags].join(' ').toLowerCase().includes(q.toLowerCase())));
 }
 
-async function updateCustomerTag(id: string, tags: string) {
+async function updateCustomerTag(id, tags) {
   await fetch(API + '?action=updateCustomer', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id, tags}) });
   showToast('Tag updated ✓');
 }
 
-async function updateCustomerNote(id: string, notes: string) {
+async function updateCustomerNote(id, notes) {
   await fetch(API + '?action=updateCustomer', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id, notes}) });
 }
 
@@ -527,7 +527,7 @@ async function loadDrops() {
   const res = await fetch(API + '?action=getDrops');
   const drops = await res.json();
   document.getElementById('dropsList').innerHTML = drops.length
-    ? drops.map((d: any) => `
+    ? drops.map((d) => `
       <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
         <div>
           <div style="font-size:14px;font-weight:700;">${d.product_name}</div>
@@ -562,12 +562,12 @@ async function submitDrop() {
   closeModal(); loadDrops(); showToast('Drop scheduled ✓');
 }
 
-async function toggleDrop(id: string, is_live: boolean) {
+async function toggleDrop(id, is_live) {
   await fetch(API + '?action=updateDrop', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id, is_live}) });
   showToast(is_live ? 'Drop is LIVE ✓' : 'Drop paused');
 }
 
-async function deleteDrop(id: string) {
+async function deleteDrop(id) {
   if(!confirm('Delete this drop?')) return;
   await fetch(API + '?action=deleteDrop', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id}) });
   loadDrops(); showToast('Drop deleted');
@@ -577,7 +577,7 @@ async function deleteDrop(id: string) {
 async function loadTeam() {
   const res = await fetch(API + '?action=getAdminUsers');
   const users = await res.json();
-  document.getElementById('teamBody').innerHTML = users.map((u: any) => `
+  document.getElementById('teamBody').innerHTML = users.map((u) => `
     <tr>
       <td style="font-weight:700;">${u.name}</td>
       <td><span class="status ${u.role==='owner'?'Paid':'Contacted'}">${u.role}</span></td>
@@ -611,12 +611,12 @@ async function submitAddUser() {
   closeModal(); loadTeam(); showToast('Team member added ✓');
 }
 
-async function updatePasscode(id: string, passcode: string) {
+async function updatePasscode(id, passcode) {
   await fetch(API + '?action=updateAdminUser', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id, passcode}) });
   showToast('Passcode updated ✓');
 }
 
-async function toggleUser(id: string, active: boolean) {
+async function toggleUser(id, active) {
   await fetch(API + '?action=updateAdminUser', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id, active}) });
   showToast(active ? 'User activated ✓' : 'User deactivated');
 }
@@ -625,7 +625,7 @@ async function toggleUser(id: string, active: boolean) {
 function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
 document.getElementById('modalOverlay').addEventListener('click', function(e) { if(e.target === this) closeModal(); });
 
-function showToast(msg: string) {
+function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
