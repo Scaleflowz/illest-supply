@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Admin — The Illest Supply</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -163,7 +164,7 @@ input:checked + .toggle-slider:before{transform:translateX(16px);background:#22c
     <img class="login-logo" src="https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/409f6a116_918D9A7E-D61E-4658-A7B6-5DF1F8B5AC78.png"/>
     <div class="login-title">ADMIN ACCESS</div>
     <div class="login-sub">Enter your passcode to continue</div>
-    <input class="login-input" type="password" id="passcodeInput" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/>
+    <input class="login-input" type="password" id="passcodeInput" placeholder="Enter passcode" onkeydown="if(event.key==='Enter')doLogin()"/>
     <button class="login-btn" onclick="doLogin()">ENTER →</button>
     <div class="login-err" id="loginErr">Invalid passcode. Try again.</div>
   </div>
@@ -309,7 +310,7 @@ let currentUser = null;
 let allInquiries = [], allCustomers = [], allInventory = [];
 
 // ── AUTH ──────────────────────────────────────────────────────────────────
-function doLogin() {
+window.doLogin = function doLogin() {
   const passcode = document.getElementById('passcodeInput').value.trim().toUpperCase();
   if(!passcode) return;
   const user = VALID_CODES[passcode];
@@ -324,7 +325,7 @@ function doLogin() {
   loadAll();
 }
 
-function logout() {
+window.logout = function logout() {
   currentUser = null;
   document.getElementById('app').style.display = 'none';
   document.getElementById('loginScreen').style.display = 'flex';
@@ -332,7 +333,7 @@ function logout() {
 }
 
 // ── NAV ───────────────────────────────────────────────────────────────────
-function nav(page) {
+window.nav = function nav(page) {
   document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.sb-item').forEach(s => s.classList.remove('active'));
   document.getElementById('sec-' + page).classList.add('active');
