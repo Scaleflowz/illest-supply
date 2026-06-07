@@ -304,25 +304,24 @@ input:checked + .toggle-slider:before{transform:translateX(16px);background:#22c
 
 <script>
 const API = 'https://api.base44.com/api/apps/6a21ea02495f72afbc2ec54c/functions/adminApi';
+const VALID_CODES = { 'ILLEST2025': { name: 'Timoy', role: 'owner' }, 'STAFF2025': { name: 'Employee', role: 'employee' } };
 let currentUser = null;
 let allInquiries = [], allCustomers = [], allInventory = [];
 
 // ── AUTH ──────────────────────────────────────────────────────────────────
-async function doLogin() {
-  const passcode = document.getElementById('passcodeInput').value.trim();
+function doLogin() {
+  const passcode = document.getElementById('passcodeInput').value.trim().toUpperCase();
   if(!passcode) return;
-  try {
-    const res = await fetch(API + '?action=login', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({passcode}) });
-    const data = await res.json();
-    if(!res.ok) { document.getElementById('loginErr').style.display='block'; return; }
-    currentUser = data.user;
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('app').style.display = 'block';
-    document.getElementById('sbName').textContent = currentUser.name;
-    document.getElementById('sbRole').textContent = currentUser.role;
-    if(currentUser.role === 'owner') document.getElementById('teamNav').style.display = 'block';
-    loadAll();
-  } catch(e) { document.getElementById('loginErr').style.display='block'; }
+  const user = VALID_CODES[passcode];
+  if(!user) { document.getElementById('loginErr').style.display='block'; return; }
+  currentUser = { passcode, name: user.name, role: user.role };
+  document.getElementById('loginErr').style.display = 'none';
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('sbName').textContent = currentUser.name;
+  document.getElementById('sbRole').textContent = currentUser.role;
+  if(currentUser.role === 'owner') document.getElementById('teamNav').style.display = 'block';
+  loadAll();
 }
 
 function logout() {
