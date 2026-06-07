@@ -123,32 +123,6 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:18px 4
 
 /* REVIEWS */
 
-/* RECENTLY SOLD STRIP */
-.sold-strip{padding:0 0 48px;}
-.sold-strip-header{display:flex;align-items:center;justify-content:space-between;padding:0 24px;margin-bottom:20px;}
-.sold-strip-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,4vw,42px);letter-spacing:0.04em;}
-.sold-strip-sub{font-size:12px;color:#555;letter-spacing:0.08em;margin-top:2px;}
-.sold-live{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:#ef4444;font-weight:700;letter-spacing:0.06em;}
-.sold-live-dot{width:6px;height:6px;border-radius:50%;background:#ef4444;animation:pulse 1.8s ease-in-out infinite;}
-
-.sold-scroll{display:flex;gap:14px;overflow-x:auto;padding:0 24px 12px;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
-.sold-scroll::-webkit-scrollbar{display:none;}
-
-.sold-card{flex-shrink:0;width:130px;position:relative;cursor:pointer;border-radius:14px;overflow:hidden;background:#0e0e0e;border:1px solid rgba(255,255,255,0.06);transition:transform .2s;}
-.sold-card:hover{transform:translateY(-3px);}
-.sold-card-media{width:100%;aspect-ratio:1/1;position:relative;overflow:hidden;}
-.sold-card-media video,.sold-card-media img{width:100%;height:100%;object-fit:cover;}
-.sold-stamp{position:absolute;top:8px;left:8px;background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);border:1px solid rgba(239,68,68,0.5);border-radius:6px;padding:3px 8px;font-size:9px;font-weight:800;letter-spacing:0.1em;color:#ef4444;text-transform:uppercase;}
-.sold-card-info{padding:10px 10px 12px;}
-.sold-card-name{font-size:11px;font-weight:700;color:#ccc;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.sold-card-meta{font-size:10px;color:#444;}
-.sold-card-price{font-size:12px;font-weight:800;color:#888;margin-top:2px;}
-
-@media(max-width:600px){
-  .sold-strip-header{padding:0 16px;}
-  .sold-scroll{padding:0 16px 12px;}
-}
-
 .reviews-section{background:#0b0b0b;border-top:1px solid rgba(255,255,255,0.05);border-bottom:1px solid rgba(255,255,255,0.05);padding:70px 30px;}
 .section-header{text-align:center;margin-bottom:48px;}
 .section-eyebrow{font-size:11px;letter-spacing:0.2em;color:#555;text-transform:uppercase;font-weight:600;margin-bottom:10px;}
@@ -371,18 +345,6 @@ select option:disabled{color:#444;}
   <div class="rv-scroll" id="rvScroll"></div>
 </section>
 
-
-<!-- RECENTLY SOLD -->
-<section class="sold-strip" id="soldStrip">
-  <div class="sold-strip-header">
-    <div>
-      <div class="section-eyebrow">Just Moved</div>
-      <div class="sold-strip-title">RECENTLY SOLD</div>
-    </div>
-    <div class="sold-live"><span class="sold-live-dot"></span> Live</div>
-  </div>
-  <div class="sold-scroll" id="soldScroll"></div>
-</section>
 
 <section class="products-section" id="products">
   <div class="products-grid" id="productsGrid"></div>
