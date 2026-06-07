@@ -116,6 +116,44 @@ input:checked + .tslider:before{transform:translateX(16px);background:#22c55e;}
 .bar-lbl{font-size:9px;color:#444;letter-spacing:0.05em;}
 .bar-cnt{font-size:9px;color:#888;font-weight:600;}
 
+
+/* SECTION 3 — CUSTOMER & ANALYTICS */
+.revenue-chart{background:#111;border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:20px;margin-bottom:20px;}
+.rev-bars{display:flex;align-items:flex-end;gap:6px;height:90px;margin-top:12px;}
+.rev-bar-w{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;}
+.rev-bar{width:100%;background:rgba(34,197,94,0.12);border-radius:3px 3px 0 0;min-height:3px;transition:height .4s;}
+.rev-bar.lit{background:rgba(34,197,94,0.5);}
+.rev-bar-lbl{font-size:9px;color:#444;letter-spacing:0.03em;}
+.rev-bar-val{font-size:8px;color:#22c55e;font-weight:700;}
+
+.leaderboard{display:flex;flex-direction:column;gap:8px;}
+.lb-row{display:flex;align-items:center;gap:12px;padding:10px 14px;background:#0d0d0d;border-radius:10px;border:1px solid rgba(255,255,255,0.04);}
+.lb-rank{font-size:11px;font-weight:800;color:#333;min-width:18px;}
+.lb-rank.gold{color:#f59e0b;}
+.lb-rank.silver{color:#9ca3af;}
+.lb-rank.bronze{color:#b45309;}
+.lb-avatar{width:30px;height:30px;border-radius:50%;background:#1a1a1a;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#666;flex-shrink:0;}
+.lb-name{flex:1;font-size:12px;font-weight:700;}
+.lb-email{font-size:10px;color:#444;}
+.lb-orders{font-size:11px;font-weight:700;color:#666;min-width:50px;text-align:center;}
+.lb-spent{font-size:13px;font-weight:800;color:#22c55e;min-width:60px;text-align:right;}
+
+.cust-profile-modal .order-item{padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05);display:flex;gap:10px;align-items:flex-start;}
+.cust-profile-modal .order-item:last-child{border-bottom:none;}
+.cust-tag-pill{display:inline-block;padding:2px 10px;border-radius:50px;font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;background:rgba(129,140,248,0.15);color:#818cf8;margin-bottom:12px;}
+.cust-tag-pill.vip{background:rgba(245,158,11,0.15);color:#f59e0b;}
+.cust-tag-pill.repeat{background:rgba(34,197,94,0.12);color:#22c55e;}
+.cust-tag-pill.blocked{background:rgba(239,68,68,0.1);color:#ef4444;}
+
+.email-blast-box{background:#111;border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:22px;margin-bottom:20px;}
+.email-blast-box textarea{width:100%;background:#0a0a0a;border:1px solid rgba(255,255,255,0.08);border-radius:9px;color:#fff;font-size:13px;padding:10px 13px;font-family:'Inter',sans-serif;outline:none;resize:vertical;min-height:90px;margin-top:8px;}
+.email-blast-box input{width:100%;background:#0a0a0a;border:1px solid rgba(255,255,255,0.08);border-radius:9px;color:#fff;font-size:13px;padding:10px 13px;font-family:'Inter',sans-serif;outline:none;margin-top:8px;}
+.blast-meta{font-size:11px;color:#444;margin-top:8px;}
+
+.cust-actions{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
+.stat-change{font-size:10px;color:#22c55e;margin-top:4px;font-weight:600;}
+.stat-change.neg{color:#ef4444;}
+
 .toast{position:fixed;bottom:24px;right:24px;background:#22c55e;color:#fff;font-size:11px;font-weight:700;letter-spacing:0.08em;padding:10px 20px;border-radius:10px;opacity:0;transition:opacity .25s;z-index:9999;pointer-events:none;}
 .toast.show{opacity:1;}
 
@@ -125,6 +163,9 @@ input:checked + .tslider:before{transform:translateX(16px);background:#22c55e;}
   .sidebar{display:none;}
   .main{padding:16px;}
   .stats{grid-template-columns:1fr 1fr;}
+  .revenue-chart,.trend{grid-column:span 1;}
+  #page-dash .stats + div{grid-template-columns:1fr!important;}
+  #page-dash .stats + div + div{grid-template-columns:1fr!important;}
 }
 </style>
 </head>
@@ -162,15 +203,29 @@ input:checked + .tslider:before{transform:translateX(16px);background:#22c55e;}
         <div class="page-title">ANALYTICS</div>
         <div class="page-sub">Live overview of your store</div>
         <div class="stats">
-          <div class="stat"><div class="stat-label">Total Inquiries</div><div class="stat-val" id="sTot">—</div></div>
-          <div class="stat"><div class="stat-label">Revenue (est.)</div><div class="stat-val green" id="sRev">—</div></div>
+          <div class="stat"><div class="stat-label">Total Inquiries</div><div class="stat-val" id="sTot">—</div><div class="stat-change" id="sTotChange"></div></div>
+          <div class="stat"><div class="stat-label">Revenue (est.)</div><div class="stat-val green" id="sRev">—</div><div class="stat-change" id="sRevChange"></div></div>
           <div class="stat"><div class="stat-label">Customers</div><div class="stat-val" id="sCust">—</div></div>
           <div class="stat"><div class="stat-label">Repeat Buyers</div><div class="stat-val yellow" id="sRep">—</div></div>
+          <div class="stat"><div class="stat-label">Conversion Rate</div><div class="stat-val" id="sConv">—</div></div>
+          <div class="stat"><div class="stat-label">Avg Order Value</div><div class="stat-val green" id="sAov">—</div></div>
           <div class="stat"><div class="stat-label">OOS Sizes</div><div class="stat-val red" id="sOos">—</div></div>
           <div class="stat"><div class="stat-label">New Inquiries</div><div class="stat-val" id="sNew">—</div></div>
         </div>
-        <div class="trend"><div class="trend-title">Inquiries — Last 7 Days</div><div class="bars" id="trendBars"></div></div>
-        <div class="card" style="padding:20px;"><div class="card-title" style="margin-bottom:14px;">Top Products</div><div id="topProds"></div></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
+          <div class="revenue-chart">
+            <div class="trend-title">💰 Revenue — Last 7 Days</div>
+            <div class="rev-bars" id="revBars"></div>
+          </div>
+          <div class="trend">
+            <div class="trend-title">📥 Inquiries — Last 7 Days</div>
+            <div class="bars" id="trendBars"></div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:0;">
+          <div class="card" style="padding:20px;"><div class="card-title" style="margin-bottom:14px;">🏆 Top Products</div><div id="topProds"></div></div>
+          <div class="card" style="padding:20px;"><div class="card-title" style="margin-bottom:14px;">👑 Top Customers</div><div class="leaderboard" id="topCusts"></div></div>
+        </div>
       </div>
 
       <div class="page" id="page-inq">
@@ -197,12 +252,34 @@ input:checked + .tslider:before{transform:translateX(16px);background:#22c55e;}
       <div class="page" id="page-cust">
         <div class="page-title">CUSTOMERS</div>
         <div class="page-sub">Everyone who has ever inquired</div>
+        <div class="cust-actions" id="custActions">
+          <button class="btn btn-white btn-sm" onclick="exportCSV()">⬇ Export CSV</button>
+          <button class="btn btn-outline btn-sm" id="blastBtn" onclick="toggleBlast()" style="display:none;">📣 Email Blast</button>
+        </div>
+        <div class="email-blast-box" id="blastBox" style="display:none;">
+          <div class="card-title">📣 Email Blast</div>
+          <div class="blast-meta" id="blastMeta">Sending to all customers...</div>
+          <div style="margin-top:12px;"><label style="font-size:10px;color:#555;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;">Subject</label>
+          <input id="blastSubject" placeholder="e.g. New Drop Alert 🔥"/></div>
+          <div style="margin-top:10px;"><label style="font-size:10px;color:#555;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;">Message</label>
+          <textarea id="blastBody" placeholder="Write your message to customers..."></textarea></div>
+          <div style="display:flex;gap:8px;margin-top:12px;justify-content:flex-end;">
+            <button class="btn btn-outline btn-sm" onclick="toggleBlast()">Cancel</button>
+            <button class="btn btn-white btn-sm" onclick="sendBlast()">Send Blast →</button>
+          </div>
+        </div>
         <div class="card">
           <div class="card-head">
             <div class="card-title">Customer List</div>
-            <input class="search" type="text" placeholder="Search..." oninput="filterCust(this.value)"/>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <select class="sel" onchange="filterCustTag(this.value)" id="custTagFilter">
+                <option value="">All Tags</option>
+                <option>New</option><option>Repeat Buyer</option><option>VIP</option><option>Blocked</option>
+              </select>
+              <input class="search" type="text" placeholder="Search..." oninput="filterCust(this.value)"/>
+            </div>
           </div>
-          <div style="overflow-x:auto;"><table><thead><tr><th>Name</th><th>Email</th><th>Orders</th><th>Spent</th><th>Tag</th><th>Last Inquiry</th></tr></thead><tbody id="custBody"></tbody></table></div>
+          <div style="overflow-x:auto;"><table><thead><tr><th>Name</th><th>Email</th><th>Orders</th><th>Spent</th><th>Tag</th><th>Last Inquiry</th><th></th></tr></thead><tbody id="custBody"></tbody></table></div>
         </div>
       </div>
 
@@ -285,18 +362,34 @@ function loadAll() {
 // ANALYTICS
 function loadDash() {
   fetch(API + '?action=getAnalytics').then(function(r){return r.json();}).then(function(d) {
-    document.getElementById('sTot').textContent = d.total_inquiries || 0;
-    document.getElementById('sRev').textContent = '$' + (d.estimated_revenue || 0).toFixed(0);
+    var tot = d.total_inquiries || 0;
+    var rev = d.estimated_revenue || 0;
+    var paid = d.by_status && (d.by_status.Paid||0) + (d.by_status.Shipped||0) + (d.by_status.Done||0);
+    var conv = tot > 0 ? Math.round((paid/tot)*100) : 0;
+    var aov = paid > 0 ? (rev/paid).toFixed(0) : 0;
+    document.getElementById('sTot').textContent = tot;
+    document.getElementById('sRev').textContent = '$' + rev.toFixed(0);
     document.getElementById('sCust').textContent = d.total_customers || 0;
     document.getElementById('sRep').textContent = d.repeat_buyers || 0;
+    document.getElementById('sConv').textContent = conv + '%';
+    document.getElementById('sAov').textContent = '$' + aov;
     document.getElementById('sOos').textContent = d.oos_sizes || 0;
     document.getElementById('sNew').textContent = (d.by_status && d.by_status.New) || 0;
+    // inquiry trend bars
     var trend = d.trend || [];
     var maxV = Math.max.apply(null, trend.map(function(t){return t.count;})) || 1;
     document.getElementById('trendBars').innerHTML = trend.map(function(t) {
-      var h = Math.max(3, Math.round((t.count / maxV) * 60));
+      var h = Math.max(3, Math.round((t.count / maxV) * 70));
       return '<div class="bar-w"><div class="bar-cnt">'+(t.count||'')+'</div><div class="bar '+(t.count>0?'lit':'')+'" style="height:'+h+'px;"></div><div class="bar-lbl">'+t.label+'</div></div>';
     }).join('');
+    // revenue bars (estimate per day from trend * aov)
+    var revMaxV = Math.max.apply(null, trend.map(function(t){return t.count * (aov||1);})) || 1;
+    document.getElementById('revBars').innerHTML = trend.map(function(t) {
+      var dayRev = t.count * (parseFloat(aov)||0);
+      var h = Math.max(3, Math.round((dayRev / revMaxV) * 80));
+      return '<div class="rev-bar-w"><div class="rev-bar-val">'+(dayRev>0?'$'+Math.round(dayRev):'')+'</div><div class="rev-bar '+(dayRev>0?'lit':'')+'" style="height:'+h+'px;"></div><div class="rev-bar-lbl">'+t.label+'</div></div>';
+    }).join('');
+    // top products
     var top = d.top_products || [];
     var topMax = top.length ? top[0].count : 1;
     document.getElementById('topProds').innerHTML = top.length ? top.map(function(p) {
@@ -306,6 +399,19 @@ function loadDash() {
         +'<div style="flex:2;height:4px;background:rgba(255,255,255,0.05);border-radius:2px;overflow:hidden;"><div style="width:'+pct+'%;height:100%;background:rgba(255,255,255,0.3);border-radius:2px;"></div></div>'
         +'<div style="font-size:11px;font-weight:700;color:#666;min-width:20px;text-align:right;">'+p.count+'</div></div>';
     }).join('') : '<div style="font-size:12px;color:#444;padding:10px 0;">No data yet</div>';
+    // top customers leaderboard
+    var topC = d.top_customers || [];
+    var rankLabels = ['🥇','🥈','🥉'];
+    var rankClasses = ['gold','silver','bronze'];
+    document.getElementById('topCusts').innerHTML = topC.length ? topC.slice(0,5).map(function(c,i) {
+      var initials = (c.name||'?').split(' ').map(function(w){return w[0];}).join('').substring(0,2).toUpperCase();
+      return '<div class="lb-row">'
+        +'<div class="lb-rank '+(rankClasses[i]||'')+'">'+(rankLabels[i]||(i+1))+'</div>'
+        +'<div class="lb-avatar">'+initials+'</div>'
+        +'<div style="flex:1;"><div class="lb-name">'+(c.name||'—')+'</div><div class="lb-email">'+(c.email||'')+'</div></div>'
+        +'<div class="lb-orders">'+(c.total_orders||0)+' orders</div>'
+        +'<div class="lb-spent">$'+(c.total_spent||0)+'</div></div>';
+    }).join('') : '<div style="font-size:12px;color:#444;padding:10px 0;">No customers yet</div>';
   }).catch(function(){});
 }
 
