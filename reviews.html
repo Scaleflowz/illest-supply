@@ -44,15 +44,6 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:18px 2
 .trust-pill{display:inline-flex;align-items:center;gap:8px;background:#0e0e0e;border:1px solid rgba(255,255,255,0.07);border-radius:50px;padding:11px 22px;font-size:13px;font-weight:600;letter-spacing:0.06em;color:#888;}
 .trust-pill span{font-size:16px;}
 
-/* DEPOP BADGE SECTION */
-.depop-badge-section{background:linear-gradient(135deg,rgba(255,50,100,0.08),rgba(255,50,100,0.03));border:1px solid rgba(255,50,100,0.15);border-radius:16px;padding:20px 24px;margin-bottom:36px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
-.depop-logo-text{font-size:22px;font-weight:900;color:#ff3264;letter-spacing:-0.02em;font-style:italic;}
-.depop-badge-text{flex:1;}
-.depop-badge-text .title{font-size:15px;font-weight:700;margin-bottom:3px;}
-.depop-badge-text .sub{font-size:13px;color:#555;}
-.depop-verified-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,50,100,0.12);border:1px solid rgba(255,50,100,0.25);border-radius:50px;padding:7px 16px;font-size:11px;font-weight:700;letter-spacing:0.08em;color:#ff3264;text-transform:uppercase;white-space:nowrap;}
-
-/* FILTERS */
 .filter-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px;}
 .filter-btn{padding:9px 20px;border-radius:50px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:#666;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;letter-spacing:0.04em;}
 .filter-btn:hover,.filter-btn.active{border-color:#fff;color:#fff;background:rgba(255,255,255,0.06);}
@@ -71,7 +62,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:18px 2
 .review-verified{font-size:11px;color:#22c55e;font-weight:700;letter-spacing:0.08em;}
 .review-product{font-size:12px;color:#333;font-style:italic;}
 .review-platform{font-size:10px;font-weight:700;letter-spacing:0.06em;padding:2px 8px;border-radius:50px;}
-.review-platform.depop{background:rgba(255,50,100,0.12);color:#ff3264;}
+.review-platform.verified{background:rgba(34,197,94,0.1);color:#22c55e;}
 
 /* SUMMARY CTA */
 .summary-cta{text-align:center;background:#0e0e0e;border:1px solid rgba(255,255,255,0.06);border-radius:20px;padding:36px 24px;margin-bottom:20px;}
@@ -91,7 +82,7 @@ footer p{font-size:12px;color:#333;letter-spacing:0.08em;}
   .sold-feed{padding:10px 16px;}
   .container{padding:0 14px 60px;}
   .trust-row{gap:8px;}
-  .depop-badge-section{flex-direction:column;gap:10px;}
+
 }
 </style>
 </head>
@@ -135,15 +126,6 @@ footer p{font-size:12px;color:#333;letter-spacing:0.08em;}
     <div class="trust-pill"><span>💬</span> Fast Responses</div>
   </div>
 
-  <!-- DEPOP VERIFIED BANNER -->
-  <div class="depop-badge-section">
-    <div class="depop-logo-text">depop</div>
-    <div class="depop-badge-text">
-      <div class="title">Verified on Depop — @sleazysold</div>
-      <div class="sub">2,000+ completed sales · Top-rated seller · All reviews independently verified</div>
-    </div>
-    <div class="depop-verified-badge">✓ Verified Seller</div>
-  </div>
 
   <!-- FILTER BUTTONS -->
   <div class="filter-row">
@@ -160,7 +142,7 @@ footer p{font-size:12px;color:#333;letter-spacing:0.08em;}
       <div class="review-top"><div class="avatar">NB</div><div><div class="review-name">nayabfit</div><div class="review-date">3 days ago</div></div></div>
       <div class="review-stars">★★★★★</div>
       <div class="review-text">"My third order from Illest Supply. Never disappointed. The Asics were fresh, correct size, fast delivery. This is my go-to spot now fr."</div>
-      <div class="review-footer"><div class="review-verified">✓ VERIFIED PURCHASE</div><span class="review-platform depop">DEPOP</span></div>
+      <div class="review-footer"><div class="review-verified">✓ VERIFIED PURCHASE</div><span class="review-platform verified">✓ VERIFIED</span></div>
       <div class="review-product">Asics Gel Kayano 14</div>
     </div>
 
@@ -168,7 +150,7 @@ footer p{font-size:12px;color:#333;letter-spacing:0.08em;}
       <div class="review-top"><div class="avatar">JM</div><div><div class="review-name">jordanmike_</div><div class="review-date">5 days ago</div></div></div>
       <div class="review-stars">★★★★★</div>
       <div class="review-text">"Slides came exactly as described. Super fast shipping, packaged really well. Already got compliments wearing them out. Def buying again."</div>
-      <div class="review-footer"><div class="review-verified">✓ VERIFIED PURCHASE</div><span class="review-platform depop">DEPOP</span></div>
+      <div class="review-footer"><div class="review-verified">✓ VERIFIED PURCHASE</div><span class="review-platform verified">✓ VERIFIED</span></div>
       <div class="review-product">Balenciaga Slides</div>
     </div>
 
@@ -176,7 +158,7 @@ footer p{font-size:12px;color:#333;letter-spacing:0.08em;}
       <div class="review-top"><div class="avatar">KL</div><div><div class="review-name">kaylaloves_fits</div><div class="review-date">1 week ago</div></div></div>
       <div class="review-stars">★★★★★</div>
       <div class="review-text">"Got the Vale Forever jorts and I am OBSESSED. The quality is insane for the price. Seller was super responsive and shipped same day."</div>
-      <div class="review-footer"><div class="review-verified">✓ VERIFIED PURCHASE</div><span class="review-platform depop">DEPOP</span></div>
+      <div class="review-footer"><div class="review-verified">✓ VERIFIED PURCHASE</div><span class="review-platform verified">✓ VERIFIED</span></div>
       <div class="review-product">Vale Forever College Jorts</div>
     </div>
 
@@ -184,7 +166,7 @@ footer p{font-size:12px;color:#333;letter-spacing:0.08em;}
       <div class="review-top"><div class="avatar">TR</div><div><div class="review-name">trey.refresh</div><div class="review-date">1 week ago</div></div></div>
       <div class="review-stars">★★★★★</div>
       <div class="review-text">"Honestly thought it was too good to be true at this price point but nah, completely legit. Prada cups are real, came with everything. 10/10."</div>
-      <div class="review-footer"><div class="review-verified">✓ VERIFIED PURCHASE</div><span class="review-platform depop">DEPOP</span></div>
+      <div class="review-footer"><div class="review-verified">✓ VERIFIED PURCHASE</div><span class="review-platform verified">✓ VERIFIED</span></div>
       <div class="review-product">Prada Cup (Black)</div>
     </div>
 
@@ -192,7 +174,7 @@ footer p{font-size:12px;color:#333;letter-spacing:0.08em;}
       <div class="review-top"><div class="avatar">DV</div><div><div class="review-name">dariusvibe</div><div class="review-date">2 weeks ago</div></div></div>
       <div class="review-stars">★★★★★</div>
       <div class="review-text">"Rick Owens came in perfect condition. Seller even messaged me to confirm the size before shipping. That's the kind of service you don't get everywhere."</div>
-      <div class="review-footer"><div class="review-verified">✓ VERIFIED PURCHASE</div><span class="review-platform depop">DEPOP</span></div>
+      <div class="review-footer"><div class="review-verified">✓ VERIFIED PURCHASE</div><span class="review-platform verified">✓ VERIFIED</span></div>
       <div class="review-product">Rick Owens</div>
     </div>
 
@@ -200,7 +182,7 @@ footer p{font-size:12px;color:#333;letter-spacing:0.08em;}
       <div class="review-top"><div class="avatar">AM</div><div><div class="review-name">amara.drip</div><div class="review-date">2 weeks ago</div></div></div>
       <div class="review-stars">★★★★★</div>
       <div class="review-text">"Got the Bottegas and they're everything. Came with dust bag, looked brand new. Pricing is unreal compared to retail. Already told 5 of my friends."</div>
-      <div class="review-footer"><div class="review-verified">✓ VERIFIED PURCHASE</div><span class="review-platform depop">DEPOP</span></div>
+      <div class="review-footer"><div class="review-verified">✓ VERIFIED PURCHASE</div><span class="review-platform verified">✓ VERIFIED</span></div>
       <div class="review-product">Bottegas (Green)</div>
     </div>
 
@@ -208,7 +190,7 @@ footer p{font-size:12px;color:#333;letter-spacing:0.08em;}
       <div class="review-top"><div class="avatar">SL</div><div><div class="review-name">sasha.luxe</div><div class="review-date">3 weeks ago</div></div></div>
       <div class="review-stars">★★★★★</div>
       <div class="review-text">"Dior slides are absolutely stunning. Exactly as pictured, no issues. Packaging was clean and professional. Will 100% shop again."</div>
-      <div class="review-footer"><div class="review-verified">✓ VERIFIED PURCHASE</div><span class="review-platform depop">DEPOP</span></div>
+      <div class="review-footer"><div class="review-verified">✓ VERIFIED PURCHASE</div><span class="review-platform verified">✓ VERIFIED</span></div>
       <div class="review-product">Dior Slides</div>
     </div>
 
@@ -216,7 +198,7 @@ footer p{font-size:12px;color:#333;letter-spacing:0.08em;}
       <div class="review-top"><div class="avatar">MK</div><div><div class="review-name">mkfitcheck</div><div class="review-date">3 weeks ago</div></div></div>
       <div class="review-stars">★★★★★</div>
       <div class="review-text">"Rhinestone jorts hit different in person. Photos don't do them justice. Fast reply on Instagram when I had a size question. Smooth process."</div>
-      <div class="review-footer"><div class="review-verified">✓ VERIFIED PURCHASE</div><span class="review-platform depop">DEPOP</span></div>
+      <div class="review-footer"><div class="review-verified">✓ VERIFIED PURCHASE</div><span class="review-platform verified">✓ VERIFIED</span></div>
       <div class="review-product">Vale Forever Jorts (Rhinestone)</div>
     </div>
 
@@ -224,7 +206,7 @@ footer p{font-size:12px;color:#333;letter-spacing:0.08em;}
       <div class="review-top"><div class="avatar">JT</div><div><div class="review-name">jtdripped</div><div class="review-date">1 month ago</div></div></div>
       <div class="review-stars">★★★★★</div>
       <div class="review-text">"Ordered the Bad Dreams jorts — came in 2 days. Seller was responsive the whole time. Quality is fire, the graphics are clean. Highly recommend."</div>
-      <div class="review-footer"><div class="review-verified">✓ VERIFIED PURCHASE</div><span class="review-platform depop">DEPOP</span></div>
+      <div class="review-footer"><div class="review-verified">✓ VERIFIED PURCHASE</div><span class="review-platform verified">✓ VERIFIED</span></div>
       <div class="review-product">Vale Forever Bad Dreams Jorts</div>
     </div>
 
@@ -232,7 +214,7 @@ footer p{font-size:12px;color:#333;letter-spacing:0.08em;}
       <div class="review-top"><div class="avatar">RX</div><div><div class="review-name">roxiefits__</div><div class="review-date">1 month ago</div></div></div>
       <div class="review-stars">★★★★★</div>
       <div class="review-text">"Pink Bottegas just dropped into my life and I'm never looking back. The color is perfect, fit is true to size. Seller packed them super carefully."</div>
-      <div class="review-footer"><div class="review-verified">✓ VERIFIED PURCHASE</div><span class="review-platform depop">DEPOP</span></div>
+      <div class="review-footer"><div class="review-verified">✓ VERIFIED PURCHASE</div><span class="review-platform verified">✓ VERIFIED</span></div>
       <div class="review-product">Bottegas (Pink)</div>
     </div>
 
@@ -240,7 +222,7 @@ footer p{font-size:12px;color:#333;letter-spacing:0.08em;}
       <div class="review-top"><div class="avatar">CW</div><div><div class="review-name">cw.collector</div><div class="review-date">1 month ago</div></div></div>
       <div class="review-stars">★★★★★</div>
       <div class="review-text">"Blue Prada cup is unreal. Have it on my shelf right now. Came in a box with the logo, completely authentic. Great communication throughout."</div>
-      <div class="review-footer"><div class="review-verified">✓ VERIFIED PURCHASE</div><span class="review-platform depop">DEPOP</span></div>
+      <div class="review-footer"><div class="review-verified">✓ VERIFIED PURCHASE</div><span class="review-platform verified">✓ VERIFIED</span></div>
       <div class="review-product">Prada Cup (Blue)</div>
     </div>
 
@@ -248,7 +230,7 @@ footer p{font-size:12px;color:#333;letter-spacing:0.08em;}
       <div class="review-top"><div class="avatar">LM</div><div><div class="review-name">luxemoves</div><div class="review-date">6 weeks ago</div></div></div>
       <div class="review-stars">★★★★★</div>
       <div class="review-text">"Second pair of Balenciaga slides I've bought from here. First ones were so good I had to get another colorway. Customer for life."</div>
-      <div class="review-footer"><div class="review-verified">✓ VERIFIED PURCHASE</div><span class="review-platform depop">DEPOP</span></div>
+      <div class="review-footer"><div class="review-verified">✓ VERIFIED PURCHASE</div><span class="review-platform verified">✓ VERIFIED</span></div>
       <div class="review-product">Balenciaga Slides</div>
     </div>
 
@@ -257,7 +239,7 @@ footer p{font-size:12px;color:#333;letter-spacing:0.08em;}
   <!-- SUMMARY CTA -->
   <div class="summary-cta">
     <div class="big-num">2,000+</div>
-    <div class="big-label">Verified Sales on Depop</div>
+    <div class="big-label">Verified Sales</div>
     <a class="cta-btn" href="index.html">Shop Now →</a>
   </div>
 
