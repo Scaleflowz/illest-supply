@@ -113,6 +113,8 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:18px 4
 .stock-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,#f59e0b,#ef4444);}
 
 .buy-btn{display:none;}
+.sold-count{font-size:11px;color:#444;font-weight:500;margin-top:3px;letter-spacing:0.02em;}
+.sold-count span{color:#666;}
 .card-sizes{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.05);}
 .csz{padding:4px 9px;border-radius:6px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:#666;font-size:11px;font-weight:600;cursor:pointer;transition:all .18s;font-family:inherit;letter-spacing:0.04em;}
 .csz:hover:not(.oos){border-color:rgba(255,255,255,0.35);color:#ccc;}
@@ -554,6 +556,8 @@ function renderProducts(filter) {
       });
     }
 
+
+  var SOLD_COUNTS = {1:89,2:54,3:47,4:76,5:112,6:98,7:63,8:71,9:134,10:58,11:82,12:61,13:77};
     return `
       <div class="product-card" data-category="${p.category}" onclick="goToProduct(${p.id})">
         <div class="product-badge">${badgeHTML}</div>
@@ -565,6 +569,7 @@ function renderProducts(filter) {
             <span class="price-original">$${p.origPrice}</span>
             <span class="price-save">-${save}%</span>
           </div>
+          <div class="sold-count"><span>${SOLD_COUNTS[p.id] || 40}+ sold</span></div>
           ${sizePills ? `<div class="card-sizes" id="cs${p.id}">${sizePills}</div>` : ''}
         </div>
       </div>`;
