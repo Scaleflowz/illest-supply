@@ -1,0 +1,48 @@
+{
+  "type": "object",
+  "properties": {
+    "customer_name": {
+      "type": "string"
+    },
+    "customer_email": {
+      "type": "string"
+    },
+    "product_name": {
+      "type": "string"
+    },
+    "product_id": {
+      "type": "number"
+    },
+    "size": {
+      "type": "string"
+    },
+    "color": {
+      "type": "string"
+    },
+    "price": {
+      "type": "number"
+    },
+    "message": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "New",
+        "Contacted",
+        "Paid",
+        "Shipped",
+        "Done",
+        "Cancelled"
+      ]
+    },
+    "notes": {
+      "type": "string"
+    },
+    "source": {
+      "type": "string"
+    }
+  },
+  "required": [],
+  "name": "Inquiry"
+}

@@ -1,0 +1,28 @@
+{
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "total_orders": {
+      "type": "number"
+    },
+    "total_spent": {
+      "type": "number"
+    },
+    "tags": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "last_inquiry_date": {
+      "type": "string"
+    }
+  },
+  "required": [],
+  "name": "Customer"
+}
