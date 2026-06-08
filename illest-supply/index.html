@@ -113,6 +113,14 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:18px 4
 .stock-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,#f59e0b,#ef4444);}
 
 .buy-btn{display:none;}
+
+.sold-out-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.55);display:flex;align-items:center;justify-content:center;border-radius:inherit;z-index:3;}
+.sold-out-tag{font-size:11px;font-weight:800;letter-spacing:0.2em;color:rgba(255,255,255,0.85);text-transform:uppercase;border:1px solid rgba(255,255,255,0.3);padding:6px 16px;border-radius:50px;backdrop-filter:blur(4px);background:rgba(0,0,0,0.3);}
+.product-card.is-sold-out{opacity:0.72;cursor:default;}
+.product-card.is-sold-out .card-sizes{pointer-events:none;opacity:0.3;}
+.product-card.is-sold-out .price-current{color:#555;text-shadow:none;}
+.product-card.is-sold-out .price-save{opacity:0.3;}
+
 .sold-count{font-size:11px;color:#444;font-weight:500;margin-top:3px;letter-spacing:0.02em;}
 .sold-count span{color:#666;}
 .card-sizes{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.05);}
@@ -454,10 +462,10 @@ const PRODUCTS = [
       "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/f4b027634_74A998F7-E15E-4E87-8A68-5C2D9880512F.png",
       "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/6b287f63d_AA36F7DE-F3CD-47CF-BAFB-FEE327EF145A.png"
     ],
-    tag:"LIMITED", type:"short", stock:35
+    tag:"LIMITED", type:"short", stock:35, soldOut:true
   },
   {
-    id:6, name:"Vale Forever Jorts", category:"BOTTOMS", price:69.99, origPrice:105,
+    id:6, name:"Vale Forever Jorts", category:"BOTTOMS", price:69.99, origPrice:105, soldOut:true,
     imgs:[
       "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/effd672da_F748D361-0A5E-4D84-B7CE-21A80BF31A03.png",
       "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/eac22a547_FF86E6B6-910B-416D-8894-171D71295C5C.png",
@@ -466,7 +474,7 @@ const PRODUCTS = [
     tag:"LIMITED", type:"short", stock:28
   },
   {
-    id:7, name:"Vale Forever Jorts (Rhinestone)", category:"BOTTOMS", price:79.99, origPrice:120,
+    id:7, name:"Vale Forever Jorts (Rhinestone)", category:"BOTTOMS", price:79.99, origPrice:120, soldOut:true,
     imgs:[
       "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/607e2c691_CF43C058-BCF4-41FB-963A-95E3D9C3D886.png",
       "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/e6a45f9dd_FEF16C09-1B37-4184-95F3-F18D4A350911.png"
@@ -474,7 +482,7 @@ const PRODUCTS = [
     tag:"LIMITED", type:"short", stock:20
   },
   {
-    id:8, name:"Vale Forever Bad Dreams Jorts", category:"BOTTOMS", price:79.99, origPrice:120,
+    id:8, name:"Vale Forever Bad Dreams Jorts", category:"BOTTOMS", price:79.99, origPrice:120, soldOut:true,
     imgs:[
       "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/05a792aed_AdobeExpress-file.png",
       "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/3dd13263d_AdobeExpress-file3.png"
@@ -559,9 +567,12 @@ function renderProducts(filter) {
 
   var SOLD_COUNTS = {1:89,2:54,3:47,4:76,5:112,6:98,7:63,8:71,9:134,10:58,11:82,12:61,13:77};
     return `
-      <div class="product-card" data-category="${p.category}" onclick="goToProduct(${p.id})">
+      <div class="product-card${p.soldOut?' is-sold-out':''}" data-category="${p.category}" onclick="${p.soldOut?'':('goToProduct('+p.id+')')}">
         <div class="product-badge">${badgeHTML}</div>
-        <div class="product-img-wrap">${mediaHTML}</div>
+        <div class="product-img-wrap">
+          ${mediaHTML}
+          ${p.soldOut?'<div class="sold-out-overlay"><div class="sold-out-tag">Sold Out</div></div>':''}
+        </div>
         <div class="product-info">
           <div class="product-name">${p.name}</div>
           <div class="price-row">
@@ -569,7 +580,7 @@ function renderProducts(filter) {
             <span class="price-original">$${p.origPrice}</span>
             <span class="price-save">-${save}%</span>
           </div>
-          <div class="sold-count"><span>${SOLD_COUNTS[p.id] || 40}+ sold</span></div>
+          ${p.soldOut ? '<div class="sold-count" style="color:#333;">All pairs gone</div>' : '<div class="sold-count"><span>'+(SOLD_COUNTS[p.id]||40)+'+ sold</span></div>'}
           ${sizePills ? `<div class="card-sizes" id="cs${p.id}">${sizePills}</div>` : ''}
         </div>
       </div>`;
