@@ -720,23 +720,26 @@ function renderReviewRows(reviews) {
       +'<td><span style="background:'+sc+';color:'+st+';font-size:10px;font-weight:700;padding:4px 10px;border-radius:50px;text-transform:uppercase;">'+(r.status||'')+'</span></td>'
       +'<td style="font-size:11px;color:#555;">'+date+'</td>'
       +'<td>'
-        +(r.status!=='approved'?'<button onclick="moderateReview(''+r.id+'','approved')" style="background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.2);color:#22c55e;font-size:10px;padding:4px 10px;border-radius:6px;cursor:pointer;margin-right:4px;">Approve</button>':'')
-        +(r.status!=='rejected'?'<button onclick="moderateReview(''+r.id+'','rejected')" style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);color:#ef4444;font-size:10px;padding:4px 10px;border-radius:6px;cursor:pointer;margin-right:4px;">Reject</button>':'')
-        +'<button onclick="deleteReview(''+r.id+'')" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:#666;font-size:10px;padding:4px 10px;border-radius:6px;cursor:pointer;">Delete</button>'
-        +(r.verifiedPurchase?'':' <button onclick="markVerified(''+r.id+'')" style="background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.12);color:#22c55e;font-size:10px;padding:4px 8px;border-radius:6px;cursor:pointer;">✓ Verify</button>')
+        +(r.status!=='approved'?'<button onclick="moderateReview(this)" data-id="'+r.id+'" data-status="approved" style="background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.2);color:#22c55e;font-size:10px;padding:4px 10px;border-radius:6px;cursor:pointer;margin-right:4px;">Approve</button>':'')
+        +(r.status!=='rejected'?'<button onclick="moderateReview(this)" data-id="'+r.id+'" data-status="rejected" style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);color:#ef4444;font-size:10px;padding:4px 10px;border-radius:6px;cursor:pointer;margin-right:4px;">Reject</button>':'')
+        +'<button onclick="deleteReview(this)" data-id="'+r.id+'" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:#666;font-size:10px;padding:4px 10px;border-radius:6px;cursor:pointer;">Delete</button>'
+        +(r.verifiedPurchase?'':' <button onclick="markVerified(this)" data-id="'+r.id+'" style="background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.12);color:#22c55e;font-size:10px;padding:4px 8px;border-radius:6px;cursor:pointer;">✓ Verify</button>')
       +'</td>'
       +'</tr>';
   }).join('');
 }
 
-function moderateReview(id, status) {
+function moderateReview(el) {
+  var id = el.dataset.id;
+  var status = el.dataset.status;
   var pc = me && me.passcode ? me.passcode : 'ILLEST2025';
   fetch(REVIEWS_API + '?action=moderate', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({passcode:pc,id:id,status:status})})
     .then(function(r){return r.json();})
     .then(function(d){ if(d.success) loadPendingReviews(); });
 }
 
-function deleteReview(id) {
+function deleteReview(el) {
+  var id = el.dataset.id;
   if(!confirm('Delete this review?')) return;
   var pc = me && me.passcode ? me.passcode : 'ILLEST2025';
   fetch(REVIEWS_API + '?action=delete', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({passcode:pc,id:id})})
@@ -744,7 +747,8 @@ function deleteReview(id) {
     .then(function(d){ if(d.success) loadPendingReviews(); });
 }
 
-function markVerified(id) {
+function markVerified(el) {
+  var id = el.dataset.id;
   var pc = me && me.passcode ? me.passcode : 'ILLEST2025';
   fetch(REVIEWS_API + '?action=moderate', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({passcode:pc,id:id,verifiedPurchase:true})})
     .then(function(r){return r.json();})
@@ -828,7 +832,7 @@ function markVerified(id) {
           + '<input type="checkbox" id="pp-new-'+p.id+'" '+(isNew?'checked':'')+' /> New Arrival</label>'
           + '<label style="display:flex;align-items:center;gap:6px;font-size:11px;cursor:pointer;">'
           + '<input type="checkbox" id="pp-best-'+p.id+'" '+(isBest?'checked':'')+' /> Best Seller</label>'
-          + '<button class="btn btn-white btn-sm" style="margin-left:auto;" onclick="saveProduct('+p.id+',''+p.name+'')">Save Changes</button>'
+          + '<button class="btn btn-white btn-sm" data-pid="'+p.id+'" data-pname="'+p.name+'" style="margin-left:auto;" onclick="saveProduct(this)">Save Changes</button>'
           + '</div>'
           + '</div>';
       }).join('');
@@ -837,7 +841,9 @@ function markVerified(id) {
     });
   }
 
-  function saveProduct(id, name) {
+  function saveProduct(el) {
+  var id = parseInt(el.dataset.pid);
+  var name = el.dataset.pname;
     var price    = parseFloat(document.getElementById('pp-price-'+id).value) || 0;
     var origPrice= parseFloat(document.getElementById('pp-orig-'+id).value) || 0;
     var sold     = parseInt(document.getElementById('pp-sold-'+id).value) || 0;
