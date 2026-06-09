@@ -89,10 +89,9 @@
   <p class="hero-sub">Designer pieces. Real price. Real heat.</p>
   <div class="hero-btns">
     <a href="shop.html" class="btn-primary">Shop Now</a>
-    <a href="shop.html?sort=bestsellers" class="btn-outline">Best Sellers</a>
   </div>
   <div class="hero-trust">
-    <span class="hero-trust-item">2,000+ Verified Sales</span>
+    <span class="hero-trust-item">2,000+ Happy Customers</span>
     <span class="hero-trust-item">4.9/5 Rating</span>
     <span class="hero-trust-item">Premium Items</span>
     <span class="hero-trust-item">Fast Shipping</span>
@@ -212,7 +211,12 @@ document.getElementById('footerContainer').innerHTML = getFooterHTML();
 
 // Render grids after overrides/inventory sync
 onProductsReady(function() {
-  const featured = getFeatured().slice(0,4);
+  // Always show exactly 4 products — available ones only
+  const available = PRODUCTS.filter(p => !p.isSoldOut);
+  // Prioritize best sellers, then fill with others
+  const bestSellers = available.filter(p => p.isBestSeller);
+  const others = available.filter(p => !p.isBestSeller);
+  const featured = bestSellers.concat(others).slice(0,4);
   document.getElementById('newArrivalsGrid').innerHTML = featured.map(p => renderHomeCard(p)).join('');
 });
 
@@ -253,6 +257,11 @@ function renderHomeCard(p) {
 <style>
 #emailPopup{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:9999;align-items:center;justify-content:center;padding:16px;}
 #emailPopup.show{display:flex;animation:fadeInPop .35s ease;}
+@keyframes spinY {
+  0%   { transform: perspective(600px) rotateY(0deg); }
+  50%  { transform: perspective(600px) rotateY(25deg); }
+  100% { transform: perspective(600px) rotateY(0deg); }
+}
 @keyframes fadeInPop{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
 .popup-box{background:#0d0d0d;border:1px solid rgba(255,255,255,.1);border-radius:24px;max-width:440px;width:100%;overflow:hidden;position:relative;}
 .popup-close{position:absolute;top:14px;right:16px;background:rgba(255,255,255,.08);border:none;color:#fff;font-size:14px;cursor:pointer;z-index:10;line-height:1;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
