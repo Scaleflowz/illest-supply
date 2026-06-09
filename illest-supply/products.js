@@ -6,9 +6,9 @@ const PRODUCTS = [
   {
     id: 1, name: "Balenciaga Slides", slug: "balenciaga-slides",
     price: 89, origPrice: 145, category: "slides", brand: "Balenciaga",
-    condition: "Brand New / Deadstock", isNewArrival: false, isBestSeller: true, isSoldOut: false,
+    condition: "Brand New", isNewArrival: false, isBestSeller: true, isSoldOut: false,
     badges: ["HOT"],
-    desc: "Iconic Balenciaga pool slides. Clean colorway, premium rubber sole. Deadstock condition.",
+    desc: "Iconic Balenciaga pool slides. Clean colorway, premium rubber sole. Brand new condition.",
     sizes: ["6","7","8","9","10","11","12","13"],
     stock: {"6":2,"7":3,"8":4,"9":3,"10":2,"11":1,"12":0,"13":0},
     img: "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/05a792aed_AdobeExpress-file.png",
@@ -42,7 +42,7 @@ const PRODUCTS = [
   {
     id: 4, name: "Dior Slides", slug: "dior-slides",
     price: 120, origPrice: 195, category: "slides", brand: "Dior",
-    condition: "Brand New / Deadstock", isNewArrival: true, isBestSeller: true, isSoldOut: false,
+    condition: "Brand New", isNewArrival: true, isBestSeller: true, isSoldOut: false,
     badges: ["NEW", "HOT"],
     desc: "Dior Aqua slides — the silhouette of the season. Premium rubber, clean Dior branding.",
     sizes: ["6","7","8","9","10","11","12"],
@@ -102,7 +102,7 @@ const PRODUCTS = [
   {
     id: 9, name: "Asics Gel Kayano 14 Pink Glow", slug: "asics-gel-kayano-14-pink-glow",
     price: 110, origPrice: 175, category: "sneakers", brand: "Asics",
-    condition: "Brand New / Deadstock", isNewArrival: true, isBestSeller: true, isSoldOut: false,
+    condition: "Brand New", isNewArrival: true, isBestSeller: true, isSoldOut: false,
     badges: ["NEW", "HOT"],
     desc: "Asics Gel Kayano 14 in the rare Pink Glow colorway. Chunky 90s silhouette. All sizes verified.",
     sizes: ["6","7","8","9","10","11","12"],
@@ -117,7 +117,7 @@ const PRODUCTS = [
   {
     id: 10, name: "Rick Owens Ramones", slug: "rick-owens-ramones",
     price: 150, origPrice: 245, category: "sneakers", brand: "Rick Owens",
-    condition: "Brand New / Deadstock", isNewArrival: true, isBestSeller: true, isSoldOut: false,
+    condition: "Brand New", isNewArrival: true, isBestSeller: true, isSoldOut: false,
     badges: ["NEW"],
     desc: "Rick Owens Ramones low in white canvas. Signature geobasket sole. Luxury streetwear staple.",
     sizes: ["7","8","9","10","11","12"],
@@ -129,7 +129,7 @@ const PRODUCTS = [
   {
     id: 11, name: "Bottega Veneta (Green)", slug: "bottega-veneta-green",
     price: 150, origPrice: 240, category: "sneakers", brand: "Bottega Veneta",
-    condition: "Brand New / Deadstock", isNewArrival: true, isBestSeller: false, isSoldOut: false,
+    condition: "Brand New", isNewArrival: true, isBestSeller: false, isSoldOut: false,
     badges: ["NEW", "LOW"],
     desc: "Bottega Veneta Speedster sneaker in forest green. Woven leather upper. Limited stock.",
     sizes: ["7","8","9","10","11"],
@@ -141,7 +141,7 @@ const PRODUCTS = [
   {
     id: 12, name: "Bottega Veneta (Blue)", slug: "bottega-veneta-blue",
     price: 150, origPrice: 240, category: "sneakers", brand: "Bottega Veneta",
-    condition: "Brand New / Deadstock", isNewArrival: true, isBestSeller: false, isSoldOut: false,
+    condition: "Brand New", isNewArrival: true, isBestSeller: false, isSoldOut: false,
     badges: ["NEW"],
     desc: "Bottega Veneta in cobalt blue. Clean and rare.",
     sizes: ["7","8","9","10","11"],
@@ -153,7 +153,7 @@ const PRODUCTS = [
   {
     id: 13, name: "Bottega Veneta (Pink)", slug: "bottega-veneta-pink",
     price: 150, origPrice: 240, category: "sneakers", brand: "Bottega Veneta",
-    condition: "Brand New / Deadstock", isNewArrival: true, isBestSeller: true, isSoldOut: false,
+    condition: "Brand New", isNewArrival: true, isBestSeller: true, isSoldOut: false,
     badges: ["NEW", "HOT"],
     desc: "Bottega Veneta in dusty rose/pink. The hardest colorway to find. Limited pairs.",
     sizes: ["7","8","9","10","11"],

@@ -335,7 +335,7 @@ input:checked + .tslider:before{transform:translateX(16px);background:#22c55e;}
       <div>
         <label class="pm-label">Condition</label>
         <select class="qty-in" id="pm-condition" style="width:100%;padding:9px 12px;">
-          <option value="Brand New / Deadstock">Brand New / Deadstock</option>
+          <option value="Brand New">Brand New</option>
           <option value="Like New">Like New</option>
           <option value="Excellent">Excellent</option>
           <option value="Good">Good</option>
@@ -920,17 +920,17 @@ function markVerified(el) {
     });
 
     var staticProducts = [
-      {id:1,  name:'Balenciaga Slides',        price:89,   origPrice:145, badges:'HOT',     sold:89,  img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/05a792aed_AdobeExpress-file.png', video:null, category:'slides',   brand:'Balenciaga', condition:'Brand New / Deadstock', desc:'Iconic Balenciaga pool slides.',  sizes:['6','7','8','9','10','11','12','13']},
-      {id:2,  name:'Prada Cup (Black)',         price:95,   origPrice:165, badges:'HOT',     sold:54,  img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/35ae1e2e5_AdobeExpress-file.png', video:null, category:'sneakers', brand:'Prada',      condition:'Brand New / Deadstock', desc:'Prada America\'s Cup sneakers.',  sizes:['7','8','9','10','11','12']},
-      {id:3,  name:'Prada Cup (Blue)',          price:95,   origPrice:165, badges:'NEW',     sold:47,  img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/3dd13263d_AdobeExpress-file3.png', video:null, category:'sneakers', brand:'Prada',      condition:'Brand New / Deadstock', desc:'Prada Cup in blue colorway.',    sizes:['7','8','9','10','11','12']},
-      {id:4,  name:'Dior Slides',               price:120,  origPrice:195, badges:'NEW,HOT', sold:76,  img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/040af7300_AdobeExpress-file3.png', video:null, category:'slides',   brand:'Dior',       condition:'Brand New / Deadstock', desc:'Dior logo slides.',              sizes:['6','7','8','9','10','11','12']},
-      {id:5,  name:'Vale Forever College Jorts',price:64.99,origPrice:95,  badges:'SOLD',    sold:38,  img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/ab18f8c12_CBA80A5F-97CF-45C5-AA11-522922875DE3.png', video:null, category:'bottoms',  brand:'Vale Forever', condition:'Brand New / Deadstock', desc:'Vale Forever college jorts.', sizes:['S','M','L','XL']},
-      {id:6,  name:'Vale Forever Jorts',        price:64.99,origPrice:95,  badges:'',        sold:22,  img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/ab18f8c12_CBA80A5F-97CF-45C5-AA11-522922875DE3.png', video:null, category:'bottoms',  brand:'Vale Forever', condition:'Brand New / Deadstock', desc:'Vale Forever jorts.',         sizes:['S','M','L','XL']},
-      {id:9,  name:'Asics Gel Kayano 14',       price:110,  origPrice:175, badges:'NEW',     sold:31,  img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/607e2c691_CF43C058-BCF4-41FB-963A-95E3D9C3D886.png', video:null, category:'sneakers', brand:'Asics',      condition:'Brand New / Deadstock', desc:'Asics Gel Kayano 14.',           sizes:['7','8','9','10','11','12']},
-      {id:10, name:'Rick Owens',                price:145,  origPrice:220, badges:'HOT',     sold:19,  img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/6b287f63d_AA36F7DE-F3CD-47CF-BAFB-FEE327EF145A.png', video:null, category:'sneakers', brand:'Rick Owens',  condition:'Brand New / Deadstock', desc:'Rick Owens DRKSHDW sneakers.',   sizes:['7','8','9','10','11','12']},
-      {id:11, name:'Bottegas (Green)',           price:130,  origPrice:195, badges:'NEW',     sold:12,  img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/eac22a547_FF86E6B6-910B-416D-8894-171D71295C5C.png', video:null, category:'sneakers', brand:'Bottega',     condition:'Brand New / Deadstock', desc:'Bottega Veneta sneakers green.', sizes:['7','8','9','10','11','12']},
-      {id:12, name:'Bottegas (Blue)',            price:130,  origPrice:195, badges:'',        sold:8,   img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/effd672da_F748D361-0A5E-4D84-B7CE-21A80BF31A03.png', video:null, category:'sneakers', brand:'Bottega',     condition:'Brand New / Deadstock', desc:'Bottega Veneta sneakers blue.',  sizes:['7','8','9','10','11','12']},
-      {id:13, name:'Bottegas (Pink)',            price:130,  origPrice:195, badges:'NEW',     sold:15,  img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/e6282f07d_918D9A7E-D61E-4658-A7B6-5DF1F8B5AC78.png', video:null, category:'sneakers', brand:'Bottega',     condition:'Brand New / Deadstock', desc:'Bottega Veneta sneakers pink.',  sizes:['7','8','9','10','11','12']}
+      {id:1,  name:'Balenciaga Slides',        price:89,   origPrice:145, badges:'HOT',     sold:89,  img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/05a792aed_AdobeExpress-file.png', video:null, category:'slides',   brand:'Balenciaga', condition:'Brand New', desc:'Iconic Balenciaga pool slides.',  sizes:['6','7','8','9','10','11','12','13']},
+      {id:2,  name:'Prada Cup (Black)',         price:95,   origPrice:165, badges:'HOT',     sold:54,  img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/35ae1e2e5_AdobeExpress-file.png', video:null, category:'sneakers', brand:'Prada',      condition:'Brand New', desc:'Prada America\'s Cup sneakers.',  sizes:['7','8','9','10','11','12']},
+      {id:3,  name:'Prada Cup (Blue)',          price:95,   origPrice:165, badges:'NEW',     sold:47,  img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/3dd13263d_AdobeExpress-file3.png', video:null, category:'sneakers', brand:'Prada',      condition:'Brand New', desc:'Prada Cup in blue colorway.',    sizes:['7','8','9','10','11','12']},
+      {id:4,  name:'Dior Slides',               price:120,  origPrice:195, badges:'NEW,HOT', sold:76,  img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/040af7300_AdobeExpress-file3.png', video:null, category:'slides',   brand:'Dior',       condition:'Brand New', desc:'Dior logo slides.',              sizes:['6','7','8','9','10','11','12']},
+      {id:5,  name:'Vale Forever College Jorts',price:64.99,origPrice:95,  badges:'SOLD',    sold:38,  img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/ab18f8c12_CBA80A5F-97CF-45C5-AA11-522922875DE3.png', video:null, category:'bottoms',  brand:'Vale Forever', condition:'Brand New', desc:'Vale Forever college jorts.', sizes:['S','M','L','XL']},
+      {id:6,  name:'Vale Forever Jorts',        price:64.99,origPrice:95,  badges:'',        sold:22,  img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/ab18f8c12_CBA80A5F-97CF-45C5-AA11-522922875DE3.png', video:null, category:'bottoms',  brand:'Vale Forever', condition:'Brand New', desc:'Vale Forever jorts.',         sizes:['S','M','L','XL']},
+      {id:9,  name:'Asics Gel Kayano 14',       price:110,  origPrice:175, badges:'NEW',     sold:31,  img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/607e2c691_CF43C058-BCF4-41FB-963A-95E3D9C3D886.png', video:null, category:'sneakers', brand:'Asics',      condition:'Brand New', desc:'Asics Gel Kayano 14.',           sizes:['7','8','9','10','11','12']},
+      {id:10, name:'Rick Owens',                price:145,  origPrice:220, badges:'HOT',     sold:19,  img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/6b287f63d_AA36F7DE-F3CD-47CF-BAFB-FEE327EF145A.png', video:null, category:'sneakers', brand:'Rick Owens',  condition:'Brand New', desc:'Rick Owens DRKSHDW sneakers.',   sizes:['7','8','9','10','11','12']},
+      {id:11, name:'Bottegas (Green)',           price:130,  origPrice:195, badges:'NEW',     sold:12,  img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/eac22a547_FF86E6B6-910B-416D-8894-171D71295C5C.png', video:null, category:'sneakers', brand:'Bottega',     condition:'Brand New', desc:'Bottega Veneta sneakers green.', sizes:['7','8','9','10','11','12']},
+      {id:12, name:'Bottegas (Blue)',            price:130,  origPrice:195, badges:'',        sold:8,   img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/effd672da_F748D361-0A5E-4D84-B7CE-21A80BF31A03.png', video:null, category:'sneakers', brand:'Bottega',     condition:'Brand New', desc:'Bottega Veneta sneakers blue.',  sizes:['7','8','9','10','11','12']},
+      {id:13, name:'Bottegas (Pink)',            price:130,  origPrice:195, badges:'NEW',     sold:15,  img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/e6282f07d_918D9A7E-D61E-4658-A7B6-5DF1F8B5AC78.png', video:null, category:'sneakers', brand:'Bottega',     condition:'Brand New', desc:'Bottega Veneta sneakers pink.',  sizes:['7','8','9','10','11','12']}
     ];
 
     // Merge any custom products from overrides (id >= 100 = custom)
@@ -944,7 +944,7 @@ function markVerified(el) {
             badges: ov.badges || '', sold: ov.sold_count || 0,
             img: ov.img || '', video: ov.video || null,
             category: ov.category || 'sneakers', brand: ov.brand || '',
-            condition: ov.condition || 'Brand New / Deadstock',
+            condition: ov.condition || 'Brand New',
             desc: ov.desc || '', sizes: ov.sizes ? ov.sizes.split(',') : [],
             isCustom: true
           });
@@ -1052,7 +1052,7 @@ function openAddProduct() {
   document.getElementById('pm-price').value    = '';
   document.getElementById('pm-orig').value     = '';
   document.getElementById('pm-cat').value      = 'sneakers';
-  document.getElementById('pm-condition').value= 'Brand New / Deadstock';
+  document.getElementById('pm-condition').value= 'Brand New';
   document.getElementById('pm-desc').value     = '';
   document.getElementById('pm-badges').value   = '';
   document.getElementById('pm-sizes').value    = '';
@@ -1081,7 +1081,7 @@ function openEditProduct(id) {
   document.getElementById('pm-price').value    = ov.price        || '';
   document.getElementById('pm-orig').value     = ov.orig_price   || '';
   document.getElementById('pm-cat').value      = ov.category     || 'sneakers';
-  document.getElementById('pm-condition').value= ov.condition    || 'Brand New / Deadstock';
+  document.getElementById('pm-condition').value= ov.condition    || 'Brand New';
   document.getElementById('pm-desc').value     = ov.desc         || '';
   document.getElementById('pm-badges').value   = ov.badges       || '';
   document.getElementById('pm-sizes').value    = ov.sizes        || '';
