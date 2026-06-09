@@ -4,10 +4,23 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>The Illest Supply | Authenticated Designer Streetwear & Sneakers</title>
-<meta name="description" content="Shop authenticated designer sneakers, slides, jorts, accessories, and streetwear pieces from The Illest Supply. Premium resale, fast shipping, and secure checkout."/>
+<meta name="description" content="Shop designer sneakers, slides, jorts, and streetwear pieces from The Illest Supply. Premium resale, fast shipping, and secure checkout."/>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<style id="globalStyles"></style>
+<style id="globalStyles">
+/* EMAIL POPUP */
+#email-popup{position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity 0.35s;}
+#email-popup.show{opacity:1;pointer-events:all;}
+.popup-box{background:#0d0d0d;border:1px solid rgba(255,255,255,0.1);border-radius:24px;padding:40px 32px;max-width:400px;width:100%;text-align:center;position:relative;}
+.popup-close{position:absolute;top:14px;right:18px;background:none;border:none;color:#555;font-size:22px;cursor:pointer;line-height:1;}
+.popup-tag{font-size:10px;letter-spacing:0.2em;color:#c9a96e;font-weight:700;text-transform:uppercase;margin-bottom:12px;}
+.popup-title{font-family:'Bebas Neue',sans-serif;font-size:36px;line-height:1;margin-bottom:8px;color:#fff;}
+.popup-sub{font-size:13px;color:#555;margin-bottom:24px;line-height:1.5;}
+.popup-input{width:100%;padding:14px 16px;background:#000;border:1px solid rgba(255,255,255,0.12);border-radius:12px;color:#fff;font-size:14px;box-sizing:border-box;margin-bottom:12px;outline:none;}
+.popup-input:focus{border-color:#c9a96e;}
+.popup-btn{width:100%;padding:15px;background:#fff;color:#000;border:none;border-radius:12px;font-size:13px;font-weight:800;letter-spacing:0.08em;cursor:pointer;text-transform:uppercase;}
+.popup-skip{font-size:11px;color:#333;margin-top:14px;cursor:pointer;text-decoration:underline;display:block;}
+</style>
 <style>
 .hero{text-align:left;padding:60px 0 60px;position:relative;overflow:hidden;}
 .hero::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 20% 50%,rgba(255,255,255,0.03) 0%,transparent 70%);pointer-events:none;}
@@ -78,7 +91,7 @@
   <img class="hero-brand-logo" src="https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/409f6a116_918D9A7E-D61E-4658-A7B6-5DF1F8B5AC78.png" alt="The Illest Supply">
   </div>
   <h1 class="hero-headline"><span class="hero-solid">DRESS</span><span class="hero-outline">DIFFERENT</span><span class="hero-solid">STAY <span style="color:transparent;-webkit-text-stroke:2.5px rgba(255,255,255,0.45);">ILLEST</span></span></h1>
-  <p class="hero-sub">Authenticated designer pieces. Shop, select your size, buy now.</p>
+  <p class="hero-sub">Designer pieces. Real price. Real heat.</p>
   <div class="hero-btns">
     <a href="shop.html" class="btn-primary">Shop Now</a>
     <a href="shop.html?sort=bestsellers" class="btn-outline">Best Sellers</a>
@@ -143,7 +156,7 @@
       <div class="section-heading">Why Shop With<br>Illest Supply?</div>
     </div>
     <div class="why-grid">
-      <div class="why-card"><div class="why-icon">🔐</div><div class="why-title">Authenticated Before Listing</div><div class="why-desc">Every piece is reviewed and verified before it goes live. No fakes. No guesswork.</div></div>
+      
       <div class="why-card"><div class="why-icon">⚡</div><div class="why-title">Fast 1–3 Day Shipping</div><div class="why-desc">Orders ship fast. Track your package from confirmation to your door.</div></div>
       <div class="why-card"><div class="why-icon">🎁</div><div class="why-title">Free Shipping Over $150</div><div class="why-desc">Hit the threshold and shipping is on us. Simple.</div></div>
       <div class="why-card"><div class="why-icon">💯</div><div class="why-title">Trusted by 2,000+ Customers</div><div class="why-desc">Built on real reviews and repeat buyers. The community speaks for itself.</div></div>
@@ -224,5 +237,41 @@ document.getElementById('footerContainer').innerHTML = getFooterHTML();
 document.getElementById('newArrivalsGrid').innerHTML = getNewArrivals().map(p => renderProductCard(p)).join('');
 document.getElementById('bestSellersGrid').innerHTML = getFeatured().map(p => renderProductCard(p)).join('');
 </script>
+
+<!-- EMAIL CAPTURE POPUP -->
+<div id="email-popup">
+  <div class="popup-box">
+    <button class="popup-close" onclick="closePopup()">✕</button>
+    <div class="popup-tag">Early Access</div>
+    <div class="popup-title">GET FIRST DROP ALERTS</div>
+    <div class="popup-sub">New drops sell out fast. Be the first to know when limited pairs go live.</div>
+    <input class="popup-input" id="popupEmail" type="email" placeholder="your@email.com">
+    <button class="popup-btn" onclick="submitPopup()">NOTIFY ME</button>
+    <span class="popup-skip" onclick="closePopup()">No thanks, I'll miss out</span>
+  </div>
+</div>
+<script>
+(function(){
+  if(localStorage.getItem('illest_popup_dismissed')) return;
+  setTimeout(function(){
+    document.getElementById('email-popup').classList.add('show');
+  }, 4000);
+})();
+function closePopup(){
+  document.getElementById('email-popup').classList.remove('show');
+  localStorage.setItem('illest_popup_dismissed','1');
+}
+function submitPopup(){
+  const email = document.getElementById('popupEmail').value.trim();
+  if(!email || !email.includes('@')) { document.getElementById('popupEmail').style.borderColor='#ef4444'; return; }
+  fetch('/api/apps/6a21ea02495f72afbc2ec54c/functions/adminApi', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({action:'notifyDrop', email, dropId:'general'})
+  });
+  document.querySelector('.popup-box').innerHTML = '<div style="padding:20px 0"><div style="font-size:48px;margin-bottom:16px;">🔥</div><div style="font-family:Bebas Neue,sans-serif;font-size:32px;margin-bottom:8px;">YOU'RE ON THE LIST</div><div style="font-size:13px;color:#555;">We'll hit you first when the drop goes live.</div></div>';
+  setTimeout(closePopup, 2500);
+}
+</script>
+
 </body>
 </html>
