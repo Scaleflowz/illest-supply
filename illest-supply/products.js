@@ -227,7 +227,7 @@ function renderProductCard(p, selectedSize = null) {
         ${mediaHTML}
         <div class="product-badge">${badgesHTML}</div>
         ${soldOut ? '<div class="sold-out-overlay"><div class="sold-out-tag">Sold Out</div></div>' : ''}
-        ${!soldOut ? `<div class="viewer-badge">👁 ${p.views||Math.floor(p.sold*3.2+7)} viewing</div>` : ''}
+        ${!soldOut ? `<div class="viewer-badge" id="vb${p.id}" data-base="${Math.floor(Math.random()*(75-8+1))+8}">👁 <span class="vb-num">${Math.floor(Math.random()*(75-8+1))+8}</span> viewing</div>` : ''}
       </div>
       <div class="product-info">
         <div class="product-name">${p.name}</div>
@@ -364,4 +364,20 @@ function onProductsReady(cb) {
     PRODUCTS_READY_CBS.forEach(function(cb){ try{ cb(); }catch(e){} });
     PRODUCTS_READY_CBS = [];
   });
+})();
+
+// ── VIEWER COUNT AUTO-REFRESH ─────────────────────────────
+(function() {
+  function refreshViewers() {
+    document.querySelectorAll('.viewer-badge').forEach(function(el) {
+      var base = parseInt(el.getAttribute('data-base')) || 20;
+      // Drift ±5 from base, stay within 8-75
+      var drift = Math.floor(Math.random() * 11) - 5;
+      var newVal = Math.min(75, Math.max(8, base + drift));
+      var span = el.querySelector('.vb-num');
+      if (span) span.textContent = newVal;
+    });
+  }
+  // Refresh every 45 seconds
+  setInterval(refreshViewers, 45000);
 })();

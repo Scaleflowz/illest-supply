@@ -17,28 +17,35 @@
 .badge-auth{display:none!important;}
 
 @keyframes spinY {
-  0%   { transform: perspective(600px) rotateY(0deg); }
-  50%  { transform: perspective(600px) rotateY(25deg); }
-  100% { transform: perspective(600px) rotateY(0deg); }
+  0%   { transform: rotate(-5deg); }
+  50%  { transform: rotate(5deg); }
+  100% { transform: rotate(-5deg); }
 }
+.section-accent-title{position:relative;display:inline-block;padding-bottom:8px;}
+.section-accent-title::after{content:'';position:absolute;bottom:0;left:0;width:40px;height:2px;background:#fff;border-radius:2px;}
+.drop-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:20px;padding:5px 14px;font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#fff;}
+.drop-badge-hot{background:rgba(220,38,38,0.1);border-color:rgba(220,38,38,0.3);color:#f87171;}
+.drop-badge-new{background:rgba(34,197,94,0.08);border-color:rgba(34,197,94,0.25);color:#4ade80;}
+.drop-badge-live{background:rgba(239,68,68,0.12);border-color:rgba(239,68,68,0.35);color:#f87171;animation:pulseBadge 2s ease-in-out infinite;}
+@keyframes pulseBadge{0%,100%{opacity:1;}50%{opacity:.65;}}
 </style>
 <style>
 .hero{text-align:left;padding:60px 0 60px;position:relative;overflow:hidden;}
 .hero::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 20% 50%,rgba(255,255,255,0.03) 0%,transparent 70%);pointer-events:none;}
 .hero .container{position:relative;z-index:1;}
-.hero-brand-logo{width:140px;margin:0 auto 32px;display:block;animation:spinY 25s linear infinite;mix-blend-mode:screen;}
+.hero-brand-logo{width:140px;margin:0 auto 32px;display:block;animation:spinY 3s ease-in-out infinite;mix-blend-mode:screen;transform-origin:center center;}
 .hero-headline{font-family:'Bebas Neue',sans-serif;font-size:clamp(80px,18vw,160px);line-height:0.9;letter-spacing:0.01em;margin-bottom:24px;display:block;}
 .hero-solid{color:#ffffff;display:block;}
 .hero-outline{color:transparent;-webkit-text-stroke:2.5px rgba(255,255,255,0.45);display:block;}
 .hero-sub{font-size:14px;color:#555;letter-spacing:0.04em;margin-bottom:32px;max-width:420px;line-height:1.6;}
 .hero-btns{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:40px;}
 .hero-trust{display:flex;gap:24px;flex-wrap:wrap;}
-.hero-trust-item{font-size:11px;color:#333;letter-spacing:0.1em;font-weight:600;text-transform:uppercase;}
-.hero-trust-item::before{content:'✓ ';}
+.hero-trust-item{font-size:11px;color:#555;letter-spacing:0.1em;font-weight:600;text-transform:uppercase;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:5px 14px;}
+.hero-trust-item::before{content:'✓ ';color:#22c55e;}
 
 /* CATEGORIES */
 .cats-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;}
-.cat-card{background:#0d0d0d;border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:24px 16px;text-align:center;cursor:pointer;transition:all .2s;}
+.cat-card{background:#0d0d0d;border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:24px 16px;text-align:center;cursor:pointer;transition:all .2s;}
 .cat-card:hover{border-color:rgba(255,255,255,0.18);transform:translateY(-2px);}
 .cat-icon{font-size:28px;margin-bottom:10px;}
 .cat-name{font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;}
@@ -55,7 +62,7 @@
 
 /* WHY US */
 .why-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
-.why-card{background:#0d0d0d;border:1px solid rgba(255,255,255,0.05);border-radius:16px;padding:28px 24px;}
+.why-card{background:#0d0d0d;border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:28px 24px;transition:border-color .2s;}.why-card:hover{border-color:rgba(255,255,255,0.2);}
 .why-icon{font-size:28px;margin-bottom:14px;}
 .why-title{font-size:13px;font-weight:700;letter-spacing:0.06em;margin-bottom:8px;}
 .why-desc{font-size:12px;color:#333;line-height:1.6;}
@@ -132,7 +139,10 @@
 <!-- FEATURED PRODUCTS -->
 <section>
   <div class="container">
-    <div class="section-heading" style="margin-bottom:8px;">Featured Drops</div>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;flex-wrap:wrap;">
+      <div class="section-heading">Featured Drops</div>
+      <span class="drop-badge drop-badge-hot">🔥 New Stock</span>
+    </div>
     <div style="color:#555;font-size:13px;margin-bottom:28px;">Premium pieces, real prices.</div>
     <div id="newArrivalsGrid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;"></div>
     <style>@media(max-width:768px){#newArrivalsGrid{grid-template-columns:repeat(2,1fr)!important;}}</style>
@@ -179,7 +189,10 @@
 <section style="background:#050505;padding:60px 0;">
   <div class="container">
     <div style="text-align:center;margin-bottom:40px;">
-      <div class="section-title">Real Talk</div>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px;flex-wrap:wrap;">
+        <div class="section-title">Real Talk</div>
+        <span class="drop-badge drop-badge-new">✓ Verified</span>
+      </div>
       <div class="section-heading">What Customers Say</div>
     </div>
     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;" id="reviewsPreview">
@@ -235,6 +248,14 @@ onProductsReady(function() {
   const others = PRODUCTS.filter(p => !p.isBestSeller);
   const featured = bestSellers.concat(others).slice(0, 20);
   document.getElementById('newArrivalsGrid').innerHTML = featured.map(p => renderHomeCard(p, true)).join('');
+  // Start viewer count refresh
+  setInterval(function(){
+    document.querySelectorAll('.vb-num').forEach(function(span){
+      var base = parseInt(span.closest('[data-base]')?.getAttribute('data-base')) || 20;
+      var drift = Math.floor(Math.random()*11)-5;
+      span.textContent = Math.min(75, Math.max(8, base+drift));
+    });
+  }, 45000);
 });
 
 function renderHomeCard(p, forceAvailable) {
@@ -263,7 +284,7 @@ function renderHomeCard(p, forceAvailable) {
         <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
           ${p.soldCount ? `<span style="font-size:11px;color:#888;letter-spacing:.03em;">${p.soldCount}+ sold</span>` : ''}
           ${p.soldCount && p.viewers ? `<span style="font-size:11px;color:#444;">·</span>` : ''}
-          ${p.viewers ? `<span style="font-size:11px;color:#888;letter-spacing:.03em;">👁 ${p.viewers} viewing</span>` : ''}
+          ${!soldOut ? `<span class="viewer-badge-inline" id="vbh${p.id}" data-base="${Math.floor(Math.random()*(75-8+1))+8}" style="font-size:11px;color:#888;letter-spacing:.03em;">👁 <span class="vb-num">${Math.floor(Math.random()*(75-8+1))+8}</span> viewing</span>` : ''}
         </div>
         ${btn}
       </div>
@@ -280,9 +301,9 @@ function renderHomeCard(p, forceAvailable) {
 #emailPopup{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:9999;align-items:center;justify-content:center;padding:16px;}
 #emailPopup.show{display:flex;animation:fadeInPop .35s ease;}
 @keyframes spinY {
-  0%   { transform: perspective(600px) rotateY(0deg); }
-  50%  { transform: perspective(600px) rotateY(25deg); }
-  100% { transform: perspective(600px) rotateY(0deg); }
+  0%   { transform: rotate(-5deg); }
+  50%  { transform: rotate(5deg); }
+  100% { transform: rotate(-5deg); }
 }
 @keyframes fadeInPop{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
 .popup-box{background:#0d0d0d;border:1px solid rgba(255,255,255,.1);border-radius:24px;max-width:440px;width:100%;overflow:hidden;position:relative;}
