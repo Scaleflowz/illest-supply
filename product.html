@@ -192,6 +192,7 @@ document.getElementById('globalStyles').textContent = getGlobalCSS();
 document.getElementById('navContainer').innerHTML = getNavHTML('shop');
 document.getElementById('footerContainer').innerHTML = getFooterHTML();
 
+document.addEventListener('overridesLoaded', function() {
 let currentProduct = null;
 let selectedSize = null;
 let qty = 1;
@@ -336,6 +337,8 @@ function switchTab(name, el) {
   document.getElementById(`tab-${name}`).classList.add('active');
   el.classList.add('active');
 }
+
+});
 </script>
 </body>
 </html>
