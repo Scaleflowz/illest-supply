@@ -1,805 +1,224 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>The Illest Supply</title>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>The Illest Supply | Authenticated Designer Streetwear & Sneakers</title>
+<meta name="description" content="Shop authenticated designer sneakers, slides, jorts, accessories, and streetwear pieces from The Illest Supply. Premium resale, fast shipping, and secure checkout."/>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style id="globalStyles"></style>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
-body{background:#080808;color:#fff;font-family:'Inter',sans-serif;overflow-x:hidden;}
+.hero{text-align:center;padding:100px 20px 80px;position:relative;overflow:hidden;}
+.hero::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(255,255,255,0.04) 0%,transparent 70%);pointer-events:none;}
+.hero-brand-logo{width:160px;margin:0 auto 28px;display:block;animation:spinY 25s linear infinite;mix-blend-mode:screen;}
+.hero-eyebrow{font-size:11px;letter-spacing:0.25em;color:#444;text-transform:uppercase;margin-bottom:16px;font-weight:600;}
+.hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(60px,9vw,120px);line-height:0.9;letter-spacing:0.02em;margin-bottom:20px;}
+.hero h1 em{font-style:normal;color:transparent;-webkit-text-stroke:1px rgba(255,255,255,0.3);}
+.hero-sub{font-size:15px;color:#444;letter-spacing:0.04em;margin-bottom:36px;max-width:500px;margin-left:auto;margin-right:auto;line-height:1.6;}
+.hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:40px;}
+.hero-trust{display:flex;gap:24px;justify-content:center;flex-wrap:wrap;}
+.hero-trust-item{font-size:11px;color:#333;letter-spacing:0.1em;font-weight:600;text-transform:uppercase;}
+.hero-trust-item::before{content:'✓ ';}
 
-/* ANNOUNCEMENT */
-#announcement{background:#fff;color:#000;text-align:center;padding:10px 12px;font-size:13px;font-weight:600;letter-spacing:0.08em;overflow:hidden;position:relative;height:36px;}
-.announce-slide{position:absolute;width:100%;left:0;top:0;padding:9px 12px;opacity:0;transition:opacity 0.6s ease;}
-.announce-slide.active{opacity:1;}
-#announcement span{color:#c00;margin:0 6px;}
+/* CATEGORIES */
+.cats-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;}
+.cat-card{background:#0d0d0d;border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:24px 16px;text-align:center;cursor:pointer;transition:all .2s;}
+.cat-card:hover{border-color:rgba(255,255,255,0.18);transform:translateY(-2px);}
+.cat-icon{font-size:28px;margin-bottom:10px;}
+.cat-name{font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;}
+.cat-count{font-size:11px;color:#333;margin-top:4px;}
 
-/* NAV */
-nav{display:flex;align-items:center;justify-content:space-between;padding:18px 40px;border-bottom:1px solid rgba(255,255,255,0.05);background:rgba(8,8,8,0.97);position:sticky;top:0;z-index:100;}
-.nav-logo{height:52px;object-fit:contain;animation:spinY 25s linear infinite;mix-blend-mode:screen;}
-@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
-.nav-right{display:flex;align-items:center;gap:14px;}
-.nav-right a{color:#fff;opacity:0.75;font-size:14px;text-decoration:none;letter-spacing:0.04em;transition:opacity .2s;}
-.nav-right a:hover{opacity:1;}
-.nav-btn{padding:9px 22px;border-radius:50px;border:1px solid rgba(255,255,255,0.18);color:#fff;background:transparent;font-size:13px;font-weight:600;letter-spacing:0.07em;cursor:pointer;transition:all .2s;}
-.nav-btn:hover{background:#fff;color:#000;}
+/* HOW IT WORKS */
+.steps{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;counter-reset:step;}
+.step{text-align:center;padding:24px 16px;position:relative;}
+.step::after{content:'→';position:absolute;right:-8px;top:50%;transform:translateY(-50%);color:#222;font-size:18px;}
+.step:last-child::after{display:none;}
+.step-num{font-family:'Bebas Neue',sans-serif;font-size:40px;color:#111;margin-bottom:8px;}
+.step-title{font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:6px;}
+.step-desc{font-size:11px;color:#333;line-height:1.5;}
 
-/* TICKER */
-.ticker-wrap{background:#0f0f0f;border-bottom:1px solid rgba(255,255,255,0.06);overflow:hidden;padding:10px 0;}
-.ticker{display:flex;width:max-content;animation:ticker 28s linear infinite;}
-.ticker span{white-space:nowrap;padding:0 32px;font-size:11px;letter-spacing:0.14em;font-weight:600;color:#555;text-transform:uppercase;}
-.ticker span.dot{color:#c00;padding:0 4px;}
-@keyframes ticker{from{transform:translateX(0);}to{transform:translateX(-50%);}}}
+/* WHY US */
+.why-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+.why-card{background:#0d0d0d;border:1px solid rgba(255,255,255,0.05);border-radius:16px;padding:28px 24px;}
+.why-icon{font-size:28px;margin-bottom:14px;}
+.why-title{font-size:13px;font-weight:700;letter-spacing:0.06em;margin-bottom:8px;}
+.why-desc{font-size:12px;color:#333;line-height:1.6;}
 
-/* HERO */
-.hero{text-align:center;padding:90px 20px 70px;position:relative;overflow:hidden;}
-.hero::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(255,255,255,0.05) 0%,transparent 70%);pointer-events:none;}
-.hero-eyebrow{font-size:12px;letter-spacing:0.22em;color:#555;text-transform:uppercase;margin-bottom:18px;font-weight:600;}
-.hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(64px,10vw,130px);line-height:0.92;letter-spacing:0.02em;margin-bottom:20px;}
-.hero h1 em{font-style:normal;color:transparent;-webkit-text-stroke:1px rgba(255,255,255,0.35);}
-.hero-sub{font-size:15px;color:#484848;letter-spacing:0.06em;margin-bottom:36px;font-weight:400;}
-.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:50px;padding:9px 20px;font-size:12px;letter-spacing:0.1em;color:#888;}
-.hero-badge .dot{width:6px;height:6px;background:#22c55e;border-radius:50%;animation:pulse 2s infinite;}
-@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
-
-
-/* HERO LOGO SPIN */
-.hero-brand-logo{width:200px;height:auto;margin:0 auto 32px;display:block;animation:spinY 25s linear infinite;}
-@keyframes spinY{from{transform:rotateY(0deg);}to{transform:rotateY(360deg);}}
-
-/* FILTERS */
-.filters{display:flex;justify-content:center;gap:10px;padding:30px 20px 10px;flex-wrap:wrap;}
-.filter-btn{padding:9px 24px;border-radius:50px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:#888;font-size:13px;font-weight:600;letter-spacing:0.09em;cursor:pointer;transition:all .2s;text-transform:uppercase;}
-.filter-btn.active,.filter-btn:hover{border-color:#fff;color:#fff;background:rgba(255,255,255,0.05);}
-
-/* PRODUCTS */
-.products-section{padding:40px 30px 80px;}
-.products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:18px;max-width:1400px;margin:0 auto;}
-
-.product-card{border-radius:20px;overflow:hidden;background:#0e0e0e;border:1px solid rgba(255,255,255,0.06);position:relative;animation:float 5s ease-in-out infinite;transition:transform .3s,box-shadow .3s;}
-.product-card:hover{transform:translateY(-8px) scale(1.02);box-shadow:0 30px 80px rgba(0,0,0,0.8);}
-.product-card:nth-child(even){animation-delay:2.5s;}
-@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
-.product-card:hover{animation-play-state:paused;}
-/* CLICKABLE CARD */
-.product-card{cursor:pointer;position:relative;}
-.product-card-link{display:block;text-decoration:none;color:inherit;}
-
-/* STICKY BUY BAR */
-.sticky-bar{position:fixed;bottom:0;left:0;right:0;z-index:500;background:rgba(10,10,10,0.97);border-top:1px solid rgba(255,255,255,0.08);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;backdrop-filter:blur(12px);}
-.sticky-bar-left{font-size:12px;color:#555;letter-spacing:0.06em;}
-.sticky-bar-left strong{color:#fff;font-size:15px;display:block;margin-bottom:2px;}
-.sticky-btn{flex-shrink:0;padding:14px 34px;border-radius:50px;background:#fff;color:#000;font-size:13px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;border:none;cursor:pointer;transition:all .2s;}
-.sticky-btn:hover{background:#f0f0f0;transform:translateY(-1px);}
-
-
-.product-badge{position:absolute;top:14px;left:14px;z-index:2;display:flex;flex-direction:column;gap:5px;}
-.badge{padding:5px 11px;border-radius:50px;font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;}
-.badge.hot{background:#c00;color:#fff;}
-.badge.new{background:#fff;color:#000;}
-.badge.limited{background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;}
-.badge.out{background:rgba(255,255,255,0.08);color:#666;}
-
-.product-img-wrap{width:100%;aspect-ratio:1/1;overflow:hidden;background:#111;}
-.product-img-wrap img,.product-img-wrap video{width:100%;height:100%;object-fit:cover;}
-
-.product-info{padding:8px 10px 10px;}
-.product-cat{font-size:11px;letter-spacing:0.16em;color:#444;text-transform:uppercase;margin-bottom:3px;font-weight:600;}
-.product-name{font-size:14px;font-weight:700;letter-spacing:0.02em;margin-bottom:6px;line-height:1.2;}
-
-/* PRICE */
-.price-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap;}
-.price-current{font-size:17px;font-weight:800;color:#ef4444;text-shadow:0 0 12px rgba(239,68,68,0.4);}
-.price-original{font-size:13px;color:#555;text-decoration:line-through;}
-.price-save{font-size:11px;font-weight:700;color:#22c55e;background:rgba(34,197,94,0.1);padding:2px 8px;border-radius:50px;letter-spacing:0.05em;}
-
-/* SIZE SELECTOR */
-.size-section{margin-bottom:14px;}
-.size-label{font-size:11px;letter-spacing:0.12em;color:#555;text-transform:uppercase;font-weight:600;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;}
-.size-label span{color:#888;font-size:10px;letter-spacing:0.08em;}
-.size-grid{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px;}
-.size-btn{padding:6px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.12);background:transparent;color:#ccc;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;min-width:42px;text-align:center;}
-.size-btn:hover:not(.oos){border-color:#fff;color:#fff;background:rgba(255,255,255,0.07);}
-.size-btn.selected{border-color:#fff;background:#fff;color:#000;}
-.size-btn.oos{border-color:rgba(255,255,255,0.04);color:#333;cursor:not-allowed;position:relative;text-decoration:line-through;}
-.size-conversion{font-size:10px;color:#444;margin-top:4px;font-style:italic;}
-
-/* STOCK BAR */
-.stock-bar-wrap{margin-bottom:14px;}
-.stock-text{font-size:11px;color:#f59e0b;font-weight:600;letter-spacing:0.06em;margin-bottom:5px;}
-.stock-bar{height:3px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;}
-.stock-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,#f59e0b,#ef4444);}
-
-.buy-btn{display:none;}
-
-.sold-out-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.55);display:flex;align-items:center;justify-content:center;border-radius:inherit;z-index:3;}
-.sold-out-tag{font-size:11px;font-weight:800;letter-spacing:0.2em;color:rgba(255,255,255,0.85);text-transform:uppercase;border:1px solid rgba(255,255,255,0.3);padding:6px 16px;border-radius:50px;backdrop-filter:blur(4px);background:rgba(0,0,0,0.3);}
-.product-card.is-sold-out{opacity:0.72;cursor:default;}
-.product-card.is-sold-out .card-sizes{pointer-events:none;opacity:0.3;}
-.product-card.is-sold-out .price-current{color:#555;text-shadow:none;}
-.product-card.is-sold-out .price-save{opacity:0.3;}
-
-.sold-count{font-size:11px;color:#444;font-weight:500;margin-top:3px;letter-spacing:0.02em;}
-.sold-count span{color:#666;}
-.card-sizes{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.05);}
-.csz{padding:4px 9px;border-radius:6px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:#666;font-size:11px;font-weight:600;cursor:pointer;transition:all .18s;font-family:inherit;letter-spacing:0.04em;}
-.csz:hover:not(.oos){border-color:rgba(255,255,255,0.35);color:#ccc;}
-.csz.selected{border-color:#fff;background:#fff;color:#000;}
-.csz.oos{color:#252525;border-color:rgba(255,255,255,0.03);cursor:default;text-decoration:line-through;}
-.buy-btn:hover{background:#f0f0f0;transform:translateY(-1px);}
-.buy-btn:active{transform:translateY(0);}
-
-/* REVIEWS */
-
-.reviews-section{background:#0b0b0b;border-top:1px solid rgba(255,255,255,0.05);border-bottom:1px solid rgba(255,255,255,0.05);padding:70px 30px;}
-.section-header{text-align:center;margin-bottom:48px;}
-.section-eyebrow{font-size:11px;letter-spacing:0.2em;color:#555;text-transform:uppercase;font-weight:600;margin-bottom:10px;}
-.section-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,5vw,56px);letter-spacing:0.04em;}
-.stars{color:#f59e0b;font-size:14px;margin-bottom:4px;}
-.rating-summary{font-size:14px;color:#666;margin-top:6px;}
-.reviews-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px;max-width:1200px;margin:0 auto;}
-.review-card{background:#0e0e0e;border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:22px 20px;}
-.review-top{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
-.review-avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#333,#1a1a1a);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#888;flex-shrink:0;}
-.review-meta{flex:1;}
-.review-name{font-size:14px;font-weight:700;color:#ccc;}
-.review-date{font-size:11px;color:#444;margin-top:1px;}
-.review-stars{color:#f59e0b;font-size:13px;margin-bottom:8px;}
-.review-text{font-size:13px;color:#666;line-height:1.6;}
-.review-verified{font-size:10px;color:#22c55e;font-weight:600;letter-spacing:0.08em;margin-top:10px;display:flex;align-items:center;gap:4px;}
-
-/* FOOTER */
-footer{padding:40px 30px;text-align:center;border-top:1px solid rgba(255,255,255,0.04);}
-.footer-logo{height:50px;margin-bottom:14px;mix-blend-mode:screen;}
-footer p{font-size:12px;color:#333;letter-spacing:0.08em;}
-
-/* MODAL */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:1000;align-items:center;justify-content:center;padding:20px;}
-.modal-overlay.open{display:flex;}
-.modal{background:#111;border:1px solid rgba(255,255,255,0.12);border-radius:24px;padding:36px;max-width:460px;width:100%;position:relative;max-height:90vh;overflow-y:auto;}
-.modal-close{position:absolute;top:16px;right:18px;background:none;border:none;color:#666;font-size:22px;cursor:pointer;line-height:1;}
-.modal-close:hover{color:#fff;}
-.modal h2{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:0.06em;margin-bottom:4px;}
-.modal-product-info{font-size:13px;color:#888;margin-bottom:6px;}
-.modal-size-info{font-size:12px;color:#f59e0b;font-weight:600;margin-bottom:20px;}
-.modal-price-row{display:flex;align-items:center;gap:10px;margin-bottom:24px;}
-.modal-price{font-size:24px;font-weight:800;}
-.modal-price-orig{font-size:14px;color:#444;text-decoration:line-through;}
-.modal-save{font-size:11px;color:#22c55e;font-weight:700;background:rgba(34,197,94,0.1);padding:3px 10px;border-radius:50px;}
-.modal label{display:block;font-size:11px;letter-spacing:0.1em;color:#555;text-transform:uppercase;font-weight:600;margin-bottom:6px;}
-.modal input,.modal select,.modal textarea{width:100%;background:#0a0a0a;border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#fff;font-size:13px;padding:11px 14px;margin-bottom:14px;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s;}
-.modal input:focus,.modal select:focus,.modal textarea:focus{border-color:rgba(255,255,255,0.3);}
-.modal textarea{resize:vertical;min-height:80px;}
-.modal-submit{width:100%;padding:14px;background:#fff;color:#000;font-size:13px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;border:none;border-radius:12px;cursor:pointer;transition:all .2s;margin-top:4px;}
-.modal-submit:hover{background:#f0f0f0;}
-.modal-submit:disabled{opacity:0.5;cursor:not-allowed;}
-.modal-note{font-size:10px;color:#444;text-align:center;margin-top:12px;line-height:1.5;}
-
-select option:disabled{color:#444;}
-
-/* MOBILE 2-COLUMN */
-@media(max-width:600px){
-  nav{padding:12px 16px;}
-  .hero{padding:60px 16px 50px;}
-  .products-section{padding:30px 12px 60px;}
-  .products-grid{grid-template-columns:repeat(2,1fr);gap:12px;}
-  .product-info{padding:12px 10px 14px;}
-  .product-name{font-size:12px;}
-  .price-current{font-size:18px;}
-  .size-btn{min-width:36px;font-size:11px;padding:5px 7px;}
-  .buy-btn{font-size:10px;padding:10px;}
-  .filters{gap:6px;padding:20px 12px 6px;}
-  .filter-btn{padding:6px 14px;font-size:10px;}
-  .reviews-grid{grid-template-columns:1fr;}
-  .size-chart-table th,.size-chart-table td{padding:8px 10px;font-size:11px;}
-}
-
-/* SIZE CHART SECTION */
-.size-chart-section{padding:60px 30px;background:#080808;border-top:1px solid rgba(255,255,255,0.05);}
-.size-chart-inner{max-width:900px;margin:0 auto;}
-.size-chart-tabs{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;}
-.sc-tab{padding:8px 22px;border-radius:50px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:#888;font-size:11px;font-weight:600;letter-spacing:0.09em;cursor:pointer;transition:all .2s;text-transform:uppercase;}
-.sc-tab.active{border-color:#fff;color:#fff;background:rgba(255,255,255,0.05);}
-.size-chart-panel{display:none;}
-.size-chart-panel.active{display:block;}
-.size-chart-table{width:100%;border-collapse:collapse;font-size:12px;}
-.size-chart-table th{background:rgba(255,255,255,0.05);color:#888;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;font-weight:600;padding:12px 16px;text-align:left;border-bottom:1px solid rgba(255,255,255,0.06);}
-.size-chart-table td{padding:11px 16px;border-bottom:1px solid rgba(255,255,255,0.04);color:#ccc;font-size:12px;}
-.size-chart-table tr:hover td{background:rgba(255,255,255,0.02);}
-.size-chart-table .oos-row td{color:#333;text-decoration:line-through;}
-.size-chart-note{font-size:11px;color:#444;margin-top:16px;line-height:1.7;}
-.size-chart-note strong{color:#888;}
-
-/* RECENTLY VIEWED */
-.rv-section{padding:50px 30px;background:#0a0a0a;border-top:1px solid rgba(255,255,255,0.04);}
-.rv-section .section-header{margin-bottom:28px;}
-.rv-scroll{display:flex;gap:16px;overflow-x:auto;padding-bottom:10px;scrollbar-width:none;max-width:1400px;margin:0 auto;}
-.rv-scroll::-webkit-scrollbar{display:none;}
-.rv-card{flex:0 0 160px;border-radius:14px;overflow:hidden;background:#0e0e0e;border:1px solid rgba(255,255,255,0.06);cursor:pointer;transition:transform .2s,box-shadow .2s;}
-.rv-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,0.6);}
-.rv-card-img{width:100%;aspect-ratio:3/4;overflow:hidden;background:#111;}
-.rv-card-img img,.rv-card-img video{width:100%;height:100%;object-fit:cover;}
-.rv-card-info{padding:10px 10px 12px;}
-.rv-card-name{font-size:11px;font-weight:700;margin-bottom:4px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.rv-card-price{font-size:13px;font-weight:800;color:#fff;}
-.rv-card-orig{font-size:10px;color:#444;text-decoration:line-through;margin-left:4px;}
-.rv-empty{color:#444;font-size:13px;text-align:center;padding:30px;}
-
+/* IG CTA */
+.ig-cta{background:#0d0d0d;border:1px solid rgba(255,255,255,0.06);border-radius:24px;padding:60px 40px;text-align:center;margin:0 0 20px;}
+.ig-cta h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,5vw,64px);margin-bottom:12px;}
+.ig-cta p{font-size:14px;color:#444;margin-bottom:28px;}
 
 /* VIDEO HERO */
-.hero-video-bg{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;opacity:0.15;z-index:0;pointer-events:none;display:block;}
-.hero-content{position:relative;z-index:2;display:block;}
-.hero-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,8,8,0.2) 0%,rgba(8,8,8,0.65) 100%);z-index:1;pointer-events:none;}
+.hero-video-bg{position:absolute;inset:0;z-index:-1;overflow:hidden;}
+.hero-video-bg video{width:100%;height:100%;object-fit:cover;opacity:.08;}
 
-/* DROP BANNER */
-.drop-banner{background:linear-gradient(135deg,#0f0f0f 0%,#1a0a0a 100%);border-top:1px solid rgba(239,68,68,0.2);border-bottom:1px solid rgba(239,68,68,0.2);padding:18px 20px;text-align:center;}
-.drop-banner-inner{max-width:700px;margin:0 auto;display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap;}
-.drop-banner-label{font-size:10px;letter-spacing:0.2em;color:#ef4444;text-transform:uppercase;font-weight:700;}
-.drop-banner-name{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:0.06em;color:#fff;}
-.drop-banner-hype{font-size:11px;color:#888;letter-spacing:0.08em;}
-.countdown{display:flex;gap:10px;align-items:center;}
-.countdown-unit{text-align:center;}
-.countdown-num{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:0.04em;color:#fff;line-height:1;min-width:38px;display:block;}
-.countdown-lbl{font-size:8px;letter-spacing:0.14em;color:#555;text-transform:uppercase;font-weight:600;}
-.countdown-sep{font-family:'Bebas Neue',sans-serif;font-size:28px;color:#333;margin-top:-4px;}
-.drop-notify-btn{padding:9px 22px;border-radius:50px;border:1px solid rgba(239,68,68,0.4);background:rgba(239,68,68,0.08);color:#ef4444;font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:all .2s;white-space:nowrap;}
-.drop-notify-btn:hover,.drop-notify-btn.notified{background:rgba(239,68,68,0.2);border-color:#ef4444;}
-.drop-notify-btn.notified{color:#f87171;cursor:default;}
-
-/* OOS NOTIFY */
-.oos-notify{display:none;background:#0e0e0e;border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:14px 16px;margin-top:10px;}
-.oos-notify.show{display:block;}
-.oos-notify label{font-size:10px;letter-spacing:0.1em;color:#555;text-transform:uppercase;font-weight:600;margin-bottom:6px;display:block;}
-.oos-notify-row{display:flex;gap:8px;}
-.oos-notify-in{flex:1;background:#080808;border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#fff;font-size:13px;padding:9px 12px;font-family:inherit;outline:none;}
-.oos-notify-in:focus{border-color:rgba(255,255,255,0.25);}
-.oos-notify-submit{padding:9px 18px;border-radius:8px;background:#fff;color:#000;font-size:11px;font-weight:700;letter-spacing:0.08em;border:none;cursor:pointer;white-space:nowrap;}
-.oos-notify-submit:hover{background:#eee;}
-.oos-done{font-size:12px;color:#22c55e;font-weight:600;display:none;padding:6px 0;}
-
+@media(max-width:768px){
+  .cats-grid{grid-template-columns:repeat(3,1fr);}
+  .steps{grid-template-columns:1fr;gap:8px;}
+  .step::after{display:none;}
+  .why-grid{grid-template-columns:1fr 1fr;}
+  .ig-cta{padding:40px 20px;}
+}
 </style>
 </head>
 <body>
+<div id="navContainer"></div>
 
-<div id="announcement">
-  <div class="announce-slide active">🔥 FINAL CLEARANCE — UP TO 40% OFF &nbsp;·&nbsp; FREE SHIPPING OVER $150</div>
-  <div class="announce-slide">✓ 2,000+ HAPPY CUSTOMERS &nbsp;·&nbsp; ALL ITEMS AUTHENTICATED</div>
-  <div class="announce-slide">📦 SHIPS IN 1–3 DAYS &nbsp;·&nbsp; FAST & SECURE PACKAGING</div>
-  <div class="announce-slide">📷 DM US ON INSTAGRAM &nbsp;·&nbsp; @THEILLESTSUPPLY</div>
-</div>
-<script>
-(function(){
-  const slides = document.querySelectorAll('.announce-slide');
-  let cur = 0;
-  setInterval(()=>{
-    slides[cur].classList.remove('active');
-    cur = (cur+1)%slides.length;
-    slides[cur].classList.add('active');
-  }, 3000);
-})();
-</script>
-
-<nav>
-  <img class="nav-logo" src="https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/409f6a116_918D9A7E-D61E-4658-A7B6-5DF1F8B5AC78.png" alt="Illest Supply" />
-  <div class="nav-right">
-    <a href="reviews.html">Reviews</a>
-    <a href="faq.html">FAQ</a>
-    <a href="https://www.instagram.com/theillestsupply?igsh=OGt3cndoZ3RjamQ%3D&utm_source=qr" target="_blank" style="font-size:18px;">📷</a>
-    <button class="nav-btn" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">SHOP NOW</button>
-  </div>
-</nav>
-
-<div class="ticker-wrap">
-  <div class="ticker">
-    <span>BALENCIAGA</span><span class="dot">✦</span>
-    <span>PRADA</span><span class="dot">✦</span>
-    <span>DIOR</span><span class="dot">✦</span>
-    <span>RICK OWENS</span><span class="dot">✦</span>
-    <span>BOTTEGA VENETA</span><span class="dot">✦</span>
-    <span>VALE FOREVER</span><span class="dot">✦</span>
-    <span>ASICS</span><span class="dot">✦</span>
-    <span>THE ILLEST SUPPLY</span><span class="dot">✦</span>
-    <span>AUTHENTICATED</span><span class="dot">✦</span>
-    <span>2,000+ SALES</span><span class="dot">✦</span>
-    <span>BALENCIAGA</span><span class="dot">✦</span>
-    <span>PRADA</span><span class="dot">✦</span>
-    <span>DIOR</span><span class="dot">✦</span>
-    <span>RICK OWENS</span><span class="dot">✦</span>
-    <span>BOTTEGA VENETA</span><span class="dot">✦</span>
-    <span>VALE FOREVER</span><span class="dot">✦</span>
-    <span>ASICS</span><span class="dot">✦</span>
-    <span>THE ILLEST SUPPLY</span><span class="dot">✦</span>
-    <span>AUTHENTICATED</span><span class="dot">✦</span>
-    <span>2,000+ SALES</span><span class="dot">✦</span>
-  </div>
-</div>
-
+<main>
+<!-- HERO -->
 <section class="hero">
-  <video class="hero-video-bg" autoplay muted loop playsinline id="heroBg">
-    <source src="https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/3a44c0ebc_d411fd6a5_IMG_3816.mov" type="video/mp4"/>
-  </video>
-  <div class="hero-overlay"></div>
-  <div class="hero-content">
-    <div class="hero-eyebrow">Est. The Illest Supply — Curated Luxury</div>
-    <img class="hero-brand-logo" src="https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/409f6a116_918D9A7E-D61E-4658-A7B6-5DF1F8B5AC78.png" alt="Illest Supply Logo" />
-    <h1>DRESS <em>DIFFERENT</em><br>STAY <em>ILLEST</em></h1>
-    <p class="hero-sub">Authenticated designer pieces. Real price. Real heat.</p>
-    <div class="hero-badge"><span class="dot"></span> Secure checkout · Verified seller · Ships fast</div>
+  <div class="hero-video-bg">
+    <video autoplay muted loop playsinline src="https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/fdba18512_51cb75de-43cf-461f-849e-1f05d6d5a56a.mp4"></video>
+  </div>
+  <img class="hero-brand-logo" src="https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/409f6a116_918D9A7E-D61E-4658-A7B6-5DF1F8B5AC78.png" alt="The Illest Supply">
+  <div class="hero-eyebrow">Premium Designer Resale</div>
+  <h1>Authenticated<br>Designer <em>Heat.</em><br>Built for the<br>Illest Fits.</h1>
+  <p class="hero-sub">Shop verified sneakers, slides, jorts, accessories, and streetwear pieces curated for premium everyday style.</p>
+  <div class="hero-btns">
+    <a href="shop.html" class="btn-primary">Shop New Arrivals</a>
+    <a href="shop.html?sort=bestsellers" class="btn-outline">View Best Sellers</a>
+  </div>
+  <div class="hero-trust">
+    <span class="hero-trust-item">2,000+ Verified Sales</span>
+    <span class="hero-trust-item">4.9/5 Rating</span>
+    <span class="hero-trust-item">Authenticated Items</span>
+    <span class="hero-trust-item">Fast Shipping</span>
   </div>
 </section>
 
-<!-- DROP COUNTDOWN BANNER — loaded dynamically -->
-<div id="dropBanner" style="display:none;"></div>
-
-<div class="filters">
-  <button class="filter-btn active" onclick="filterProducts('ALL',this)">All</button>
-  <button class="filter-btn" onclick="filterProducts('SNEAKERS',this)">Sneakers</button>
-  <button class="filter-btn" onclick="filterProducts('SLIDES',this)">Slides</button>
-  <button class="filter-btn" onclick="filterProducts('BOTTOMS',this)">Bottoms</button>
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Authenticated Before Listing</div>
+  <div class="trust-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><path d="m16 8 2 2 4-4"/><path d="M21 18c0 2.2-1.8 4-4 4H9c-2.2 0-4-1.8-4-4V7"/></svg> 1–3 Day Shipping</div>
+  <div class="trust-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12V22H4V12"/><path d="M22 7H2v5h20V7z"/><path d="M12 22V7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg> Free Shipping Over $150</div>
+  <div class="trust-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> 2,000+ Happy Customers</div>
+  <div class="trust-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg> Secure Checkout</div>
 </div>
 
-
-<!-- SIZE CHART -->
-<div style="text-align:center;padding:30px 20px 10px;">
-  <a href="size-chart.html" style="display:inline-flex;align-items:center;gap:8px;padding:10px 28px;border-radius:50px;border:1px solid rgba(255,255,255,0.18);color:#fff;background:transparent;font-size:12px;font-weight:600;letter-spacing:0.1em;text-decoration:none;text-transform:uppercase;transition:all .2s;" onmouseover="this.style.background='#fff';this.style.color='#000'" onmouseout="this.style.background='transparent';this.style.color='#fff'">📏 View Size Chart →</a>
-</div>
-
-<!-- RECENTLY VIEWED -->
-<section class="rv-section" id="recentlyViewed" style="display:none;">
-  <div class="section-header">
-    <div class="section-eyebrow">Don't Sleep</div>
-    <div class="section-title" style="font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,4vw,42px);letter-spacing:0.04em;">RECENTLY VIEWED</div>
-  </div>
-  <div class="rv-scroll" id="rvScroll"></div>
-</section>
-
-
-<section class="products-section" id="products">
-  <div class="products-grid" id="productsGrid"></div>
-</section>
-
-<section style="padding:48px 30px;background:#0b0b0b;border-top:1px solid rgba(255,255,255,0.05);">
-  <div style="max-width:900px;margin:0 auto;display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-bottom:28px;">
-    <div style="background:#0e0e0e;border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:18px 22px;flex:1;min-width:220px;max-width:300px;">
-      <div style="color:#f59e0b;font-size:13px;margin-bottom:6px;">★★★★★</div>
-      <div style="font-size:12px;color:#888;line-height:1.6;">"Slides came exactly as described. Super fast shipping. Already got compliments."</div>
-      <div style="font-size:10px;color:#22c55e;font-weight:700;margin-top:10px;letter-spacing:0.06em;">✓ VERIFIED PURCHASE · jordanmike_</div>
+<!-- CATEGORIES -->
+<section>
+  <div class="container">
+    <div class="section-title">Browse By Category</div>
+    <div class="section-heading">Shop The Collection</div>
+    <div class="cats-grid">
+      <a href="shop.html?cat=sneakers" class="cat-card"><div class="cat-icon">👟</div><div class="cat-name">Sneakers</div><div class="cat-count">6 styles</div></a>
+      <a href="shop.html?cat=slides" class="cat-card"><div class="cat-icon">🩴</div><div class="cat-name">Slides</div><div class="cat-count">2 styles</div></a>
+      <a href="shop.html?cat=bottoms" class="cat-card"><div class="cat-icon">👖</div><div class="cat-name">Bottoms</div><div class="cat-count">4 styles</div></a>
+      <a href="shop.html?cat=accessories" class="cat-card"><div class="cat-icon">💎</div><div class="cat-name">Accessories</div><div class="cat-count">Coming soon</div></a>
+      <a href="shop.html" class="cat-card"><div class="cat-icon">🛍️</div><div class="cat-name">All Items</div><div class="cat-count">13 total</div></a>
     </div>
-    <div style="background:#0e0e0e;border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:18px 22px;flex:1;min-width:220px;max-width:300px;">
-      <div style="color:#f59e0b;font-size:13px;margin-bottom:6px;">★★★★★</div>
-      <div style="font-size:12px;color:#888;line-height:1.6;">"Got the Vale Forever jorts and I am OBSESSED. Seller shipped same day."</div>
-      <div style="font-size:10px;color:#22c55e;font-weight:700;margin-top:10px;letter-spacing:0.06em;">✓ VERIFIED PURCHASE · kaylaloves_fits</div>
-    </div>
-    <div style="background:#0e0e0e;border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:18px 22px;flex:1;min-width:220px;max-width:300px;">
-      <div style="color:#f59e0b;font-size:13px;margin-bottom:6px;">★★★★★</div>
-      <div style="font-size:12px;color:#888;line-height:1.6;">"Rick Owens came in perfect condition. Seller confirmed size before shipping. 10/10."</div>
-      <div style="font-size:10px;color:#22c55e;font-weight:700;margin-top:10px;letter-spacing:0.06em;">✓ VERIFIED PURCHASE · dariusvibe</div>
-    </div>
-  </div>
-  <div style="text-align:center;">
-    <div style="font-size:12px;color:#555;margin-bottom:14px;">4.9 / 5 · 2,000+ verified sales</div>
-    <a href="reviews.html" style="display:inline-flex;align-items:center;gap:8px;padding:10px 28px;border-radius:50px;border:1px solid rgba(255,255,255,0.14);color:#fff;font-size:11px;font-weight:700;letter-spacing:0.1em;text-decoration:none;text-transform:uppercase;transition:all .2s;" onmouseover="this.style.background='#fff';this.style.color='#000'" onmouseout="this.style.background='transparent';this.style.color='#fff'">See All Reviews →</a>
   </div>
 </section>
 
-<footer>
-  <img class="footer-logo" src="https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/409f6a116_918D9A7E-D61E-4658-A7B6-5DF1F8B5AC78.png" alt="Illest Supply" />
-  <div style="display:flex;justify-content:center;gap:24px;margin-bottom:14px;flex-wrap:wrap;">
-    <a href="reviews.html" style="color:#444;font-size:11px;text-decoration:none;letter-spacing:0.08em;">REVIEWS</a>
-    <a href="faq.html" style="color:#444;font-size:11px;text-decoration:none;letter-spacing:0.08em;">FAQ</a>
-    <a href="size-chart.html" style="color:#444;font-size:11px;text-decoration:none;letter-spacing:0.08em;">SIZE CHART</a>
-    <a href="https://www.instagram.com/theillestsupply?igsh=OGt3cndoZ3RjamQ%3D&utm_source=qr" target="_blank" style="color:#444;font-size:11px;text-decoration:none;letter-spacing:0.08em;">INSTAGRAM</a>
+<!-- NEW ARRIVALS -->
+<section>
+  <div class="container">
+    <div class="section-title">Just Dropped</div>
+    <div class="section-heading">New Arrivals</div>
+    <div class="products-grid" id="newArrivalsGrid"></div>
+    <div style="text-align:center;margin-top:32px;"><a href="shop.html" class="btn-outline">View All Products</a></div>
   </div>
-  <p style="font-size:11px;color:#333;letter-spacing:0.08em;">© 2025 The Illest Supply · All Rights Reserved</p>
-</footer>
+</section>
 
-<!-- MODAL -->
-<div class="modal-overlay" id="modalOverlay">
-  <div class="modal">
-    <button class="modal-close" onclick="closeModal()">×</button>
-    <h2>SECURE YOUR PAIR</h2>
-    <div class="modal-product-info" id="modalProductName"></div>
-    <div class="modal-size-info" id="modalSizeInfo"></div>
-    <div class="modal-price-row">
-      <span class="modal-price" id="modalPrice"></span>
-      <span class="modal-price-orig" id="modalOrig"></span>
-      <span class="modal-save" id="modalSave"></span>
+<!-- BEST SELLERS -->
+<section>
+  <div class="container">
+    <div class="section-title">Most Popular</div>
+    <div class="section-heading">Best Sellers</div>
+    <div class="products-grid" id="bestSellersGrid"></div>
+  </div>
+</section>
+
+<!-- WHY US -->
+<section style="background:#050505;padding:60px 0;">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:40px;">
+      <div class="section-title">Why Choose Us</div>
+      <div class="section-heading">Why Shop With<br>Illest Supply?</div>
     </div>
-    <label>Your Name</label>
-    <input type="text" id="inquiryName" placeholder="Full name" />
-    <label>Email Address</label>
-    <input type="email" id="inquiryEmail" placeholder="your@email.com" />
-    <label>Message (optional)</label>
-    <textarea id="inquiryMessage" placeholder="Any questions or special requests?"></textarea>
-    <button class="modal-submit" id="submitBtn" onclick="submitInquiry()">CLAIM THIS ITEM →</button>
-    <p class="modal-note">🔒 Secure inquiry · We'll confirm your order within 24hrs · No payment info collected here</p>
+    <div class="why-grid">
+      <div class="why-card"><div class="why-icon">🔐</div><div class="why-title">Authenticated Before Listing</div><div class="why-desc">Every piece is reviewed and verified before it goes live. No fakes. No guesswork.</div></div>
+      <div class="why-card"><div class="why-icon">⚡</div><div class="why-title">Fast 1–3 Day Shipping</div><div class="why-desc">Orders ship fast. Track your package from confirmation to your door.</div></div>
+      <div class="why-card"><div class="why-icon">🎁</div><div class="why-title">Free Shipping Over $150</div><div class="why-desc">Hit the threshold and shipping is on us. Simple.</div></div>
+      <div class="why-card"><div class="why-icon">💯</div><div class="why-title">Trusted by 2,000+ Customers</div><div class="why-desc">Built on real reviews and repeat buyers. The community speaks for itself.</div></div>
+    </div>
   </div>
-</div>
+</section>
 
-<script>
-const SHOE_SIZES = [
-  {us:'6',women:'7.5',oos:false},
-  {us:'6.5',women:'8',oos:false},
-  {us:'7',women:'8.5',oos:false},
-  {us:'7.5',women:'9',oos:false},
-  {us:'8',women:'9.5',oos:true},
-  {us:'8.5',women:'10',oos:true},
-  {us:'9',women:'10.5',oos:true},
-  {us:'9.5',women:'11',oos:true},
-  {us:'10',women:'11.5',oos:true},
-  {us:'10.5',women:'12',oos:true},
-  {us:'11',women:'12.5',oos:false},
-  {us:'12',women:'13.5',oos:false},
-  {us:'13',women:'14.5',oos:false},
-];
+<!-- HOW IT WORKS -->
+<section>
+  <div class="container">
+    <div style="text-align:center;margin-bottom:40px;">
+      <div class="section-title">Simple Process</div>
+      <div class="section-heading">How It Works</div>
+    </div>
+    <div class="steps">
+      <div class="step"><div class="step-num">01</div><div class="step-title">Pick Your Item</div><div class="step-desc">Browse the collection and find your piece.</div></div>
+      <div class="step"><div class="step-num">02</div><div class="step-title">Select Your Size</div><div class="step-desc">Choose your size from available options.</div></div>
+      <div class="step"><div class="step-num">03</div><div class="step-title">Add to Cart</div><div class="step-desc">Add to cart or hit Buy Now to go straight to checkout.</div></div>
+      <div class="step"><div class="step-num">04</div><div class="step-title">Checkout Securely</div><div class="step-desc">Enter your info and complete your order.</div></div>
+      <div class="step"><div class="step-num">05</div><div class="step-title">Get Your Fit</div><div class="step-desc">Receive tracking info and get your order in 1–3 days.</div></div>
+    </div>
+  </div>
+</section>
 
-const PRODUCTS = [
-  {
-    id:1, name:"Balenciaga Slides", category:"SLIDES", price:130, origPrice:185,
-    video:"https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/5823dd706_3852cb545_IMG_3818.mov",
-    tag:"HOT", type:"shoe", stock:82
-  },
-  {
-    id:2, name:"Prada Cups (Black)", category:"SNEAKERS", price:170, origPrice:240,
-    video:"https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/6557a200f_d411fd6a5_IMG_3816.mov",
-    tag:"LIMITED", type:"nosize", stock:60
-  },
-  {
-    id:3, name:"Prada Cups (Blue)", category:"SNEAKERS", price:170, origPrice:240,
-    video:"https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/efa1df4ca_5b35fc966_IMG_3817.mov",
-    tag:"LIMITED", type:"nosize", stock:55
-  },
-  {
-    id:4, name:"Dior Slides", category:"SLIDES", price:130, origPrice:195,
-    video:"https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/b309349de_7099759ef_IMG_3824.mov",
-    tag:"HOT", type:"shoe", stock:70
-  },
-  {
-    id:5, name:"Vale Forever College Jorts", category:"BOTTOMS", price:64.99, origPrice:95,
-    imgs:[
-      "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/f4b027634_74A998F7-E15E-4E87-8A68-5C2D9880512F.png",
-      "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/6b287f63d_AA36F7DE-F3CD-47CF-BAFB-FEE327EF145A.png"
-    ],
-    tag:"LIMITED", type:"short", stock:35, soldOut:true
-  },
-  {
-    id:6, name:"Vale Forever Jorts", category:"BOTTOMS", price:69.99, origPrice:105, soldOut:true,
-    imgs:[
-      "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/effd672da_F748D361-0A5E-4D84-B7CE-21A80BF31A03.png",
-      "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/eac22a547_FF86E6B6-910B-416D-8894-171D71295C5C.png",
-      "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/ab18f8c12_CBA80A5F-97CF-45C5-AA11-522922875DE3.png"
-    ],
-    tag:"LIMITED", type:"short", stock:28
-  },
-  {
-    id:7, name:"Vale Forever Jorts (Rhinestone)", category:"BOTTOMS", price:79.99, origPrice:120, soldOut:true,
-    imgs:[
-      "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/607e2c691_CF43C058-BCF4-41FB-963A-95E3D9C3D886.png",
-      "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/e6a45f9dd_FEF16C09-1B37-4184-95F3-F18D4A350911.png"
-    ],
-    tag:"LIMITED", type:"short", stock:20
-  },
-  {
-    id:8, name:"Vale Forever Bad Dreams Jorts", category:"BOTTOMS", price:79.99, origPrice:120, soldOut:true,
-    imgs:[
-      "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/05a792aed_AdobeExpress-file.png",
-      "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/3dd13263d_AdobeExpress-file3.png"
-    ],
-    tag:"LIMITED", type:"short", stock:15
-  },
-  {
-    id:9, name:"Asics Gel Kayano 14 Pink Glow", category:"SNEAKERS", price:110, origPrice:160,
-    video:"https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/a3863a27a_a3a6a46f6_IMG_38152.mov",
-    tag:"HOT", type:"shoe", stock:65
-  },
-  {
-    id:10, name:"Rick Owens", category:"SNEAKERS", price:150, origPrice:220,
-    video:"https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/5933676ed_424a09905_IMG_38132.mov",
-    tag:"HOT", type:"shoe", stock:75
-  },
-  {
-    id:11, name:"Bottegas (Green)", category:"SNEAKERS", price:150, origPrice:210,
-    video:"https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/eac53cd23_5dd2172fc_IMG_3820.mov",
-    tag:"NEW", type:"shoe", stock:80
-  },
-  {
-    id:12, name:"Bottegas (Blue)", category:"SNEAKERS", price:150, origPrice:210,
-    video:"https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/261fd2257_888b8f45f_IMG_3821.mov",
-    tag:"NEW", type:"shoe", stock:80
-  },
-  {
-    id:13, name:"Bottegas (Pink)", category:"SNEAKERS", price:150, origPrice:210,
-    video:"https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/44c290b36_9874363bd_IMG_3823.mov",
-    tag:"NEW", type:"shoe", stock:80
-  },
-];
-
-const SHORT_SIZES = [
-  {label:'XS', oos:true},
-  {label:'S', oos:false},
-  {label:'M', oos:false},
-  {label:'L', oos:false},
-  {label:'XL', oos:true},
-];
-
-let selectedSizes = {};
-let currentFilter = 'ALL';
-let modalProduct = null;
-
-function getSavePercent(price, orig) {
-  return Math.round((1 - price/orig)*100);
-}
-
-function renderProducts(filter) {
-  const grid = document.getElementById('productsGrid');
-  const filtered = filter === 'ALL' ? PRODUCTS : PRODUCTS.filter(p => p.category === filter);
-  grid.innerHTML = filtered.map(p => {
-    const save = getSavePercent(p.price, p.origPrice);
-    let badgeHTML = '';
-    if(p.tag === 'HOT') badgeHTML += `<span class="badge hot">🔥 HOT</span>`;
-    if(p.tag === 'NEW') badgeHTML += `<span class="badge new">NEW</span>`;
-    if(p.tag === 'LIMITED') badgeHTML += `<span class="badge limited">⚡ LIMITED</span>`;
-    badgeHTML += `<span class="badge" style="background:rgba(34,197,94,0.15);color:#22c55e;">-${save}% OFF</span>`;
-
-    let mediaHTML = '';
-    if(p.video) {
-      mediaHTML = `<video src="${p.video}" autoplay muted loop playsinline style="width:100%;height:100%;object-fit:cover;"></video>`;
-    } else if(p.imgs && p.imgs.length > 0) {
-      mediaHTML = `<img src="${p.imgs[0]}" alt="${p.name}" loading="lazy" />`;
-    }
-
-
-
-    // Slim size pills
-    let sizePills = '';
-    if(p.type === 'shoe') {
-      [['6',false],['7',false],['8',true],['9',true],['10',true],['11',false],['12',false],['13',false]].forEach(([s,oos]) => {
-        sizePills += `<button class="csz${oos?' oos':''}" onclick="event.stopPropagation();${oos?'':` pickCS(${p.id},'${s}',this)`}">${s}</button>`;
-      });
-    } else if(p.type === 'short') {
-      [['S',false],['M',false],['L',false],['XL',true]].forEach(([s,oos]) => {
-        sizePills += `<button class="csz${oos?' oos':''}" onclick="event.stopPropagation();${oos?'':` pickCS(${p.id},'${s}',this)`}">${s}</button>`;
-      });
-    }
-
-
-  var SOLD_COUNTS = {1:89,2:54,3:47,4:76,5:112,6:98,7:63,8:71,9:134,10:58,11:82,12:61,13:77};
-    return `
-      <div class="product-card${p.soldOut?' is-sold-out':''}" data-category="${p.category}" onclick="${p.soldOut?'':('goToProduct('+p.id+')')}">
-        <div class="product-badge">${badgeHTML}</div>
-        <div class="product-img-wrap">
-          ${mediaHTML}
-          ${p.soldOut?'<div class="sold-out-overlay"><div class="sold-out-tag">Sold Out</div></div>':''}
-        </div>
-        <div class="product-info">
-          <div class="product-name">${p.name}</div>
-          <div class="price-row">
-            <span class="price-current">$${p.price}</span>
-            <span class="price-original">$${p.origPrice}</span>
-            <span class="price-save">-${save}%</span>
-          </div>
-          ${p.soldOut ? '<div class="sold-count" style="color:#333;">All pairs gone</div>' : '<div class="sold-count"><span>'+(SOLD_COUNTS[p.id]||40)+'+ sold</span></div>'}
-          ${sizePills ? `<div class="card-sizes" id="cs${p.id}">${sizePills}</div>` : ''}
-        </div>
-      </div>`;
-  }).join('');
-}
-
-
-function goToProduct(id) {
-  window.location.href = 'product.html?id=' + id;
-}
-function pickCS(id, size, btn) {
-  const row = document.getElementById('cs'+id);
-  if(row) row.querySelectorAll('.csz:not(.oos)').forEach(b=>b.classList.remove('selected'));
-  btn.classList.add('selected');
-  selectedSizes[id] = size;
-}
-
-function selectSize(productId, size, btn, type) {
-  selectedSizes[productId] = size;
-  const gridId = type === 'shoe' ? `shoeGrid${productId}` : `shortGrid${productId}`;
-  const grid = document.getElementById(gridId);
-  if(grid) {
-    grid.querySelectorAll('.size-btn:not(.oos)').forEach(b => b.classList.remove('selected'));
-    btn.classList.add('selected');
-  }
-}
-
-function filterProducts(cat, btn) {
-  currentFilter = cat;
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  renderProducts(cat);
-}
-
-function openModal(id) {
-  trackView(id);
-  const p = PRODUCTS.find(x => x.id === id);
-  if(!p) return;
-  modalProduct = p;
-  const save = getSavePercent(p.price, p.origPrice);
-  const size = selectedSizes[p.id];
-  document.getElementById('modalProductName').textContent = p.name;
-  document.getElementById('modalPrice').textContent = `$${p.price}`;
-  document.getElementById('modalOrig').textContent = `$${p.origPrice}`;
-  document.getElementById('modalSave').textContent = `SAVE ${save}%`;
-  if(size) {
-    document.getElementById('modalSizeInfo').textContent = `Selected size: ${size}`;
-  } else if(p.type === 'shoe') {
-    document.getElementById('modalSizeInfo').textContent = '⚠️ No size selected — please select a size before ordering';
-  } else if(p.type === 'short') {
-    document.getElementById('modalSizeInfo').textContent = '⚠️ No size selected — please select a size before ordering';
-  } else {
-    document.getElementById('modalSizeInfo').textContent = '';
-  }
-  document.getElementById('modalOverlay').classList.add('open');
-}
-
-function closeModal() {
-  document.getElementById('modalOverlay').classList.remove('open');
-  document.getElementById('inquiryName').value = '';
-  document.getElementById('inquiryEmail').value = '';
-  document.getElementById('inquiryMessage').value = '';
-}
-
-async function submitInquiry() {
-  const name = document.getElementById('inquiryName').value.trim();
-  const email = document.getElementById('inquiryEmail').value.trim();
-  const message = document.getElementById('inquiryMessage').value.trim();
-  const size = selectedSizes[modalProduct?.id] || 'Not selected';
-  if(!name || !email) { alert('Please fill in your name and email.'); return; }
-  const btn = document.getElementById('submitBtn');
-  btn.disabled = true; btn.textContent = 'Sending...';
-  try {
-    const res = await fetch('https://api.base44.com/api/apps/6a21ea02495f72afbc2ec54c/functions/sendInquiry', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({
-        name, email, message,
-        product: modalProduct?.name || '',
-        size,
-        price: modalProduct?.price || ''
-      })
-    });
-    btn.textContent = '✓ Inquiry Sent!';
-    setTimeout(closeModal, 2000);
-  } catch(e) {
-    btn.textContent = 'Error — try again';
-    btn.disabled = false;
-  }
-}
-
-document.getElementById('modalOverlay').addEventListener('click', function(e) {
-  if(e.target === this) closeModal();
-});
-
-
-// SIZE CHART TABS
-function switchChart(tab, btn) {
-  document.querySelectorAll('.size-chart-panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.sc-tab').forEach(b => b.classList.remove('active'));
-  document.getElementById('chart-' + tab).classList.add('active');
-  btn.classList.add('active');
-}
-
-// RECENTLY VIEWED
-let recentlyViewed = [];
-function trackView(id) {
-  if(!recentlyViewed.includes(id)) {
-    recentlyViewed.unshift(id);
-    if(recentlyViewed.length > 6) recentlyViewed.pop();
-    renderRecentlyViewed();
-  }
-}
-function renderRecentlyViewed() {
-  const section = document.getElementById('recentlyViewed');
-  const scroll = document.getElementById('rvScroll');
-  if(recentlyViewed.length === 0) { section.style.display = 'none'; return; }
-  section.style.display = 'block';
-  scroll.innerHTML = recentlyViewed.map(id => {
-    const p = PRODUCTS.find(x => x.id === id);
-    if(!p) return '';
-    const save = getSavePercent(p.price, p.origPrice);
-    let media = '';
-    if(p.video) media = `<video src="${p.video}" autoplay muted loop playsinline style="width:100%;height:100%;object-fit:cover;"></video>`;
-    else if(p.imgs) media = `<img src="${p.imgs[0]}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;" />`;
-    return `<div class="rv-card" onclick="openModal(${p.id})">
-      <div class="rv-card-img">${media}</div>
-      <div class="rv-card-info">
-        <div class="rv-card-name">${p.name}</div>
-        <div><span class="rv-card-price">$${p.price}</span><span class="rv-card-orig">$${p.origPrice}</span></div>
+<!-- REVIEWS PREVIEW -->
+<section style="background:#050505;padding:60px 0;">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:40px;">
+      <div class="section-title">Real Talk</div>
+      <div class="section-heading">What Customers Say</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;" id="reviewsPreview">
+      <div style="background:#0d0d0d;border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:24px;">
+        <div style="font-size:13px;color:#f59e0b;margin-bottom:12px;">★★★★★</div>
+        <div style="font-size:13px;color:#888;line-height:1.6;margin-bottom:16px;">"Bottegas came through immaculate. Exactly as described, shipped fast, and the packaging was clean."</div>
+        <div style="font-size:12px;font-weight:700;">Jordan M.</div>
+        <div style="font-size:11px;color:#333;">Bottega Veneta (Green) · Verified Purchase</div>
       </div>
-    </div>`;
-  }).join('');
-}
-
-renderProducts('ALL');
-
-// ── DROP COUNTDOWN ────────────────────────────────────────────────────────
-var countdownInterval = null;
-
-function loadDropBanner() {
-  fetch('https://api.base44.com/api/apps/6a21ea02495f72afbc2ec54c/functions/adminApi?action=getDrops')
-    .then(function(r){return r.json();})
-    .then(function(drops) {
-      // find next live or upcoming drop
-      var now = new Date();
-      var upcoming = drops.filter(function(d) {
-        if (!d.drop_date || !d.drop_time) return false;
-        var dt = new Date(d.drop_date + 'T' + d.drop_time);
-        return dt > now;
-      }).sort(function(a,b){
-        return new Date(a.drop_date+'T'+a.drop_time) - new Date(b.drop_date+'T'+b.drop_time);
-      });
-      if (!upcoming.length) return;
-      var drop = upcoming[0];
-      var target = new Date(drop.drop_date + 'T' + drop.drop_time);
-      var banner = document.getElementById('dropBanner');
-      banner.style.display = 'block';
-      banner.innerHTML = '<div class="drop-banner"><div class="drop-banner-inner">'
-        + '<div style="text-align:left;">'
-        + '<div class="drop-banner-label">🔥 Next Drop</div>'
-        + '<div class="drop-banner-name">' + drop.product_name + '</div>'
-        + (drop.hype_text ? '<div class="drop-banner-hype">' + drop.hype_text + '</div>' : '')
-        + '</div>'
-        + '<div class="countdown" id="countdown"></div>'
-        + '<button class="drop-notify-btn" id="dropNotifyBtn" onclick="notifyDrop(\'' + drop.product_name + '\')">🔔 Notify Me</button>'
-        + '</div></div>';
-      // start countdown
-      if (countdownInterval) clearInterval(countdownInterval);
-      function tick() {
-        var diff = target - new Date();
-        if (diff <= 0) { clearInterval(countdownInterval); document.getElementById('dropBanner').style.display='none'; return; }
-        var d = Math.floor(diff/86400000);
-        var h = Math.floor((diff%86400000)/3600000);
-        var m = Math.floor((diff%3600000)/60000);
-        var s = Math.floor((diff%60000)/1000);
-        var el = document.getElementById('countdown');
-        if (!el) return;
-        el.innerHTML = (d > 0 ? '<div class="countdown-unit"><span class="countdown-num">'+pad(d)+'</span><span class="countdown-lbl">Days</span></div><div class="countdown-sep">:</div>' : '')
-          + '<div class="countdown-unit"><span class="countdown-num">'+pad(h)+'</span><span class="countdown-lbl">Hrs</span></div>'
-          + '<div class="countdown-sep">:</div>'
-          + '<div class="countdown-unit"><span class="countdown-num">'+pad(m)+'</span><span class="countdown-lbl">Min</span></div>'
-          + '<div class="countdown-sep">:</div>'
-          + '<div class="countdown-unit"><span class="countdown-num">'+pad(s)+'</span><span class="countdown-lbl">Sec</span></div>';
-      }
-      tick();
-      countdownInterval = setInterval(tick, 1000);
-    }).catch(function(){});
-}
-
-function pad(n) { return n < 10 ? '0'+n : ''+n; }
-
-function notifyDrop(name) {
-  var btn = document.getElementById('dropNotifyBtn');
-  if (!btn || btn.classList.contains('notified')) return;
-  var email = prompt('Enter your email to get notified when the ' + name + ' drops:');
-  if (!email || !email.includes('@')) return;
-  btn.textContent = '✓ You\'re on the list!';
-  btn.classList.add('notified');
-  // save to entity via adminApi
-  fetch('https://api.base44.com/api/apps/6a21ea02495f72afbc2ec54c/functions/adminApi?action=notifyDrop', {
-    method: 'POST',
-    headers: {'Content-Type':'application/json'},
-    body: JSON.stringify({product_name: name, email: email})
-  }).catch(function(){});
-}
-
-// load drop banner on page load
-loadDropBanner();
-
-</script>
-
-<!-- STICKY BUY BAR -->
-<div class="sticky-bar">
-  <div class="sticky-bar-left">
-    <strong>Shop The Illest Supply</strong>
-    Tap any product to order or inquire
+      <div style="background:#0d0d0d;border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:24px;">
+        <div style="font-size:13px;color:#f59e0b;margin-bottom:12px;">★★★★★</div>
+        <div style="font-size:13px;color:#888;line-height:1.6;margin-bottom:16px;">"Asics came deadstock, packed perfectly. Size was right, shipping was fast. Will be back."</div>
+        <div style="font-size:12px;font-weight:700;">Maya R.</div>
+        <div style="font-size:11px;color:#333;">Asics Gel Kayano 14 · Verified Purchase</div>
+      </div>
+      <div style="background:#0d0d0d;border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:24px;">
+        <div style="font-size:13px;color:#f59e0b;margin-bottom:12px;">★★★★★</div>
+        <div style="font-size:13px;color:#888;line-height:1.6;margin-bottom:16px;">"Rick Owens for $150? These go crazy. Legit, fast, no cap."</div>
+        <div style="font-size:12px;font-weight:700;">Tyler J.</div>
+        <div style="font-size:11px;color:#333;">Rick Owens Ramones · Verified Purchase</div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:28px;"><a href="reviews.html" class="btn-outline">Read All Reviews</a></div>
   </div>
-  <button class="sticky-btn" onclick="document.getElementById('products').scrollIntoView({behavior:'smooth'})">SHOP NOW →</button>
-</div>
+</section>
+
+<!-- IG CTA -->
+<section>
+  <div class="container">
+    <div class="ig-cta">
+      <h2>Follow <em>@theillestsupply</em></h2>
+      <p>Stay up on drops, restocks, and exclusive pieces before they sell out.</p>
+      <a href="https://www.instagram.com/theillestsupply" target="_blank" class="btn-primary">Follow on Instagram</a>
+    </div>
+  </div>
+</section>
+</main>
+
+<div id="footerContainer"></div>
+
+<script src="cart.js"></script>
+<script src="products.js"></script>
+<script>
+document.getElementById('globalStyles').textContent = getGlobalCSS();
+document.getElementById('navContainer').innerHTML = getNavHTML('home');
+document.getElementById('footerContainer').innerHTML = getFooterHTML();
+
+// Render grids
+document.getElementById('newArrivalsGrid').innerHTML = getNewArrivals().map(p => renderProductCard(p)).join('');
+document.getElementById('bestSellersGrid').innerHTML = getFeatured().map(p => renderProductCard(p)).join('');
+</script>
 </body>
 </html>
