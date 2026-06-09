@@ -167,8 +167,10 @@ function injectCartDrawer() {
 function getNavHTML(activePage) {
   const count = Cart.count();
   return `
-  <div id="announcement" style="background:#fff;color:#000;text-align:center;padding:9px 12px;font-size:12px;font-weight:600;letter-spacing:0.07em;">
-    FREE SHIPPING ON ORDERS OVER $150 &nbsp;·&nbsp; <span style="color:#c00">AUTHENTICATED DESIGNER PIECES</span> &nbsp;·&nbsp; SHIPS IN 1–3 BUSINESS DAYS
+  <div id="announcement" style="background:#080808;border-bottom:1px solid rgba(255,255,255,0.05);overflow:hidden;position:relative;height:36px;">
+    <div style="display:flex;width:max-content;animation:announceTicker 18s linear infinite;">
+      <span style="white-space:nowrap;padding:9px 40px;font-size:11px;font-weight:700;letter-spacing:0.25em;color:#ffffff;text-transform:uppercase;">DRESS DIFFERENT</span><span style="padding:9px 0;font-size:11px;color:#c00;">·</span><span style="white-space:nowrap;padding:9px 40px;font-size:11px;font-weight:700;letter-spacing:0.25em;color:#ffffff;text-transform:uppercase;">STAY ILLEST</span><span style="padding:9px 0;font-size:11px;color:#c00;">·</span><span style="white-space:nowrap;padding:9px 40px;font-size:11px;font-weight:700;letter-spacing:0.25em;color:#ffffff;text-transform:uppercase;">DRESS DIFFERENT</span><span style="padding:9px 0;font-size:11px;color:#c00;">·</span><span style="white-space:nowrap;padding:9px 40px;font-size:11px;font-weight:700;letter-spacing:0.25em;color:#ffffff;text-transform:uppercase;">STAY ILLEST</span><span style="padding:9px 0;font-size:11px;color:#c00;">·</span><span style="white-space:nowrap;padding:9px 40px;font-size:11px;font-weight:700;letter-spacing:0.25em;color:#ffffff;text-transform:uppercase;">DRESS DIFFERENT</span><span style="padding:9px 0;font-size:11px;color:#c00;">·</span><span style="white-space:nowrap;padding:9px 40px;font-size:11px;font-weight:700;letter-spacing:0.25em;color:#ffffff;text-transform:uppercase;">STAY ILLEST</span><span style="padding:9px 0;font-size:11px;color:#c00;">·</span>
+    </div>
   </div>
   <nav>
     <a href="index.html"><img class="nav-logo" src="https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/409f6a116_918D9A7E-D61E-4658-A7B6-5DF1F8B5AC78.png" alt="The Illest Supply"></a>
@@ -263,6 +265,7 @@ function getGlobalCSS() {
     #announcement{position:sticky;top:0;z-index:201;}
     .nav-logo{height:48px;object-fit:contain;animation:spinY 25s linear infinite;mix-blend-mode:screen;}
     @keyframes spinY{from{transform:rotateY(0deg);}to{transform:rotateY(360deg);}}
+    @keyframes announceTicker{from{transform:translateX(0);}to{transform:translateX(-50%);}}
     .nav-links{display:flex;gap:24px;}
     .nav-links a{font-size:13px;color:rgba(255,255,255,0.6);letter-spacing:0.04em;transition:color .2s;font-weight:500;}
     .nav-links a:hover,.nav-links a.active{color:#fff;}
