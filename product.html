@@ -341,11 +341,7 @@ function switchTab(name, el) {
 
 }
 
-if (window.__overridesReady) {
-  renderProductPage();
-} else {
-  window.__overridesCallback = renderProductPage;
-}
+onProductsReady(renderProductPage);
 </script>
 </body>
 </html>
