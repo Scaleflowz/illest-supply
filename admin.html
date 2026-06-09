@@ -682,7 +682,7 @@ function renderInq(list) {
       +'<td style="font-weight:700;">$'+(i.price||0)+'</td>'
       +'<td><select class="sel" onchange="setStatus(\''+i.id+'\',this.value)">'+opts+'</select></td>'
       +(function(){var t=getTracking(i.notes);return '<td><div style="display:flex;align-items:center;gap:5px;"><input class="note-in" style="width:140px;" value="'+(t||'')+'" placeholder="USPS tracking #" onblur="setTracking(\''+i.id+'\',this.value,\''+escNotes(i.notes)+'\')"/>'+(t?'<a href="https://track.aftership.com/usps/'+t+'" target="_blank" style="font-size:10px;color:#60a5fa;white-space:nowrap;">Track →</a>':'')+'</div></td>';})()
-      +'<td><input class="note-in" value="'+getNoteText(i.notes)+'" placeholder="Note..." onblur="setNote(\''+i.id+'\',this.value,\'\')"/></td>
+      +'<td><input class="note-in" value="'+getNoteText(i.notes)+'" placeholder="Note..." onblur="setNote(\''+i.id+'\',this.value,\'\')"/></td>'
       +'<td><a class="reply-btn" href="mailto:'+( i.customer_email||'')+'?subject=Re: '+(i.product_name||'')+'&body=Hi '+(i.customer_name||'')+',">Reply</a></td>'
       +'</tr>';
   }).join('') : '<tr><td colspan="9" style="text-align:center;color:#444;padding:28px;">No inquiries yet</td></tr>';
