@@ -478,8 +478,12 @@ var allInq = [], allCust = [], allInv = [];
 // Local passcode map — always works offline/CORS
 var LOCAL_CODES = {
   'ILLEST2025': {name:'Timoy', role:'owner', passcode:'ILLEST2025'},
+  'illest2025': {name:'Timoy', role:'owner', passcode:'ILLEST2025'},
+  'Illest2025': {name:'Timoy', role:'owner', passcode:'ILLEST2025'},
   'SLEAZY':     {name:'Employee', role:'employee', passcode:'SLEAZY'},
-  'STAFF2025':  {name:'Employee', role:'employee', passcode:'STAFF2025'}
+  'sleazy':     {name:'Employee', role:'employee', passcode:'SLEAZY'},
+  'STAFF2025':  {name:'Employee', role:'employee', passcode:'STAFF2025'},
+  'staff2025':  {name:'Employee', role:'employee', passcode:'STAFF2025'}
 };
 
 function doLogin() {
@@ -488,7 +492,7 @@ function doLogin() {
   document.getElementById('loginErr').style.display = 'none';
 
   // Try local codes first (instant, always works)
-  var localUser = LOCAL_CODES[code.toUpperCase()] || LOCAL_CODES[code];
+  var localUser = LOCAL_CODES[code.toUpperCase()] || LOCAL_CODES[code.toLowerCase()] || LOCAL_CODES[code];
   if (localUser) {
     me = localUser;
     document.getElementById('loginScreen').style.display = 'none';
@@ -525,8 +529,20 @@ function doLogin() {
   }).catch(function() {
     btn.textContent = 'ENTER →';
     btn.disabled = false;
-    document.getElementById('loginErr').textContent = 'Invalid passcode.';
-    document.getElementById('loginErr').style.display = 'block';
+    // API failed — try local codes one more time case-insensitively
+    var retry = LOCAL_CODES[code.toUpperCase()] || LOCAL_CODES[code.toLowerCase()];
+    if (retry) {
+      me = retry;
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+      document.getElementById('sbName').textContent = me.name;
+      document.getElementById('sbRole').textContent = me.role;
+      if (me.role === 'owner') document.getElementById('teamNav').style.display = 'block';
+      loadAll();
+    } else {
+      document.getElementById('loginErr').textContent = 'Wrong passcode. Try ILLEST2025 or SLEAZY.';
+      document.getElementById('loginErr').style.display = 'block';
+    }
   });
 }
 
