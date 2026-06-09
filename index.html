@@ -281,7 +281,7 @@ document.getElementById('bestSellersGrid').innerHTML = getFeatured().map(p => re
     <div class="popup-tag">Early Access</div>
     <div class="popup-title">GET FIRST DROP ALERTS</div>
     <div class="popup-sub">New drops sell out fast. Be the first to know when limited pairs go live.</div>
-    <input class="popup-input" id="popupEmail" type="email" placeholder="your@email.com">
+    <input class="popup-input" id="popupEmail" type="text" placeholder="your@email.com" autocomplete="email" inputmode="email">
     <button class="popup-btn" onclick="submitPopup()">NOTIFY ME</button>
     <span class="popup-skip" onclick="closePopup()">No thanks, I'll miss out</span>
   </div>
@@ -338,13 +338,15 @@ function submitPopup(){
 <div id="emailPopup">
   <div class="popup-box">
     <button class="popup-close" onclick="closePopup()">✕</button>
-    <img class="popup-img" src="https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/43d61f986_55D78BF3-BD37-4A1C-AB08-28E444756C13.jpg" alt="Illest Supply">
+    <div style="background:#000;display:flex;align-items:center;justify-content:center;padding:28px 20px 20px;">
+      <img src="https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/409f6a116_918D9A7E-D61E-4658-A7B6-5DF1F8B5AC78.png" alt="The Illest Supply" style="height:80px;width:auto;mix-blend-mode:screen;filter:invert(0);">
+    </div>
     <div class="popup-body" id="popupBody">
       <div class="popup-eyebrow">EXCLUSIVE ACCESS</div>
       <div class="popup-headline">Get Early Drop<br>Notifications</div>
       <div class="popup-sub">Be first to know when new heat drops. No spam, just the good stuff.</div>
       <div class="popup-row">
-        <input class="popup-input" id="popupEmail" type="email" placeholder="your@email.com" onkeydown="if(event.key==='Enter')submitPopup()">
+        <input class="popup-input" id="popupEmail" type="text" placeholder="your@email.com" autocomplete="email" inputmode="email" onkeydown="if(event.key==='Enter')submitPopup()">
         <button class="popup-submit" id="popupBtn" onclick="submitPopup()">NOTIFY ME</button>
       </div>
       <div id="popupError" style="font-size:12px;color:#ef4444;margin-top:8px;display:none;"></div>
@@ -376,14 +378,18 @@ function submitPopup(){
   });
 
   window.submitPopup = async function() {
-    const email = document.getElementById('popupEmail').value.trim();
+    const inputEl = document.getElementById('popupEmail');
+    const email = (inputEl.value || '').trim();
     const btn = document.getElementById('popupBtn');
     const errEl = document.getElementById('popupError');
     errEl.style.display = 'none';
 
-    if (!email || !email.includes('@')) {
-      errEl.textContent = 'Please enter a valid email.';
+    // Basic validation — just needs @ and a dot after it
+    const emailOk = email.length > 3 && email.indexOf('@') > 0 && email.indexOf('.', email.indexOf('@')) > 0;
+    if (!emailOk) {
+      errEl.textContent = 'Please enter your email address.';
       errEl.style.display = 'block';
+      inputEl.focus();
       return;
     }
 
