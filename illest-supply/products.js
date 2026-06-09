@@ -25,7 +25,7 @@ const PRODUCTS = [
     stock: {"7":2,"8":3,"9":2,"10":3,"11":1,"12":1},
     img: "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/ab18f8c12_CBA80A5F-97CF-45C5-AA11-522922875DE3.png",
     imgs: ["https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/ab18f8c12_CBA80A5F-97CF-45C5-AA11-522922875DE3.png"],
-    video: "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/d411fd6a5_IMG_3816.mov", type: "shoe", sold: 54
+    video: "https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/4757a4088_d411fd6a5_IMG_3816.mp4", type: "shoe", sold: 54
   },
   {
     id: 3, name: "Prada Cup (Blue)", slug: "prada-cup-blue",
@@ -37,7 +37,7 @@ const PRODUCTS = [
     stock: {"7":1,"8":2,"9":3,"10":2,"11":2,"12":1},
     img: "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/eac22a547_FF86E6B6-910B-416D-8894-171D71295C5C.png",
     imgs: ["https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/eac22a547_FF86E6B6-910B-416D-8894-171D71295C5C.png"],
-    video: "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/5b35fc966_IMG_3817.mov", type: "shoe", sold: 47
+    video: "https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/071a0cf80_5b35fc966_IMG_3817.mp4", type: "shoe", sold: 47
   },
   {
     id: 4, name: "Dior Slides", slug: "dior-slides",
@@ -49,7 +49,7 @@ const PRODUCTS = [
     stock: {"6":1,"7":3,"8":4,"9":3,"10":2,"11":1,"12":1},
     img: "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/e6a45f9dd_FEF16C09-1B37-4184-95F3-F18D4A350911.png",
     imgs: ["https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/e6a45f9dd_FEF16C09-1B37-4184-95F3-F18D4A350911.png"],
-    video: "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/3852cb545_IMG_3818.mov", type: "shoe", sold: 76
+    video: "https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/745ca9383_3852cb545_IMG_3818.mp4", type: "shoe", sold: 76
   },
   {
     id: 5, name: "Vale Forever College Jorts", slug: "vale-forever-college-jorts",
@@ -112,7 +112,7 @@ const PRODUCTS = [
       "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/e6282f07d_918D9A7E-D61E-4658-A7B6-5DF1F8B5AC78.png",
       "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/409f6a116_918D9A7E-D61E-4658-A7B6-5DF1F8B5AC78.png"
     ],
-    video: "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/5dd2172fc_IMG_3820.mov", type: "shoe", sold: 112
+    video: "https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/57ddcf7dd_5dd2172fc_IMG_3820.mp4", type: "shoe", sold: 112
   },
   {
     id: 10, name: "Rick Owens Ramones", slug: "rick-owens-ramones",
@@ -124,7 +124,7 @@ const PRODUCTS = [
     stock: {"7":1,"8":2,"9":2,"10":3,"11":2,"12":1},
     img: "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/3dd13263d_AdobeExpress-file3.png",
     imgs: ["https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/3dd13263d_AdobeExpress-file3.png"],
-    video: "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/888b8f45f_IMG_3821.mov", type: "shoe", sold: 63
+    video: "https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/2bf2bf2e8_888b8f45f_IMG_3821.mp4", type: "shoe", sold: 63
   },
   {
     id: 11, name: "Bottega Veneta (Green)", slug: "bottega-veneta-green",
@@ -136,7 +136,7 @@ const PRODUCTS = [
     stock: {"7":1,"8":1,"9":2,"10":1,"11":1},
     img: "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/040af7300_AdobeExpress-file3.png",
     imgs: ["https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/040af7300_AdobeExpress-file3.png"],
-    video: "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/7099759ef_IMG_3824.mov", type: "shoe", sold: 58
+    video: "https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/9e8443bb6_7099759ef_IMG_3824.mp4", type: "shoe", sold: 58
   },
   {
     id: 12, name: "Bottega Veneta (Blue)", slug: "bottega-veneta-blue",
@@ -148,7 +148,7 @@ const PRODUCTS = [
     stock: {"7":1,"8":2,"9":2,"10":1,"11":1},
     img: "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/35ae1e2e5_AdobeExpress-file.png",
     imgs: ["https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/35ae1e2e5_AdobeExpress-file.png"],
-    video: "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/9874363bd_IMG_3823.mov", type: "shoe", sold: 71
+    video: "https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/7a8062797_9874363bd_IMG_3823.mp4", type: "shoe", sold: 71
   },
   {
     id: 13, name: "Bottega Veneta (Pink)", slug: "bottega-veneta-pink",
@@ -160,7 +160,7 @@ const PRODUCTS = [
     stock: {"7":1,"8":1,"9":1,"10":1,"11":1},
     img: "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/ab18f8c12_CBA80A5F-97CF-45C5-AA11-522922875DE3.png",
     imgs: ["https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/ab18f8c12_CBA80A5F-97CF-45C5-AA11-522922875DE3.png"],
-    video: "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/3852cb545_IMG_3818.mov", type: "shoe", sold: 77
+    video: "https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/745ca9383_3852cb545_IMG_3818.mp4", type: "shoe", sold: 77
   }
 ];
 
