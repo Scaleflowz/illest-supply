@@ -8,9 +8,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style id="globalStyles">
-.pd-social-stats{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:16px;}
-.pd-stat{font-size:12px;color:#666;font-weight:600;}
+.pd-social-stats{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;}
+.pd-stat{font-size:11px;color:#555;font-weight:600;letter-spacing:0.04em;}
 .pd-stat span{color:#aaa;}
+.pd-stat.viewing{background:rgba(201,169,110,0.08);border:1px solid rgba(201,169,110,0.2);color:#c9a96e;padding:6px 14px;border-radius:50px;font-size:12px;font-weight:700;letter-spacing:0.06em;display:flex;align-items:center;gap:6px;}
+.pd-stat.viewing .dot{width:6px;height:6px;border-radius:50%;background:#c9a96e;display:inline-block;animation:pulse-dot 1.5s ease-in-out infinite;}
+@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.4;transform:scale(0.7);}}
 .low-stock-alert{display:inline-block;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#ef4444;font-size:12px;font-weight:700;letter-spacing:0.08em;padding:6px 14px;border-radius:50px;margin-bottom:16px;}
 .card-live-stats{display:flex;gap:10px;font-size:10px;color:#666;font-weight:600;margin-bottom:6px;}
 .low-stock-badge{background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.25);color:#ef4444;font-size:10px;font-weight:700;letter-spacing:0.06em;padding:4px 10px;border-radius:50px;margin-bottom:6px;display:inline-block;}
@@ -135,7 +138,6 @@
         <div class="pd-actions" id="pdActions"></div>
 
         <div class="trust-row">
-          <div class="trust-pill">🔐 Authenticated</div>
           <div class="trust-pill">📦 Ships in 1–3 days</div>
           <div class="trust-pill">🎁 Free over $150</div>
           <div class="trust-pill">✅ Secure Checkout</div>
@@ -219,10 +221,9 @@ else {
   const mainMedia = document.getElementById('mainMedia');
   // Social proof stats
   const views = Math.floor(p.sold * 3.2 + Math.floor(Math.random()*12) + 8);
-  const inCart = Math.floor(p.sold * 0.18 + 2);
   const bought = Math.floor(p.sold * 0.6);
   const statsEl = document.getElementById('pdStats');
-  if(statsEl) statsEl.innerHTML = `<span class="pd-stat">👁 <span>${views}</span> viewing now</span><span class="pd-stat">🛒 <span>${inCart}</span> in carts</span><span class="pd-stat">✅ <span>${bought}+</span> bought</span>`;
+  if(statsEl) statsEl.innerHTML = `<span class="pd-stat viewing"><span class="dot"></span>${views} people viewing now</span><span class="pd-stat">✅ <span>${bought}+</span> sold</span>`;
   
   // Low stock check
   const lowEl = document.getElementById('pdLowStock');
