@@ -316,111 +316,133 @@ function submitPopup(){
 #emailPopup.show{display:flex;animation:fadeInPop .35s ease;}
 @keyframes fadeInPop{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
 .popup-box{background:#0d0d0d;border:1px solid rgba(255,255,255,.1);border-radius:24px;max-width:440px;width:100%;overflow:hidden;position:relative;}
-.popup-close{position:absolute;top:16px;right:18px;background:none;border:none;color:#444;font-size:20px;cursor:pointer;z-index:2;line-height:1;}
-.popup-close:hover{color:#fff;}
-.popup-img{width:100%;height:200px;object-fit:cover;display:block;}
+.popup-close{position:absolute;top:14px;right:16px;background:rgba(255,255,255,.08);border:none;color:#fff;font-size:14px;cursor:pointer;z-index:10;line-height:1;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+.popup-close:hover{background:rgba(255,255,255,.18);}
+.popup-logo-area{background:#000;display:flex;align-items:center;justify-content:center;padding:32px 20px 24px;border-bottom:1px solid rgba(255,255,255,.06);}
+.popup-logo-area img{height:72px;width:auto;display:block;}
 .popup-body{padding:28px 28px 32px;}
-.popup-eyebrow{font-size:11px;font-weight:700;letter-spacing:.18em;color:#f59e0b;margin-bottom:8px;}
-.popup-headline{font-family:'Bebas Neue',sans-serif;font-size:36px;line-height:1.1;margin-bottom:10px;}
-.popup-sub{font-size:13px;color:#555;line-height:1.6;margin-bottom:20px;}
+.popup-eyebrow{font-size:11px;font-weight:700;letter-spacing:.18em;color:#f59e0b;margin-bottom:8px;text-transform:uppercase;}
+.popup-headline{font-family:'Bebas Neue',sans-serif;font-size:38px;line-height:1.05;margin-bottom:10px;color:#fff;}
+.popup-sub{font-size:13px;color:#555;line-height:1.6;margin-bottom:22px;}
 .popup-row{display:flex;gap:8px;}
-.popup-input{flex:1;background:#111;border:1px solid rgba(255,255,255,.1);color:#fff;font-size:13px;padding:13px 16px;border-radius:10px;outline:none;font-family:inherit;}
-.popup-input:focus{border-color:rgba(255,255,255,.25);}
-.popup-submit{background:#fff;color:#000;font-size:12px;font-weight:800;letter-spacing:.12em;padding:13px 20px;border-radius:10px;border:none;cursor:pointer;white-space:nowrap;transition:.2s;}
+.popup-input{flex:1;background:#111;border:1px solid rgba(255,255,255,.12);color:#fff;font-size:14px;padding:13px 16px;border-radius:10px;outline:none;font-family:inherit;min-width:0;}
+.popup-input::placeholder{color:#444;}
+.popup-input:focus{border-color:rgba(255,255,255,.3);}
+.popup-submit{background:#fff;color:#000;font-size:12px;font-weight:800;letter-spacing:.1em;padding:13px 18px;border-radius:10px;border:none;cursor:pointer;white-space:nowrap;transition:.15s;text-transform:uppercase;}
 .popup-submit:hover{background:#e5e5e5;}
-.popup-note{font-size:10px;color:#333;margin-top:12px;text-align:center;}
+.popup-submit:disabled{opacity:.5;cursor:not-allowed;}
+.popup-error{font-size:12px;color:#ef4444;margin-top:8px;display:none;padding:0 2px;}
+.popup-note{font-size:10px;color:#333;margin-top:12px;text-align:center;line-height:1.5;}
 .popup-success{text-align:center;padding:40px 28px;}
-.popup-success .icon{font-size:40px;margin-bottom:12px;}
-.popup-success h3{font-family:'Bebas Neue',sans-serif;font-size:28px;margin-bottom:8px;}
-.popup-success p{font-size:13px;color:#555;}
+.popup-success .ps-icon{font-size:44px;margin-bottom:14px;}
+.popup-success h3{font-family:'Bebas Neue',sans-serif;font-size:32px;margin-bottom:8px;color:#fff;}
+.popup-success p{font-size:13px;color:#555;line-height:1.6;}
 </style>
 
-<div id="emailPopup">
+<div id="emailPopup" role="dialog" aria-modal="true">
   <div class="popup-box">
-    <button class="popup-close" onclick="closePopup()">✕</button>
-    <div style="background:#000;display:flex;align-items:center;justify-content:center;padding:28px 20px 20px;">
-      <img src="https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/409f6a116_918D9A7E-D61E-4658-A7B6-5DF1F8B5AC78.png" alt="The Illest Supply" style="height:80px;width:auto;mix-blend-mode:screen;filter:invert(0);">
+    <button class="popup-close" onclick="closePopup()" aria-label="Close">✕</button>
+    <div class="popup-logo-area">
+      <img src="https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/409f6a116_918D9A7E-D61E-4658-A7B6-5DF1F8B5AC78.png" alt="The Illest Supply Logo">
     </div>
     <div class="popup-body" id="popupBody">
-      <div class="popup-eyebrow">EXCLUSIVE ACCESS</div>
+      <div class="popup-eyebrow">Exclusive Access</div>
       <div class="popup-headline">Get Early Drop<br>Notifications</div>
       <div class="popup-sub">Be first to know when new heat drops. No spam, just the good stuff.</div>
       <div class="popup-row">
-        <input class="popup-input" id="popupEmail" type="text" placeholder="your@email.com" autocomplete="email" inputmode="email" onkeydown="if(event.key==='Enter')submitPopup()">
-        <button class="popup-submit" id="popupBtn" onclick="submitPopup()">NOTIFY ME</button>
+        <input class="popup-input" id="popupEmail" type="text" placeholder="your@email.com" autocomplete="email" inputmode="email">
+        <button class="popup-submit" id="popupBtn" onclick="doPopupSubmit()">Notify Me</button>
       </div>
-      <div id="popupError" style="font-size:12px;color:#ef4444;margin-top:8px;display:none;"></div>
-      <div class="popup-note">No spam. Unsubscribe anytime.</div>
+      <div class="popup-error" id="popupError"></div>
+      <div class="popup-note">No spam &nbsp;·&nbsp; Unsubscribe anytime</div>
     </div>
   </div>
 </div>
 
 <script>
 (function(){
-  const POPUP_KEY = 'ils_popup_seen';
-  const API = 'https://superagent-bc2ec54c.base44.app/functions/illestSupply';
+  var POPUP_KEY = 'ils_popup_v3';
+  var API = 'https://superagent-bc2ec54c.base44.app/functions/illestSupply';
 
-  // Show after 8 seconds, only once per session
-  if (!sessionStorage.getItem(POPUP_KEY)) {
-    setTimeout(function(){
-      document.getElementById('emailPopup').classList.add('show');
-    }, 8000);
+  function showPopup(){
+    var el = document.getElementById('emailPopup');
+    if(el) el.classList.add('show');
   }
 
-  window.closePopup = function() {
-    document.getElementById('emailPopup').classList.remove('show');
+  // Show after 8s, only once per session
+  if(!sessionStorage.getItem(POPUP_KEY)){
+    setTimeout(showPopup, 8000);
+  }
+
+  window.closePopup = function(){
+    var el = document.getElementById('emailPopup');
+    if(el) el.classList.remove('show');
     sessionStorage.setItem(POPUP_KEY, '1');
   };
 
-  // Close on backdrop click
-  document.getElementById('emailPopup').addEventListener('click', function(e){
-    if(e.target === document.getElementById('emailPopup')) closePopup();
+  // Backdrop click
+  document.addEventListener('click', function(e){
+    var popup = document.getElementById('emailPopup');
+    var box = popup && popup.querySelector('.popup-box');
+    if(popup && popup.classList.contains('show') && e.target === popup) closePopup();
   });
 
-  window.submitPopup = async function() {
-    const inputEl = document.getElementById('popupEmail');
-    const email = (inputEl.value || '').trim();
-    const btn = document.getElementById('popupBtn');
-    const errEl = document.getElementById('popupError');
-    errEl.style.display = 'none';
+  // Enter key on input
+  var inputEl = document.getElementById('popupEmail');
+  if(inputEl){
+    inputEl.addEventListener('keydown', function(e){
+      if(e.key === 'Enter') doPopupSubmit();
+    });
+  }
 
-    // Basic validation — just needs @ and a dot after it
-    const emailOk = email.length > 3 && email.indexOf('@') > 0 && email.indexOf('.', email.indexOf('@')) > 0;
-    if (!emailOk) {
-      errEl.textContent = 'Please enter your email address.';
+  window.doPopupSubmit = function(){
+    var inputEl = document.getElementById('popupEmail');
+    var btn = document.getElementById('popupBtn');
+    var errEl = document.getElementById('popupError');
+
+    var raw = inputEl ? inputEl.value : '';
+    var email = raw.trim().toLowerCase();
+
+    errEl.style.display = 'none';
+    errEl.textContent = '';
+
+    // Validate: must have chars before @, @ symbol, and a dot somewhere after @
+    var atIdx = email.indexOf('@');
+    var dotIdx = email.lastIndexOf('.');
+    var valid = email.length >= 5 && atIdx > 0 && dotIdx > atIdx + 1 && dotIdx < email.length - 1;
+
+    if(!valid){
+      errEl.textContent = 'Please enter a valid email address.';
       errEl.style.display = 'block';
-      inputEl.focus();
+      if(inputEl) inputEl.focus();
       return;
     }
 
     btn.textContent = '...';
     btn.disabled = true;
 
-    try {
-      const res = await fetch(API + '?action=emailCapture', {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({ email, source: 'homepage_popup' })
-      });
-      const d = await res.json();
-
+    fetch(API + '?action=emailCapture', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ email: email, source: 'homepage_popup' })
+    })
+    .then(function(r){ return r.json(); })
+    .then(function(d){
       sessionStorage.setItem(POPUP_KEY, '1');
-      document.getElementById('popupBody').innerHTML = `
-        <div class="popup-success">
-          <div class="icon">🔥</div>
-          <h3>You're In.</h3>
-          <p>We'll hit you first when the next drop goes live.</p>
-        </div>`;
+      var body = document.getElementById('popupBody');
+      if(body){
+        body.innerHTML = '<div class="popup-success"><div class="ps-icon">🔥</div><h3>You're In.</h3><p>We'll hit you first when the next drop goes live.</p></div>';
+      }
       setTimeout(closePopup, 2800);
-    } catch(e) {
-      btn.textContent = 'NOTIFY ME';
+    })
+    .catch(function(){
+      btn.textContent = 'Notify Me';
       btn.disabled = false;
-      errEl.textContent = 'Something went wrong. Try again.';
+      errEl.textContent = 'Something went wrong. Please try again.';
       errEl.style.display = 'block';
-    }
+    });
   };
 })();
 </script>
-
 </body>
 </html>
