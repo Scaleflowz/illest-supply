@@ -30,6 +30,30 @@
     },
     "is_hidden": {
       "type": "boolean"
+    },
+    "brand": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string"
+    },
+    "condition": {
+      "type": "string"
+    },
+    "desc": {
+      "type": "string"
+    },
+    "sizes": {
+      "type": "string"
+    },
+    "img": {
+      "type": "string"
+    },
+    "imgs": {
+      "type": "string"
+    },
+    "video": {
+      "type": "string"
     }
   },
   "required": [],

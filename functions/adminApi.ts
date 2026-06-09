@@ -84,6 +84,37 @@ Deno.serve(async (req: Request): Promise<Response> => {
       }
       return Response.json({ success: true }, { headers: cors });
     }
+    // ── MEDIA UPLOAD ──────────────────────────────────────────────────
+    if (action === "uploadMedia") {
+      try {
+        const formData = await req.formData();
+        const file = formData.get("file") as File;
+        if (!file) return new Response(JSON.stringify({ error: "No file" }), { status: 400, headers: cors });
+        const arrayBuffer = await file.arrayBuffer();
+        const uint8 = new Uint8Array(arrayBuffer);
+        // Convert to base64
+        let binary = "";
+        for (let i = 0; i < uint8.length; i++) binary += String.fromCharCode(uint8[i]);
+        const base64 = btoa(binary);
+        const ext = file.name.split(".").pop() || "jpg";
+        const fname = `product_${Date.now()}.${ext}`;
+        // Upload via base44 storage
+        const uploadRes = await fetch(`https://api.base44.com/api/apps/${Deno.env.get("APP_ID") || "6a21ea02495f72afbc2ec54c"}/storage/upload`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "x-api-key": Deno.env.get("BASE44_API_KEY") || "" },
+          body: JSON.stringify({ filename: fname, content_base64: base64, content_type: file.type, public: true })
+        });
+        const uploadData = await uploadRes.json();
+        if (uploadData.url) {
+          return new Response(JSON.stringify({ url: uploadData.url }), { headers: cors });
+        }
+        return new Response(JSON.stringify({ error: "Upload failed", detail: uploadData }), { headers: cors });
+      } catch(e) {
+        return new Response(JSON.stringify({ error: String(e) }), { headers: cors });
+      }
+    }
+
+
 
     // ── CUSTOMERS ─────────────────────────────────────────────────────────
     if (action === "getCustomers") {
