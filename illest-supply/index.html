@@ -211,17 +211,21 @@ document.getElementById('footerContainer').innerHTML = getFooterHTML();
 
 // Render grids after overrides/inventory sync
 onProductsReady(function() {
-  // Always show exactly 4 products — available ones only
-  const available = PRODUCTS.filter(p => !p.isSoldOut);
-  // Prioritize best sellers, then fill with others
-  const bestSellers = available.filter(p => p.isBestSeller);
-  const others = available.filter(p => !p.isBestSeller);
-  const featured = bestSellers.concat(others).slice(0,4);
-  document.getElementById('newArrivalsGrid').innerHTML = featured.map(p => renderHomeCard(p)).join('');
+  // Force exactly 4 products regardless of sold-out or override status
+  // Pick by specific IDs: Asics, Rick Owens, Bottega Pink, Prada Black
+  const FEATURED_IDS = [9, 10, 13, 2];
+  let featured = FEATURED_IDS.map(id => PRODUCTS.find(p => p.id === id)).filter(Boolean);
+  // Fallback: if any are missing just grab first 4 from the full list
+  if (featured.length < 4) {
+    const ids = new Set(featured.map(p => p.id));
+    const rest = PRODUCTS.filter(p => !ids.has(p.id));
+    featured = featured.concat(rest).slice(0, 4);
+  }
+  document.getElementById('newArrivalsGrid').innerHTML = featured.map(p => renderHomeCard(p, true)).join('');
 });
 
-function renderHomeCard(p) {
-  const soldOut = p.isSoldOut || Object.values(p.stock||{}).every(v=>v===0);
+function renderHomeCard(p, forceAvailable) {
+  const soldOut = !forceAvailable && (p.isSoldOut || Object.values(p.stock||{}).every(v=>v===0));
   const media = p.video
     ? `<video src="${p.video}" autoplay muted loop playsinline style="width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;"></video>`
     : `<img src="${p.img}" alt="${p.name}" loading="lazy" style="width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;">`;
