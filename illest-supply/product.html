@@ -95,6 +95,10 @@
   .pd-actions{display:none;}
 }
 </style>
+  <meta property="og:type" content="product">
+  <meta property="og:site_name" content="The Illest Supply">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" id="canonicalTag" href="https://illestsupply.com/product.html">
 </head>
 <body>
 <div id="navContainer"></div>
@@ -209,6 +213,18 @@ else {
   const soldOut = p.isSoldOut || Object.values(p.stock||{}).every(v=>v===0);
 
   document.getElementById('pageTitle').textContent = `${p.name} | The Illest Supply`;
+  // Dynamic OG + structured data
+  if (typeof injectPageMeta === 'function') {
+    injectPageMeta({
+      title: p.name + ' | The Illest Supply',
+      description: p.desc || ('Shop ' + p.name + ' from The Illest Supply. Premium designer piece, fast shipping.'),
+      image: p.img,
+      url: 'https://illestsupply.com/product.html?id=' + p.id,
+      type: 'product'
+    });
+  }
+  if (typeof injectProductSchema === 'function') injectProductSchema(p);
+
   document.getElementById('pageDesc').content = p.desc;
   document.getElementById('breadProduct').textContent = p.name;
   document.getElementById('pdCat').textContent = `${p.brand} · ${p.category}`;

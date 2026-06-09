@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /authentication.html
+
+Sitemap: https://illestsupply.com/sitemap.xml

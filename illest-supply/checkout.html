@@ -266,8 +266,23 @@ function placeOrder() {
 
   // Save to session storage for confirmation page
   sessionStorage.setItem('lastOrder', JSON.stringify(order));
-  Cart.clear();
-  window.location.href = 'order-confirmation.html';
+
+  // Show loading state
+  const btn = document.getElementById('placeOrderBtn');
+  btn.disabled = true;
+  btn.textContent = 'Processing...';
+
+  // Save order to backend API
+  fetch('https://superagent-bc2ec54c.base44.app/functions/adminApi', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ action: 'createOrder', order: order })
+  })
+  .catch(function(e){ console.warn('Order save failed (non-critical):', e); })
+  .finally(function() {
+    Cart.clear();
+    window.location.href = 'order-confirmation.html';
+  });
 }
 
 // Input event listeners for real-time error clearing
