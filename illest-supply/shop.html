@@ -42,7 +42,7 @@
 
 .mobile-filter-btn{display:none;padding:10px 20px;border:1px solid rgba(255,255,255,0.15);background:transparent;color:#fff;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;}
 .mobile-filter-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:700;}
-.mobile-filter-panel{position:fixed;left:0;bottom:0;right:0;background:#0d0d0d;border-top:1px solid rgba(255,255,255,0.08);border-radius:20px 20px 0 0;padding:24px;z-index:701;max-height:80vh;overflow-y:auto;}
+.mobile-filter-panel{display:none;position:fixed;left:0;bottom:0;right:0;background:#0d0d0d;border-top:1px solid rgba(255,255,255,0.08);border-radius:20px 20px 0 0;padding:24px;z-index:701;max-height:80vh;overflow-y:auto;}
 .mobile-filter-panel.open,.mobile-filter-overlay.open{display:block;}
 
 @media(max-width:900px){
@@ -156,38 +156,6 @@
 <div id="footerContainer"></div>
 <script src="cart.js?v=2"></script>
 <script src="products.js?v=10"></script>
-<script>
-// ── LIVE OVERRIDE LOADER ───────────────────────────────────────────
-window.__overridesReady = false;
-window.__overridesCallback = null;
-(function() {
-  fetch('https://superagent-bc2ec54c.base44.app/functions/adminApi?action=getProductOverrides')
-    .then(function(r){ return r.json(); })
-    .then(function(overrides){
-      if (Array.isArray(overrides)) {
-        overrides.forEach(function(ov) {
-          var p = PRODUCTS.find(function(pr){ return pr.id === ov.product_id; });
-          if (!p) return;
-          if (ov.price      != null) p.price         = ov.price;
-          if (ov.orig_price != null) p.origPrice      = ov.orig_price;
-          if (ov.is_sold_out!= null) p.isSoldOut      = ov.is_sold_out;
-          if (ov.sold_count != null) p.sold           = ov.sold_count;
-          if (ov.badges != null && ov.badges) p.badges = ov.badges;
-          if (ov.is_new_arrival!=null) p.isNewArrival = ov.is_new_arrival;
-          if (ov.is_best_seller!=null) p.isBestSeller = ov.is_best_seller;
-          if (ov.is_hidden != null) p.isHidden        = ov.is_hidden;
-        });
-      }
-      window.__overridesReady = true;
-      if (typeof window.__overridesCallback === 'function') window.__overridesCallback();
-    })
-    .catch(function(){
-      window.__overridesReady = true;
-      if (typeof window.__overridesCallback === 'function') window.__overridesCallback();
-    });
-})();
-// ──────────────────────────────────────────────────────────────────
-</script>
 
 <script>
 document.getElementById('globalStyles').textContent = getGlobalCSS();
@@ -257,12 +225,7 @@ const urlParams = new URLSearchParams(location.search);
 const urlQ = urlParams.get('q');
 if (urlQ) document.getElementById('shopSearch').value = urlQ;
 
-// Wait for overrides, then render
-if (window.__overridesReady) {
-  applyFilters();
-} else {
-  window.__overridesCallback = function() { applyFilters(); };
-}
+onProductsReady(function() { applyFilters(); });
 </script>
 </body>
 </html>
