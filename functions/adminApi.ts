@@ -368,6 +368,24 @@ Deno.serve(async (req: Request): Promise<Response> => {
       return Response.json({ success: true }, { headers: cors });
     }
 
+    // ── CREATE ORDER ──────────────────────────────────────────────────────
+    if (action === "createOrder") {
+      const orderData = body.order || {};
+      const saved = await db.Inquiry.create({
+        customer_name: orderData.name || '',
+        customer_email: orderData.email || '',
+        product_name: (orderData.items||[]).map((i: any) => i.name).join(', '),
+        product_id: String((orderData.items||[])[0]?.id || ''),
+        size: (orderData.items||[]).map((i: any) => i.size).join(', '),
+        price: orderData.total || 0,
+        message: JSON.stringify(orderData.address || {}),
+        status: 'paid',
+        source: 'checkout',
+        notes: JSON.stringify({ orderNumber: orderData.orderNumber, items: orderData.items, shipping: orderData.shipping, tax: orderData.tax, phone: orderData.phone })
+      });
+      return Response.json({ success: true, id: saved.id }, { headers: cors });
+    }
+
     // ── ORDER TRACKER ──────────────────────────────────────────────────────
     if (action === "trackOrder") {
       const { orderNumber, email } = await req.json();
