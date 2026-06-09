@@ -181,6 +181,7 @@ function getNavHTML(activePage) {
       <a href="faq.html" ${activePage==='faq'?'class="active"':''}>FAQ</a>
       <a href="size-chart.html" ${activePage==='size'?'class="active"':''}>Size Guide</a>
       <a href="about.html" ${activePage==='about'?'class="active"':''}>About</a>
+      <a href="order-tracker.html" ${activePage==='track'?'class="active"':''}>Track Order</a>
     </div>
     <div class="nav-right">
       <button onclick="toggleSearch()" class="nav-icon-btn" title="Search">
@@ -206,6 +207,7 @@ function getNavHTML(activePage) {
     <a href="size-chart.html">Size Guide</a>
     <a href="about.html">About</a>
     <a href="contact.html">Contact</a>
+    <a href="order-tracker.html">Track Order</a>
   </div>
   <div id="searchBar" style="display:none;">
     <input type="text" id="searchInput" placeholder="Search products..." onkeyup="handleSearch(event)">
