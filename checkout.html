@@ -241,10 +241,7 @@ function placeOrder() {
   }
   if (Cart.get().length === 0) { alert('Your cart is empty.'); return; }
 
-  const btn = document.getElementById('placeOrderBtn');
-  btn.disabled = true;
-  btn.textContent = 'Processing...';
-
+  // Build order
   const order = {
     orderNumber: 'ILS-' + Date.now().toString(36).toUpperCase(),
     email: document.getElementById('email').value.trim(),
@@ -267,21 +264,22 @@ function placeOrder() {
     createdAt: new Date().toISOString()
   };
 
-  // ── Deduct inventory for each cart item ──
-  const invItems = order.items.map(i => ({
-    product_name: i.name,
-    size: i.size || '',
-    qty: i.qty || 1
-  }));
+  // Save to session storage for confirmation page
+  sessionStorage.setItem('lastOrder', JSON.stringify(order));
 
-  fetch('https://superagent-bc2ec54c.base44.app/functions/illestSupply?action=deductInventory', {
+  // Show loading state
+  const btn = document.getElementById('placeOrderBtn');
+  btn.disabled = true;
+  btn.textContent = 'Processing...';
+
+  // Save order to backend API
+  fetch('https://superagent-bc2ec54c.base44.app/functions/adminApi', {
     method: 'POST',
-    headers: {'Content-Type':'application/json'},
-    body: JSON.stringify({ items: invItems })
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ action: 'createOrder', order: order })
   })
-  .catch(() => {}) // don't block order on inventory error
-  .finally(() => {
-    sessionStorage.setItem('lastOrder', JSON.stringify(order));
+  .catch(function(e){ console.warn('Order save failed (non-critical):', e); })
+  .finally(function() {
     Cart.clear();
     window.location.href = 'order-confirmation.html';
   });
