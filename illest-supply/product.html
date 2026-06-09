@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title id="pageTitle">Product | The Illest Supply</title>
-<meta name="description" id="pageDesc" content="Authenticated designer piece from The Illest Supply."/>
+<meta name="description" id="pageDesc" content="Shop this piece from The Illest Supply. Limited stock, fast shipping."/>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style id="globalStyles">
@@ -37,9 +37,9 @@
 .pd-category{font-size:10px;letter-spacing:0.2em;color:#444;text-transform:uppercase;font-weight:600;margin-bottom:8px;}
 .pd-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,5vw,60px);line-height:1;margin-bottom:12px;letter-spacing:0.02em;}
 .pd-price-row{display:flex;align-items:baseline;gap:12px;margin-bottom:6px;}
-.pd-price{font-size:34px;font-weight:800;}
-.pd-orig{font-size:18px;color:#444;text-decoration:line-through;}
-.pd-save{font-size:15px;color:#22c55e;font-weight:800;}
+.pd-price{font-size:44px;font-weight:900;letter-spacing:-0.01em;}
+.pd-orig{font-size:20px;color:#444;text-decoration:line-through;}
+.pd-save{font-size:16px;color:#22c55e;font-weight:800;}
 .pd-sold{font-size:14px;color:#888;margin-bottom:12px;font-weight:600;}
 
 .pd-badges{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
@@ -254,7 +254,7 @@ else {
 
   // Badges
   const badgeMap = {AUTH:'green',HOT:'',NEW:'',LOW:'yellow',SOLD:''};
-  const badgeLabels = {AUTH:'✓ Authenticated',HOT:'🔥 Trending',NEW:'New Arrival',LOW:'⚠ Low Stock',SOLD:'Sold Out'};
+  const badgeLabels = {AUTH:'🔥 Heat',HOT:'🔥 Trending',NEW:'New Arrival',LOW:'⚠ Low Stock',SOLD:'Sold Out'};
   document.getElementById('pdBadges').innerHTML = (p.badges||[]).map(b=>`<div class="pd-badge ${badgeMap[b]||''}">${badgeLabels[b]||b}</div>`).join('');
 
   // Sizes
