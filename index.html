@@ -211,13 +211,12 @@ document.getElementById('footerContainer').innerHTML = getFooterHTML();
 
 // Render grids after overrides/inventory sync
 onProductsReady(function() {
-  // Show 4 featured products — best sellers first, fall back to any available
-  let featured = getFeatured().slice(0,4);
-  if (featured.length < 4) {
-    const ids = new Set(featured.map(p=>p.id));
-    const extras = PRODUCTS.filter(p => !p.isSoldOut && !ids.has(p.id));
-    featured = featured.concat(extras).slice(0,4);
-  }
+  // Always show exactly 4 products — available ones only
+  const available = PRODUCTS.filter(p => !p.isSoldOut);
+  // Prioritize best sellers, then fill with others
+  const bestSellers = available.filter(p => p.isBestSeller);
+  const others = available.filter(p => !p.isBestSeller);
+  const featured = bestSellers.concat(others).slice(0,4);
   document.getElementById('newArrivalsGrid').innerHTML = featured.map(p => renderHomeCard(p)).join('');
 });
 
