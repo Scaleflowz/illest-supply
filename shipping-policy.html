@@ -1,0 +1,38 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Shipping Policy | The Illest Supply</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style id="globalStyles"></style>
+<style>.policy-wrap{max-width:720px;margin:60px auto;padding:0 20px 80px;}.policy-wrap h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(44px,6vw,72px);margin-bottom:8px;}.policy-wrap .subtitle{font-size:13px;color:#333;margin-bottom:40px;}.policy-section{margin-bottom:32px;}.policy-section h3{font-size:14px;font-weight:700;letter-spacing:.06em;margin-bottom:10px;color:#fff;}.policy-section p,.policy-section li{font-size:13px;color:#444;line-height:1.8;}.policy-section ul{padding-left:20px;}.policy-section li{margin-bottom:6px;}</style>
+</head><body>
+<div id="navContainer"></div><main><div class="policy-wrap" id="policyContent"></div></main>
+<div id="footerContainer"></div>
+<script src="cart.js"></script><script src="products.js"></script>
+<script>
+document.getElementById('globalStyles').textContent=getGlobalCSS();
+document.getElementById('navContainer').innerHTML=getNavHTML('');
+document.getElementById('footerContainer').innerHTML=getFooterHTML();
+const PAGE='shipping-policy';
+const content={
+'shipping-policy':`<div class="section-title">Policies</div><h1>Shipping Policy</h1><div class="subtitle">Last updated: June 2026</div>
+<div class="policy-section"><h3>Processing Time</h3><p>All orders are processed within 1 business day of purchase. Orders placed on weekends or holidays will be processed the next business day.</p></div>
+<div class="policy-section"><h3>Delivery Time</h3><p>Standard Shipping: <strong>1–3 business days</strong> after processing. Most orders arrive faster. Delivery times are estimates and may vary due to carrier delays.</p></div>
+<div class="policy-section"><h3>Free Shipping</h3><p>We offer <strong>free standard shipping on all orders over $150.</strong> Orders under $150 ship for a flat rate of $9.99.</p></div>
+<div class="policy-section"><h3>Tracking</h3><p>Tracking information will be sent to your email once your order ships. Please allow 24 hours for the tracking link to activate.</p></div>
+<div class="policy-section"><h3>Shipping Delays</h3><p>Occasionally, carrier delays outside our control may affect delivery times. We appreciate your patience and will always do our best to communicate any issues.</p></div>
+<div class="policy-section"><h3>Questions?</h3><p>Email us at <a href="mailto:timoy@scaleflowz.us" style="color:#555;text-decoration:underline;">timoy@scaleflowz.us</a> or DM us on Instagram <a href="https://instagram.com/theillestsupply" style="color:#555;">@theillestsupply</a>.</p></div>`,
+'returns-policy':`<div class="section-title">Policies</div><h1>Returns Policy</h1><div class="subtitle">Last updated: June 2026</div>
+<div class="policy-section"><h3>Final Sale</h3><p>All sales are final. As a resale shop, we are not able to accept returns or exchanges on items once sold. Please review product descriptions, condition notes, and size guides carefully before purchasing.</p></div>
+<div class="policy-section"><h3>Wrong Item Received</h3><p>If you receive an item that is different from what you ordered, please contact us within 48 hours of delivery at <a href="mailto:timoy@scaleflowz.us" style="color:#555;text-decoration:underline;">timoy@scaleflowz.us</a> with your order number and photos. We will resolve the issue promptly.</p></div>
+<div class="policy-section"><h3>Damaged in Transit</h3><p>If your order arrives damaged due to shipping, please contact us within 48 hours with photos of the damage and packaging. We will review on a case-by-case basis.</p></div>
+<div class="policy-section"><h3>Authenticity Protection</h3><p>Every item is inspected before listing. If you have questions about the condition or authenticity of your item, reach out before purchasing. We are happy to provide additional photos or details.</p></div>
+<div class="policy-section"><h3>Contact</h3><p>For any issues, email <a href="mailto:timoy@scaleflowz.us" style="color:#555;text-decoration:underline;">timoy@scaleflowz.us</a> or DM <a href="https://instagram.com/theillestsupply" style="color:#555;">@theillestsupply</a>.</p></div>`,
+'authentication':`<div class="section-title">Trust & Verification</div><h1>Authentication</h1><div class="subtitle">How we verify every item before listing</div>
+<div class="policy-section"><h3>How We Authenticate</h3><p>Every item listed on The Illest Supply goes through a review process before being listed. We examine condition, materials, labeling, and overall quality to ensure what you see is what you get.</p></div>
+<div class="policy-section"><h3>What We Check</h3><ul><li>Physical condition — no damage, scuffs, or undisclosed wear</li><li>Labeling and product markings</li><li>Overall quality and presentation</li><li>Size accuracy</li><li>Packaging condition where applicable</li></ul></div>
+<div class="policy-section"><h3>Shop With Confidence</h3><p>We list condition honestly on every product page. If an item has any imperfection, it will be noted. We do not sell items we wouldn't wear ourselves.</p></div>
+<div class="policy-section"><h3>Disclaimer</h3><p>The Illest Supply is an independent resale shop. We are not affiliated with, endorsed by, or partnered with any of the brands whose products we resell. Brand names are used solely to accurately describe the items being sold.</p></div>
+<div class="policy-section"><h3>Questions</h3><p>Want additional photos or details before purchasing? Email <a href="mailto:timoy@scaleflowz.us" style="color:#555;text-decoration:underline;">timoy@scaleflowz.us</a> or DM us on Instagram.</p></div>`
+};
+document.getElementById('policyContent').innerHTML=content[PAGE]||'<p>Page not found.</p>';
+</script>
+</body></html>
