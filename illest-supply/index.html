@@ -116,7 +116,8 @@
   <div class="container">
     <div class="section-heading" style="margin-bottom:8px;">Featured Drops</div>
     <div style="color:#555;font-size:13px;margin-bottom:28px;">Premium pieces, real prices.</div>
-    <div class="products-grid" id="newArrivalsGrid"></div>
+    <div id="newArrivalsGrid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;"></div>
+    <style>@media(max-width:768px){#newArrivalsGrid{grid-template-columns:repeat(2,1fr)!important;}}</style>
     <div style="text-align:center;margin-top:32px;"><a href="shop.html" class="btn-outline">View All Products</a></div>
   </div>
 </section>
@@ -201,8 +202,8 @@
 
 <div id="footerContainer"></div>
 
-<script src="cart.js?v=2"></script>
-<script src="products.js?v=10"></script>
+<script src="cart.js?v=3"></script>
+<script src="products.js?v=11"></script>
 
 <script>
 document.getElementById('globalStyles').textContent = getGlobalCSS();
@@ -212,8 +213,36 @@ document.getElementById('footerContainer').innerHTML = getFooterHTML();
 // Render grids after overrides/inventory sync
 onProductsReady(function() {
   const featured = getFeatured().slice(0,4);
-  document.getElementById('newArrivalsGrid').innerHTML = featured.map(p => renderProductCard(p)).join('');
+  document.getElementById('newArrivalsGrid').innerHTML = featured.map(p => renderHomeCard(p)).join('');
 });
+
+function renderHomeCard(p) {
+  const soldOut = p.isSoldOut || Object.values(p.stock||{}).every(v=>v===0);
+  const media = p.video
+    ? `<video src="${p.video}" autoplay muted loop playsinline style="width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;"></video>`
+    : `<img src="${p.img}" alt="${p.name}" loading="lazy" style="width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;">`;
+  const badge = p.badges && p.badges.length
+    ? `<span style="position:absolute;top:10px;left:10px;background:#111;border:1px solid rgba(255,255,255,.15);color:#fff;font-size:10px;font-weight:700;letter-spacing:.06em;padding:4px 8px;border-radius:20px;">${p.badges[0]==='HOT'?'🔥 HOT':p.badges[0]}</span>`
+    : '';
+  const soldOverlay = soldOut ? `<div style="position:absolute;inset:0;background:rgba(0,0,0,.55);border-radius:12px 12px 0 0;display:flex;align-items:center;justify-content:center;"><span style="color:#fff;font-size:13px;font-weight:700;letter-spacing:.08em;">SOLD OUT</span></div>` : '';
+  const btn = soldOut
+    ? `<button disabled style="width:100%;padding:12px;background:#1a1a1a;color:#444;border:1px solid #222;border-radius:8px;font-size:13px;font-weight:700;cursor:not-allowed;letter-spacing:.06em;">SOLD OUT</button>`
+    : `<button onclick="event.stopPropagation();goToProduct(${p.id})" style="width:100%;padding:12px;background:#fff;color:#000;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:.06em;transition:opacity .2s;" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">SHOP NOW</button>`;
+  return `
+    <div onclick="${soldOut?'':('goToProduct('+p.id+')')}" style="background:#0d0d0d;border:1px solid rgba(255,255,255,.07);border-radius:12px;overflow:hidden;cursor:${soldOut?'default':'pointer'};transition:transform .2s,border-color .2s;" onmouseover="this.style.transform='translateY(-3px)';this.style.borderColor='rgba(255,255,255,.18)'" onmouseout="this.style.transform='';this.style.borderColor='rgba(255,255,255,.07)'">
+      <div style="position:relative;aspect-ratio:1;overflow:hidden;">
+        ${media}${badge}${soldOverlay}
+      </div>
+      <div style="padding:14px;">
+        <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.name}</div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+          <span style="font-size:16px;font-weight:800;color:#fff;">$${p.price}</span>
+          <span style="font-size:12px;color:#444;text-decoration:line-through;">$${p.origPrice}</span>
+        </div>
+        ${btn}
+      </div>
+    </div>`;
+}
 </script>
 
 <!-- EMAIL CAPTURE POPUP -->
