@@ -9,17 +9,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style id="globalStyles">
 /* EMAIL POPUP */
-#email-popup{position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity 0.35s;}
-#email-popup.show{opacity:1;pointer-events:all;}
-.popup-box{background:#0d0d0d;border:1px solid rgba(255,255,255,0.1);border-radius:24px;padding:40px 32px;max-width:400px;width:100%;text-align:center;position:relative;}
-.popup-close{position:absolute;top:14px;right:18px;background:none;border:none;color:#555;font-size:22px;cursor:pointer;line-height:1;}
-.popup-tag{font-size:10px;letter-spacing:0.2em;color:#c9a96e;font-weight:700;text-transform:uppercase;margin-bottom:12px;}
-.popup-title{font-family:'Bebas Neue',sans-serif;font-size:36px;line-height:1;margin-bottom:8px;color:#fff;}
-.popup-sub{font-size:13px;color:#555;margin-bottom:24px;line-height:1.5;}
-.popup-input{width:100%;padding:14px 16px;background:#000;border:1px solid rgba(255,255,255,0.12);border-radius:12px;color:#fff;font-size:14px;box-sizing:border-box;margin-bottom:12px;outline:none;}
-.popup-input:focus{border-color:#c9a96e;}
-.popup-btn{width:100%;padding:15px;background:#fff;color:#000;border:none;border-radius:12px;font-size:13px;font-weight:800;letter-spacing:0.08em;cursor:pointer;text-transform:uppercase;}
-.popup-skip{font-size:11px;color:#333;margin-top:14px;cursor:pointer;text-decoration:underline;display:block;}
 
 /* VIEWER BADGE ON CARD IMAGE */
 .viewer-badge{position:absolute;top:10px;left:10px;background:rgba(0,0,0,0.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.12);color:#fff;font-size:11px;font-weight:700;letter-spacing:0.05em;padding:5px 12px;border-radius:50px;pointer-events:none;white-space:nowrap;z-index:10;}
@@ -275,39 +264,7 @@ document.getElementById('bestSellersGrid').innerHTML = getFeatured().map(p => re
 </script>
 
 <!-- EMAIL CAPTURE POPUP -->
-<div id="email-popup">
-  <div class="popup-box">
-    <button class="popup-close" onclick="closePopup()">✕</button>
-    <div class="popup-tag">Early Access</div>
-    <div class="popup-title">GET FIRST DROP ALERTS</div>
-    <div class="popup-sub">New drops sell out fast. Be the first to know when limited pairs go live.</div>
-    <input class="popup-input" id="popupEmail" type="text" placeholder="your@email.com" autocomplete="email" inputmode="email">
-    <button class="popup-btn" onclick="submitPopup()">NOTIFY ME</button>
-    <span class="popup-skip" onclick="closePopup()">No thanks, I'll miss out</span>
-  </div>
-</div>
-<script>
-(function(){
-  if(localStorage.getItem('illest_popup_dismissed')) return;
-  setTimeout(function(){
-    document.getElementById('email-popup').classList.add('show');
-  }, 4000);
-})();
-function closePopup(){
-  document.getElementById('email-popup').classList.remove('show');
-  localStorage.setItem('illest_popup_dismissed','1');
-}
-function submitPopup(){
-  const email = document.getElementById('popupEmail').value.trim();
-  if(!email || !email.includes('@')) { document.getElementById('popupEmail').style.borderColor='#ef4444'; return; }
-  fetch('/api/apps/6a21ea02495f72afbc2ec54c/functions/adminApi', {
-    method:'POST', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({action:'notifyDrop', email, dropId:'general'})
-  });
-  document.querySelector('.popup-box').innerHTML = '<div style="padding:20px 0"><div style="font-size:48px;margin-bottom:16px;">🔥</div><div style="font-family:Bebas Neue,sans-serif;font-size:32px;margin-bottom:8px;">YOU'RE ON THE LIST</div><div style="font-size:13px;color:#555;">We'll hit you first when the drop goes live.</div></div>';
-  setTimeout(closePopup, 2500);
-}
-</script>
+
 
 
 <!-- ── EMAIL CAPTURE POPUP ─────────────────────────────── -->
