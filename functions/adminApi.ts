@@ -11,7 +11,6 @@ Deno.serve(async (req: Request): Promise<Response> => {
   const url = new URL(req.url);
   const action = url.searchParams.get("action");
 
-  // Use service role so no user token needed
   const client = createClientFromRequest(req, { appId: "6a21ea02495f72afbc2ec54c" });
   const db = client.asServiceRole.entities;
 
@@ -22,7 +21,7 @@ Deno.serve(async (req: Request): Promise<Response> => {
       const users = await db.AdminUser.list();
       const user = users.find((u: any) => u.passcode === passcode && u.active);
       if (!user) return Response.json({ error: "Invalid passcode" }, { status: 401, headers: cors });
-      return Response.json({ success: true, user: { id: user.id, name: user.name, role: user.role } }, { headers: cors });
+      return Response.json({ success: true, user: { id: user.id, name: user.name, role: user.role, passcode: user.passcode } }, { headers: cors });
     }
 
     // ── INQUIRIES ─────────────────────────────────────────────────────────
@@ -31,13 +30,11 @@ Deno.serve(async (req: Request): Promise<Response> => {
       items.sort((a: any, b: any) => new Date(b.created_date).getTime() - new Date(a.created_date).getTime());
       return Response.json(items, { headers: cors });
     }
-
     if (action === "updateInquiry") {
       const { id, ...data } = await req.json();
       await db.Inquiry.update(id, data);
       return Response.json({ success: true }, { headers: cors });
     }
-
     if (action === "createInquiry") {
       const data = await req.json();
       const inquiry = await db.Inquiry.create({ ...data, status: "New" });
@@ -52,12 +49,9 @@ Deno.serve(async (req: Request): Promise<Response> => {
         });
       } else {
         await db.Customer.create({
-          name: data.customer_name,
-          email: data.customer_email,
-          total_orders: 1,
-          total_spent: data.price || 0,
-          last_inquiry_date: new Date().toISOString().split("T")[0],
-          tags: "New",
+          name: data.customer_name, email: data.customer_email,
+          total_orders: 1, total_spent: data.price || 0,
+          last_inquiry_date: new Date().toISOString().split("T")[0], tags: "New",
         });
       }
       return Response.json({ success: true, id: inquiry.id }, { headers: cors });
@@ -68,10 +62,26 @@ Deno.serve(async (req: Request): Promise<Response> => {
       const items = await db.InventoryItem.list();
       return Response.json(items, { headers: cors });
     }
-
     if (action === "updateInventory") {
       const { id, in_stock, quantity } = await req.json();
       await db.InventoryItem.update(id, { in_stock, quantity });
+      return Response.json({ success: true }, { headers: cors });
+    }
+
+    // ── PRODUCT OVERRIDES (price, badges, sold-out, sold count) ───────────
+    if (action === "getProductOverrides") {
+      const overrides = await db.ProductOverride.list();
+      return Response.json(overrides, { headers: cors });
+    }
+    if (action === "upsertProductOverride") {
+      const data = await req.json();
+      const overrides = await db.ProductOverride.list();
+      const existing = overrides.find((o: any) => o.product_id === data.product_id);
+      if (existing) {
+        await db.ProductOverride.update(existing.id, data);
+      } else {
+        await db.ProductOverride.create(data);
+      }
       return Response.json({ success: true }, { headers: cors });
     }
 
@@ -81,7 +91,6 @@ Deno.serve(async (req: Request): Promise<Response> => {
       items.sort((a: any, b: any) => (b.total_orders || 0) - (a.total_orders || 0));
       return Response.json(items, { headers: cors });
     }
-
     if (action === "updateCustomer") {
       const { id, ...data } = await req.json();
       await db.Customer.update(id, data);
@@ -93,22 +102,15 @@ Deno.serve(async (req: Request): Promise<Response> => {
       const inquiries = await db.Inquiry.list();
       const customers = await db.Customer.list();
       const inventory = await db.InventoryItem.list();
-
       const byStatus: any = {};
       const byProduct: any = {};
       let revenue = 0;
-
       inquiries.forEach((i: any) => {
         byStatus[i.status] = (byStatus[i.status] || 0) + 1;
         byProduct[i.product_name] = (byProduct[i.product_name] || 0) + 1;
         if (["Paid", "Shipped", "Done"].includes(i.status)) revenue += i.price || 0;
       });
-
-      const topProducts = Object.entries(byProduct)
-        .sort((a: any, b: any) => b[1] - a[1])
-        .slice(0, 5)
-        .map(([name, count]) => ({ name, count }));
-
+      const topProducts = Object.entries(byProduct).sort((a: any, b: any) => b[1] - a[1]).slice(0, 5).map(([name, count]) => ({ name, count }));
       const now = Date.now();
       const trend = Array.from({ length: 7 }, (_, i) => {
         const day = new Date(now - (6 - i) * 86400000);
@@ -116,22 +118,13 @@ Deno.serve(async (req: Request): Promise<Response> => {
         const count = inquiries.filter((inq: any) => new Date(inq.created_date).toDateString() === day.toDateString()).length;
         return { label, count };
       });
-
-      const topCustomers = [...customers]
-        .sort((a: any, b: any) => (b.total_spent || 0) - (a.total_spent || 0))
-        .slice(0, 5)
+      const topCustomers = [...customers].sort((a: any, b: any) => (b.total_spent || 0) - (a.total_spent || 0)).slice(0, 5)
         .map((c: any) => ({ name: c.name, email: c.email, total_orders: c.total_orders || 0, total_spent: c.total_spent || 0 }));
-
       return Response.json({
-        total_inquiries: inquiries.length,
-        by_status: byStatus,
-        top_products: topProducts,
-        top_customers: topCustomers,
-        estimated_revenue: revenue,
-        total_customers: customers.length,
+        total_inquiries: inquiries.length, by_status: byStatus, top_products: topProducts, top_customers: topCustomers,
+        estimated_revenue: revenue, total_customers: customers.length,
         repeat_buyers: customers.filter((c: any) => (c.total_orders || 0) >= 2).length,
-        oos_sizes: inventory.filter((i: any) => !i.in_stock).length,
-        trend,
+        oos_sizes: inventory.filter((i: any) => !i.in_stock).length, trend,
       }, { headers: cors });
     }
 
@@ -155,15 +148,12 @@ Deno.serve(async (req: Request): Promise<Response> => {
       return Response.json({ success: true }, { headers: cors });
     }
 
-
     // ── EMAIL BLAST ───────────────────────────────────────────────────────
     if (action === "emailBlast") {
       const { subject, body, emails } = await req.json();
-      // Send via the inquiry email mechanism — fire and forget to each
       const sendResults = await Promise.allSettled(emails.map((email: string) =>
-        fetch("https://api.base44.com/api/apps/6a21ea02495f72afbc2ec54c/functions/sendInquiry", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
+        fetch("https://superagent-bc2ec54c.base44.app/functions/sendInquiry", {
+          method: "POST", headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ to: email, subject, body, type: "blast" })
         })
       ));
@@ -187,39 +177,29 @@ Deno.serve(async (req: Request): Promise<Response> => {
       return Response.json({ success: true }, { headers: cors });
     }
 
-
     // ── NOTIFICATIONS ─────────────────────────────────────────────────────
     if (action === "notifyDrop") {
       const { product_name, email } = await req.json();
-      // Add email to the drop's notify_list
       const drops = await db.ScheduledDrop.list();
       const drop = drops.find((d: any) => d.product_name === product_name);
       if (drop) {
         const existing = drop.notify_list ? drop.notify_list.split(',').filter(Boolean) : [];
-        if (!existing.includes(email)) {
-          existing.push(email);
-          await db.ScheduledDrop.update(drop.id, { notify_list: existing.join(',') });
-        }
+        if (!existing.includes(email)) { existing.push(email); await db.ScheduledDrop.update(drop.id, { notify_list: existing.join(',') }); }
       }
       return Response.json({ success: true }, { headers: cors });
     }
     if (action === "notifyOos") {
       const { product_name, size, email } = await req.json();
-      // Find inventory item and add to notify list
       const items = await db.InventoryItem.list();
       const item = items.find((i: any) => i.product_name === product_name && i.size === size);
       if (item) {
         const existing = item.notes ? item.notes.split(',').filter(Boolean) : [];
-        if (!existing.includes(email)) {
-          existing.push(email);
-          await db.InventoryItem.update(item.id, { notes: 'notify:' + existing.join(',') });
-        }
+        if (!existing.includes(email)) { existing.push(email); await db.InventoryItem.update(item.id, { notes: 'notify:' + existing.join(',') }); }
       }
       return Response.json({ success: true }, { headers: cors });
     }
 
     return Response.json({ error: "Unknown action" }, { status: 400, headers: cors });
-
   } catch (e: any) {
     return Response.json({ error: e.message }, { status: 500, headers: cors });
   }
