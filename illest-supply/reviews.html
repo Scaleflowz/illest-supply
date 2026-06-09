@@ -70,35 +70,18 @@ document.getElementById('footerContainer').innerHTML=getFooterHTML();
 
 const REVIEWS=[
   {
-    name:"Malik D.", user:"@malik.drip", stars:5, featured:true, verified:true,
-    product:"Asics Gel Kayano 14",
-    text:"These are actual deadstock. Came in the OG box, tissue paper, everything. The silver/white colorway is clean as hell in person — way better than photos. Shipped fast, packed tight. Not my first order from Illest and won't be my last."
+    name:"Chris V.", user:"@chrisvibe", stars:5, verified:true,
+    product:"Balenciaga Track Sneakers",
+    text:"All black Balenciagas are literally the hardest shoe I own right now. Condition is perfect, size was spot on. These came super fast and the quality speaks for itself. Illest Supply never misses.",
+    img:"https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/43d61f986_55D78BF3-BD37-4A1C-AB08-28E444756C13.jpg"
   },
   {
-    name:"Darius W.", user:"@dariuswfit", stars:5, featured:true, verified:true,
-    product:"Balenciaga Slides",
-    text:"Dropped these on my IG story and my DMs went crazy. The condition is perfect, came double-boxed. This is the only spot I'm copping from now on."
+    name:"Jaylen B.", user:"@jaybfresh", stars:5, verified:true,
+    product:"Balenciaga Track Sneakers",
+    text:"Pulled up in these and the whole room turned. All black everything, clean condition, came packaged right. You already know I'm back for the next drop. Illest Supply is the plug fr.",
+    video:"https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/509b33d79_3e153adfd_RenderedVideo.mp4"
   },
-  {
-    name:"Keisha T.", user:"@keishafit", stars:5, featured:true, verified:true,
-    product:"Dior Slides",
-    text:"Literally couldn't believe these were real when I first saw the price. Opened the box and they're 100% legit. Packaging was immaculate and they came in 2 days. Illest Supply is the real deal."
-  },
-  {
-    name:"Jordan M.", user:"@jordan.fits", stars:5, verified:true,
-    product:"Bottega Veneta (Green)",
-    text:"Bottegas came through immaculate. Exactly as described, packed perfectly, and the color is unreal in person. Placed the order Monday, had them by Wednesday."
-  },
-  {
-    name:"Priya M.", user:"@priyamood", stars:5, verified:true,
-    product:"Asics Gel Kayano 14 Pink Glow",
-    text:"Pink Glow Asics are so clean. Got mine in under 3 days. The box was sealed, deadstock condition. I'm obsessed. Ordering again next drop."
-  },
-  {
-    name:"Noah C.", user:"@noahcold", stars:5, verified:true,
-    product:"Asics Gel Kayano 14",
-    text:"Ordered the Asics and they came exactly as shown. Deadstock, correct size, fast. This is my go-to spot now for everything designer."
-  },
+  {name:"Jordan M.",user:"@jordan.fits",stars:5,verified:true,product:"Bottega Veneta (Green)",text:"Bottegas came through immaculate. Exactly as described, packed perfectly, and the color is unreal in person. Placed the order Monday, had them by Wednesday."},
   {name:"Maya R.",user:"@maya.style",stars:5,verified:true,product:"Asics Gel Kayano 14 Pink Glow",text:"Deadstock, packed properly, size was perfect. These sold out everywhere — glad I found them here. Will be back for the next drop for sure."},
   {name:"Tyler J.",user:"@tylrjay",stars:5,verified:true,product:"Rick Owens",text:"Rick Owens for that price? These go crazy. Legit, fast shipping, no cap. The Illest Supply actually delivers every time."},
   {name:"Aaliyah K.",user:"@aaliyah.k",stars:5,verified:true,product:"Dior Slides",text:"Dior slides are perfect. Came in a week, exactly what was shown. Super clean packaging, felt premium from the moment I opened the box."},
@@ -112,6 +95,7 @@ const REVIEWS=[
   {name:"Tre L.",user:"@trelouis",stars:5,verified:true,product:"Rick Owens",text:"Rick Owens pieces are hard to find for a good price — Illest Supply had them and they were legit. Packed well, arrived on time. Solid."},
   {name:"Amara S.",user:"@amarastyle",stars:5,verified:true,product:"Vale Forever Jorts",text:"Jorts are premium quality and the fit is immaculate. Ordered the L and it's perfect. Fast shipping, clean packaging. Love this store."},
   {name:"Jaylen F.",user:"@jayflex",stars:5,verified:true,product:"Balenciaga Slides",text:"Super happy with these slides. Came quicker than expected and condition was spotless. Already told my whole squad about this site."},
+  {name:"Priya M.",user:"@priyamood",stars:5,verified:true,product:"Asics Gel Kayano 14 Pink Glow",text:"Pink Glow Asics are so clean. Got mine in under 3 days. The box was sealed, deadstock condition. I'm obsessed. Ordering again next drop."},
   {name:"Zach W.",user:"@zachwaves",stars:5,verified:true,product:"Prada Cup (Black)",text:"Nobody prices these better than Illest Supply. Got the black Prada Cups and they're 100% legit. Already on my second order."},
   {name:"Tiffany O.",user:"@tiffanyoo",stars:5,verified:true,product:"Bottega Veneta (Green)",text:"Green Bottegas are gorgeous. Mine arrived in 2 days, pristine condition. The Illest Supply is the move — period."},
   {name:"Andre K.",user:"@andrekicks",stars:5,verified:true,product:"Dior Slides",text:"Legit Dior slides, fast shipping, great price. What else do you need? Been telling everyone about this place."},
@@ -121,6 +105,10 @@ const REVIEWS=[
   {name:"Elijah M.",user:"@elijahmvp",stars:5,verified:true,product:"Rick Owens",text:"Rick Owens hit different in person. Ordered Thursday, had them Saturday. Condition was flawless. Illest Supply doesn't miss."},
   {name:"Camille J.",user:"@camillej",stars:5,verified:true,product:"Prada Cup (Blue)",text:"My favorite purchase this year. The blue Prada Cups are stunning and the whole experience was smooth. Already planning my next order."},
   {name:"Dominic A.",user:"@dominica",stars:5,verified:true,product:"Bottega Veneta (Pink)",text:"Bought as a gift and she loved them. Pink Bottegas came wrapped nicely, perfect condition. Made me look like I really tried lol. Appreciate it."},
+  {name:"Noah C.",user:"@noahcold",stars:5,verified:true,product:"Asics Gel Kayano 14",text:"Ordered the Asics and they came exactly as shown. Deadstock, correct size, fast. This is my go-to spot now for everything designer."},
+  {name:"Keisha T.",user:"@keishafit",stars:5,verified:true,product:"Dior Slides",text:"Literally couldn't believe these were real when I first saw the price. Opened the box and they're 100% legit. Packaging was immaculate and they came in 2 days."},
+  {name:"Darius W.",user:"@dariuswfit",stars:5,verified:true,product:"Balenciaga Slides",text:"Dropped these on my IG story and my DMs went crazy. The condition is perfect, came double-boxed. This is the only spot I'm copping from now on."},
+  {name:"Malik D.",user:"@malik.drip",stars:5,verified:true,product:"Asics Gel Kayano 14",text:"These are actual deadstock. Came in the OG box, tissue paper, everything. The silver/white colorway is clean as hell in person. Shipped fast, packed tight. Not my first order from Illest and won't be my last."},
 ];
 
 document.getElementById('reviewsGrid').innerHTML=REVIEWS.map((r,i)=>{
