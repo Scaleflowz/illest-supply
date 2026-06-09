@@ -237,9 +237,14 @@ function renderHomeCard(p, forceAvailable) {
       </div>
       <div style="padding:14px;">
         <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.name}</div>
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
           <span style="font-size:16px;font-weight:800;color:#fff;">$${p.price}</span>
           <span style="font-size:12px;color:#444;text-decoration:line-through;">$${p.origPrice}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+          ${p.soldCount ? `<span style="font-size:11px;color:#888;letter-spacing:.03em;">${p.soldCount}+ sold</span>` : ''}
+          ${p.soldCount && p.viewers ? `<span style="font-size:11px;color:#444;">·</span>` : ''}
+          ${p.viewers ? `<span style="font-size:11px;color:#888;letter-spacing:.03em;">👁 ${p.viewers} viewing</span>` : ''}
         </div>
         ${btn}
       </div>
