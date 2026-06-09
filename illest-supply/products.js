@@ -13,7 +13,7 @@ const PRODUCTS = [
     stock: {"6":2,"7":3,"8":4,"9":3,"10":2,"11":1,"12":0,"13":0},
     img: "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/05a792aed_AdobeExpress-file.png",
     imgs: ["https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/05a792aed_AdobeExpress-file.png"],
-    video: null, type: "shoe", sold: 89
+    video: "https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/90cb49791_424a09905_IMG_38132.mp4", type: "shoe", sold: 89
   },
   {
     id: 2, name: "Prada Cup (Black)", slug: "prada-cup-black",
@@ -158,15 +158,18 @@ const PRODUCTS = [
     desc: "Bottega Veneta in dusty rose/pink. The hardest colorway to find. Limited pairs.",
     sizes: ["7","8","9","10","11"],
     stock: {"7":1,"8":1,"9":1,"10":1,"11":1},
-    img: "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/ab18f8c12_CBA80A5F-97CF-45C5-AA11-522922875DE3.png",
-    imgs: ["https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/ab18f8c12_CBA80A5F-97CF-45C5-AA11-522922875DE3.png"],
-    video: "https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/745ca9383_3852cb545_IMG_3818.mp4", type: "shoe", sold: 77
+    img: "https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/2fa25c479_4f38bf281_IMG_0613.jpg",
+    imgs: [
+      "https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/2fa25c479_4f38bf281_IMG_0613.jpg",
+      "https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/7a928092b_7c8eeb4d5_IMG_2488.png"
+    ],
+    video: "https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/51046f0fb_a3a6a46f6_IMG_38152.mp4", type: "shoe", sold: 77
   }
 ];
 
 function getProduct(id) { return PRODUCTS.find(p => p.id === id); }
 function getProductBySlug(slug) { return PRODUCTS.find(p => p.slug === slug); }
-function getFeatured() { return PRODUCTS.filter(p => p.isBestSeller && !p.isSoldOut).slice(0, 8); }
+function getFeatured() { return PRODUCTS.filter(p => p.isBestSeller && !p.isSoldOut).slice(0, 20); }
 function getNewArrivals() { return PRODUCTS.filter(p => p.isNewArrival).slice(0, 8); }
 function getSavePercent(p) { return Math.round((1 - p.price/p.origPrice)*100); }
 
