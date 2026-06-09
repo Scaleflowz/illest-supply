@@ -7,7 +7,15 @@
 <meta name="description" id="pageDesc" content="Authenticated designer piece from The Illest Supply."/>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<style id="globalStyles"></style>
+<style id="globalStyles">
+.pd-social-stats{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:16px;}
+.pd-stat{font-size:12px;color:#666;font-weight:600;}
+.pd-stat span{color:#aaa;}
+.low-stock-alert{display:inline-block;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#ef4444;font-size:12px;font-weight:700;letter-spacing:0.08em;padding:6px 14px;border-radius:50px;margin-bottom:16px;}
+.card-live-stats{display:flex;gap:10px;font-size:10px;color:#666;font-weight:600;margin-bottom:6px;}
+.low-stock-badge{background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.25);color:#ef4444;font-size:10px;font-weight:700;letter-spacing:0.06em;padding:4px 10px;border-radius:50px;margin-bottom:6px;display:inline-block;}
+.sold-count{font-size:12px;color:#c9a96e;font-weight:800;letter-spacing:0.04em;margin-bottom:4px;}
+</style>
 <style>
 .breadcrumb{font-size:11px;color:#333;padding:16px 0;letter-spacing:0.04em;}
 .breadcrumb a{color:#333;transition:color .2s;}.breadcrumb a:hover{color:#fff;}
@@ -24,12 +32,12 @@
 
 .product-detail{padding:8px 0;}
 .pd-category{font-size:10px;letter-spacing:0.2em;color:#444;text-transform:uppercase;font-weight:600;margin-bottom:8px;}
-.pd-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,4vw,52px);line-height:1;margin-bottom:12px;letter-spacing:0.02em;}
+.pd-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,5vw,60px);line-height:1;margin-bottom:12px;letter-spacing:0.02em;}
 .pd-price-row{display:flex;align-items:baseline;gap:12px;margin-bottom:6px;}
-.pd-price{font-size:28px;font-weight:800;}
-.pd-orig{font-size:16px;color:#333;text-decoration:line-through;}
-.pd-save{font-size:13px;color:#22c55e;font-weight:700;}
-.pd-sold{font-size:12px;color:#333;margin-bottom:20px;}
+.pd-price{font-size:34px;font-weight:800;}
+.pd-orig{font-size:18px;color:#444;text-decoration:line-through;}
+.pd-save{font-size:15px;color:#22c55e;font-weight:800;}
+.pd-sold{font-size:14px;color:#888;margin-bottom:12px;font-weight:600;}
 
 .pd-badges{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
 .pd-badge{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:0.08em;padding:7px 14px;border-radius:50px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:#888;}
@@ -107,6 +115,8 @@
           <span class="pd-save" id="pdSave"></span>
         </div>
         <div class="pd-sold" id="pdSold"></div>
+        <div class="pd-social-stats" id="pdStats"></div>
+        <div id="pdLowStock"></div>
         <div class="pd-badges" id="pdBadges"></div>
 
         <div class="size-label"><span>Select Size</span><a href="size-chart.html">Size Guide →</a></div>
@@ -150,7 +160,7 @@
             <a href="shipping-policy.html" style="color:#555;font-size:12px;text-decoration:underline;">View Full Shipping Policy →</a>
           </div>
         </div>
-        <p style="font-size:11px;color:#222;margin-top:20px;line-height:1.6;">The Illest Supply is an independent resale shop. Brand names are used only to describe the items being sold. All items are inspected before listing.</p>
+        <p style="font-size:11px;color:#222;margin-top:20px;line-height:1.6;">The Illest Supply is an independent resale shop. Brand names are used for descriptive purposes only.</p>
       </div>
     </div>
   </div>
@@ -207,6 +217,20 @@ else {
 
   // Gallery
   const mainMedia = document.getElementById('mainMedia');
+  // Social proof stats
+  const views = Math.floor(p.sold * 3.2 + Math.floor(Math.random()*12) + 8);
+  const inCart = Math.floor(p.sold * 0.18 + 2);
+  const bought = Math.floor(p.sold * 0.6);
+  const statsEl = document.getElementById('pdStats');
+  if(statsEl) statsEl.innerHTML = `<span class="pd-stat">👁 <span>${views}</span> viewing now</span><span class="pd-stat">🛒 <span>${inCart}</span> in carts</span><span class="pd-stat">✅ <span>${bought}+</span> bought</span>`;
+  
+  // Low stock check
+  const lowEl = document.getElementById('pdLowStock');
+  if(lowEl && p.stock){
+    const total = Object.values(p.stock).reduce((a,b)=>a+b,0);
+    if(total <= 5 && total > 0) lowEl.innerHTML = `<div class="low-stock-alert">⚠️ Only ${total} pairs left — moving fast</div>`;
+  }
+
   if (p.video) {
     mainMedia.innerHTML = `<video src="${p.video}" autoplay muted loop playsinline></video>`;
   } else {
