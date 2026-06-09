@@ -148,7 +148,7 @@ const PRODUCTS = [
     stock: {"7":1,"8":2,"9":2,"10":1,"11":1},
     img: "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/35ae1e2e5_AdobeExpress-file.png",
     imgs: ["https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/35ae1e2e5_AdobeExpress-file.png"],
-    video: "https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/7a8062797_9874363bd_IMG_3823.mp4", type: "shoe", sold: 71
+    video: "https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/580de15a1_a932f75ba_IMG_3823.mp4", type: "shoe", sold: 71
   },
   {
     id: 13, name: "Bottega Veneta (Pink)", slug: "bottega-veneta-pink",
