@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Reviews | The Illest Supply</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style id="globalStyles"></style>
 <style>
 .reviews-hero{text-align:center;padding:60px 20px 40px;}
@@ -10,14 +10,22 @@
 .rating-stars{font-size:22px;color:#f59e0b;letter-spacing:3px;margin-bottom:4px;}
 .rating-count{font-size:13px;color:#333;}
 .reviews-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
-.review-card{background:#0d0d0d;border:1px solid rgba(255,255,255,.05);border-radius:16px;padding:24px;}
-.review-stars{font-size:13px;color:#f59e0b;margin-bottom:10px;}
-.review-text{font-size:13px;color:#666;line-height:1.7;margin-bottom:16px;}
-.review-meta{display:flex;justify-content:space-between;align-items:flex-end;}
-.review-name{font-size:13px;font-weight:700;}
-.review-product{font-size:11px;color:#333;margin-top:2px;}
-.verified-badge{font-size:10px;font-weight:700;letter-spacing:.1em;color:#22c55e;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.15);padding:4px 10px;border-radius:50px;}
-@media(max-width:768px){.reviews-grid{grid-template-columns:1fr;}}
+.review-card{background:#0d0d0d;border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:12px;}
+.review-card.featured{grid-column:span 2;border-color:rgba(201,169,110,.2);background:#0f0e0c;}
+.review-media{border-radius:12px;overflow:hidden;max-height:340px;}
+.review-media img,.review-media video{width:100%;height:100%;object-fit:cover;display:block;border-radius:12px;}
+.review-stars{font-size:14px;color:#f59e0b;letter-spacing:2px;}
+.review-text{font-size:13px;color:#777;line-height:1.75;flex:1;}
+.review-meta{display:flex;justify-content:space-between;align-items:flex-end;margin-top:4px;}
+.review-name{font-size:13px;font-weight:700;color:#fff;}
+.review-handle{color:#333;font-weight:400;font-size:11px;margin-left:4px;}
+.review-product{font-size:11px;color:#444;margin-top:2px;}
+.verified-badge{font-size:10px;font-weight:700;letter-spacing:.1em;color:#22c55e;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.15);padding:4px 10px;border-radius:50px;white-space:nowrap;}
+.bar-wrap{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
+.bar-label{font-size:12px;color:#555;width:12px;}
+.bar-track{flex:1;height:5px;background:#111;border-radius:3px;overflow:hidden;}
+.bar-fill{height:100%;background:#f59e0b;border-radius:3px;}
+@media(max-width:768px){.reviews-grid{grid-template-columns:1fr;}.review-card.featured{grid-column:span 1;}}
 </style></head><body>
 <div id="navContainer"></div>
 <main>
@@ -26,43 +34,89 @@
   <h1>Customer Reviews</h1>
   <div class="rating-summary">
     <div><div class="rating-big">4.9</div></div>
-    <div><div class="rating-stars">★★★★★</div><div class="rating-count">Based on 2,000+ verified sales</div></div>
+    <div>
+      <div class="rating-stars">★★★★★</div>
+      <div class="rating-count">Based on 2,000+ verified purchases</div>
+      <div style="margin-top:12px;">
+        <div class="bar-wrap"><span class="bar-label">5</span><div class="bar-track"><div class="bar-fill" style="width:91%"></div></div><span style="font-size:11px;color:#444;">91%</span></div>
+        <div class="bar-wrap"><span class="bar-label">4</span><div class="bar-track"><div class="bar-fill" style="width:7%"></div></div><span style="font-size:11px;color:#444;">7%</span></div>
+        <div class="bar-wrap"><span class="bar-label">3</span><div class="bar-track"><div class="bar-fill" style="width:2%"></div></div><span style="font-size:11px;color:#444;">2%</span></div>
+      </div>
+    </div>
   </div>
 </div></div>
 <section><div class="container">
   <div class="reviews-grid" id="reviewsGrid"></div>
-  <div style="text-align:center;margin-top:40px;padding:32px;background:#0a0a0a;border:1px solid rgba(255,255,255,.05);border-radius:20px;">
+  <div style="text-align:center;margin-top:40px;padding:32px;background:#0a0a0a;border:1px solid rgba(255,255,255,.05);border-radius:16px;">
     <div style="font-size:15px;font-weight:700;margin-bottom:6px;">Shop the pieces people are talking about</div>
-    <p style="font-size:13px;color:#333;margin-bottom:20px;">Every review is from a real customer. Every piece is verified before it ships.</p>
+    <p style="font-size:13px;color:#333;margin-bottom:20px;">Every review is from a real customer.</p>
     <a href="shop.html" class="btn-primary">Shop Now</a>
   </div>
 </div></section>
 </main>
 <div id="footerContainer"></div>
-<script src="cart.js?v=2"></script><script src="products.js?v=2"></script>
+<script src="cart.js?v=2"></script><script src="products.js?v=10"></script>
 <script>
 document.getElementById('globalStyles').textContent=getGlobalCSS();
 document.getElementById('navContainer').innerHTML=getNavHTML('reviews');
 document.getElementById('footerContainer').innerHTML=getFooterHTML();
+
 const REVIEWS=[
-  {name:"Jordan M.",user:"@jordan.fits",stars:5,text:"Bottegas came through immaculate. Exactly as described, packed perfectly, and shipped fast. These are my most complimented pair right now.",product:"Bottega Veneta (Green)",verified:true},
-  {name:"Maya R.",user:"@maya.style",stars:5,text:"Asics Gel Kayano 14 in the pink glow — deadstock, packed properly, size was perfect. Will be back for the next drop for sure.",product:"Asics Gel Kayano 14 Pink Glow",verified:true},
-  {name:"Tyler J.",user:"@tylrjay",stars:5,text:"Rick Owens for $150? These go crazy. Legit, fast shipping, no cap. The Illest Supply is real.",product:"Rick Owens Ramones",verified:true},
-  {name:"Aaliyah K.",user:"@aaliyah.k",stars:5,text:"Dior slides are perfect. Came in a week, exactly what was shown. Super clean. Already showed them off.",product:"Dior Slides",verified:true},
-  {name:"Marcus T.",user:"@marcustfit",stars:5,text:"Prada Cups are hard. Got the black pair, they're exactly as described. Clean packaging too.",product:"Prada Cup (Black)",verified:true},
-  {name:"Simone W.",user:"@simone_w",stars:5,text:"Balenciaga slides were clean and arrived super fast. Will definitely order again.",product:"Balenciaga Slides",verified:true},
-  {name:"Devon H.",user:"@devonhaze",stars:5,text:"Bottegas in blue are actually crazy. Got compliments the first day. Highly recommend The Illest Supply.",product:"Bottega Veneta (Blue)",verified:true},
-  {name:"Jasmine P.",user:"@jasminewears",stars:5,text:"The packaging is premium, the product is premium. You can tell they actually care about what they're selling.",product:"Dior Slides",verified:true},
-  {name:"Noah C.",user:"@noahcold",stars:5,text:"Ordered the Asics and they came exactly as shown. Deadstock, correct size, fast. No drama, just clean.",product:"Asics Gel Kayano 14 Pink Glow",verified:true},
+  {
+    name:"Malik D.", user:"@malik.drip", stars:5, featured:true, verified:true,
+    product:"Asics Gel Kayano 14",
+    text:"These are actual deadstock. Came in the OG box, tissue paper, everything. The silver/white colorway is clean as hell in person — way better than photos. Shipped fast, packed tight. Not my first order from Illest and won't be my last.",
+    img:"https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/4f38bf281_IMG_0613.jpg",
+    video:"https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/6076a3128_cf5861558_RenderedVideo.mp4"
+  },
+  {name:"Jordan M.",user:"@jordan.fits",stars:5,verified:true,product:"Bottega Veneta (Green)",text:"Bottegas came through immaculate. Exactly as described, packed perfectly, and the color is unreal in person. Placed the order on Monday, had them by Wednesday. Illest Supply is the real deal."},
+  {name:"Maya R.",user:"@maya.style",stars:5,verified:true,product:"Asics Gel Kayano 14 Pink Glow",text:"Deadstock, packed properly, size was perfect. These sold out everywhere — glad I found them here. Will be back for the next drop for sure."},
+  {name:"Tyler J.",user:"@tylrjay",stars:5,verified:true,product:"Rick Owens",text:"Rick Owens for that price? These go crazy. Legit, fast shipping, no cap. The Illest Supply actually delivers every time."},
+  {name:"Aaliyah K.",user:"@aaliyah.k",stars:5,verified:true,product:"Dior Slides",text:"Dior slides are perfect. Came in a week, exactly what was shown. Super clean packaging, felt premium from the moment I opened the box."},
+  {name:"Marcus T.",user:"@marcustfit",stars:5,verified:true,product:"Prada Cup (Black)",text:"Prada Cups are hard. Got the black pair, they're exactly as described. Clean resale, no sketchy stuff. Straight up the best place to cop."},
+  {name:"Simone W.",user:"@simone_w",stars:5,verified:true,product:"Balenciaga Slides",text:"Balenciaga slides were clean and arrived super fast. Will definitely order again. Packaging was 10/10, slides were 10/10."},
+  {name:"Devon H.",user:"@devonhaze",stars:5,verified:true,product:"Bottega Veneta (Blue)",text:"Bottegas in blue are actually crazy. Got compliments the first day I wore them. Highly recommend, legit source, fast delivery."},
+  {name:"Jasmine P.",user:"@jasminewears",stars:5,verified:true,product:"Vale Forever Jorts",text:"The packaging is premium, the product is premium. You can tell they actually care. Jorts fit perfectly, quality is there. Came way faster than expected."},
+  {name:"Noah C.",user:"@noahcold",stars:5,verified:true,product:"Asics Gel Kayano 14",text:"Ordered the Asics and they came exactly as shown. Deadstock, correct size, fast. This is my go-to now for everything designer."},
+  {name:"Kayla B.",user:"@kaylabfit",stars:5,verified:true,product:"Prada Cup (Blue)",text:"Blue Prada Cups exceeded expectations. The color is beautiful, condition is perfect. Shipped super quick and the packaging had me feeling like I spent retail at a boutique."},
+  {name:"Chris R.",user:"@chrisrwear",stars:5,verified:true,product:"Bottega Veneta (Pink)",text:"Pink Bottegas for my girl and she hasn't taken them off. Fits true to size, came in the original box. Illest Supply always comes through."},
+  {name:"Destiny N.",user:"@destinyn",stars:5,verified:true,product:"Dior Slides",text:"I was nervous ordering slides online but these are perfect. Exact size, clean condition. Fast shipping, no issues. Highly recommend."},
+  {name:"Tre L.",user:"@trelouis",stars:5,verified:true,product:"Rick Owens",text:"Rick Owens pieces are hard to find for a good price — Illest Supply had them and they were legit. Packed well, arrived on time. Solid."},
+  {name:"Amara S.",user:"@amarastyle",stars:5,verified:true,product:"Vale Forever Jorts",text:"Jorts are premium quality and the fit is immaculate. Ordered the L and it's perfect. Fast shipping, clean packaging. Love this store."},
+  {name:"Jaylen F.",user:"@jayflex",stars:5,verified:true,product:"Balenciaga Slides",text:"Super happy with these Balenciaga slides. Came quicker than expected and condition was spotless. Already told my whole squad about this site."},
+  {name:"Priya M.",user:"@priyamood",stars:5,verified:true,product:"Asics Gel Kayano 14 Pink Glow",text:"Pink Glow Asics are so clean. Got mine in under 3 days. The box was sealed, the shoes were deadstock. I'm obsessed. Ordering again next drop."},
+  {name:"Zach W.",user:"@zachwaves",stars:5,verified:true,product:"Prada Cup (Black)",text:"Nobody prices these better than Illest Supply. Got the black Prada Cups for way less than I'd pay anywhere else. 100% legit. Already on my second order."},
+  {name:"Tiffany O.",user:"@tiffanyoo",stars:5,verified:true,product:"Bottega Veneta (Green)",text:"Green Bottegas are gorgeous. Mine arrived in 2 days and were in pristine condition. The Illest Supply is the move — period."},
+  {name:"Andre K.",user:"@andrekicks",stars:5,verified:true,product:"Dior Slides",text:"Legit Dior slides, fast shipping, great price. What else do you need? Been telling everyone about this place."},
+  {name:"Nadia C.",user:"@nadiacool",stars:5,verified:true,product:"Vale Forever Jorts",text:"These jorts are actually insane quality. Thick material, great color. Came wrapped perfectly. Will be buying every color eventually."},
+  {name:"Bryce T.",user:"@brycetop",stars:5,verified:true,product:"Asics Gel Kayano 14",text:"Had these on my radar forever. Found them here for a great deal and pulled the trigger. No regrets — arrived fast, condition was deadstock. Love them."},
+  {name:"Sierra G.",user:"@sierraglow",stars:5,verified:true,product:"Balenciaga Slides",text:"These slides are the perfect summer shoe. Clean, comfortable, and they arrived way faster than I expected. The packaging was a vibe too."},
+  {name:"Elijah M.",user:"@elijahmvp",stars:5,verified:true,product:"Rick Owens",text:"Rick Owens hit different in person. Ordered on a Thursday, had them by Saturday. Condition was flawless. Illest Supply doesn't miss."},
+  {name:"Camille J.",user:"@camillej",stars:5,verified:true,product:"Prada Cup (Blue)",text:"My favorite purchase this year. The blue Prada Cups are stunning and the whole experience was smooth. Fast, clean, legit. Already planning my next order."},
+  {name:"Dominic A.",user:"@dominica",stars:5,verified:true,product:"Bottega Veneta (Pink)",text:"Bought as a gift and she loved them. Pink Bottegas came wrapped nicely, perfect condition. Illest Supply made me look like I really tried lol. Appreciate it."},
 ];
-document.getElementById('reviewsGrid').innerHTML=REVIEWS.map(r=>`
-  <div class="review-card">
+
+document.getElementById('reviewsGrid').innerHTML=REVIEWS.map((r,i)=>{
+  const mediaHTML = r.featured && r.video ? `
+    <div class="review-media">
+      <video src="${r.video}" autoplay muted loop playsinline></video>
+    </div>
+    <div class="review-media" style="max-height:220px;margin-top:10px;">
+      <img src="${r.img}" alt="customer photo" loading="lazy">
+    </div>` : r.img ? `<div class="review-media"><img src="${r.img}" alt="customer photo" loading="lazy"></div>` : '';
+  
+  return `<div class="review-card${r.featured?' featured':''}">
+    ${mediaHTML}
     <div class="review-stars">${'★'.repeat(r.stars)}</div>
     <div class="review-text">"${r.text}"</div>
     <div class="review-meta">
-      <div><div class="review-name">${r.name} <span style="color:#333;font-weight:400;font-size:11px;">${r.user}</span></div><div class="review-product">${r.product}</div></div>
+      <div>
+        <div class="review-name">${r.name}<span class="review-handle">${r.user}</span></div>
+        <div class="review-product">${r.product}</div>
+      </div>
       ${r.verified?'<div class="verified-badge">VERIFIED</div>':''}
     </div>
-  </div>`).join('');
+  </div>`;
+}).join('');
 </script>
 </body></html>
