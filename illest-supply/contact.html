@@ -1,0 +1,83 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Contact | The Illest Supply</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style id="globalStyles"></style>
+<style>
+.contact-layout{display:grid;grid-template-columns:1fr 1fr;gap:40px;padding:40px 0 80px;align-items:start;}
+.contact-info{padding:8px 0;}
+.contact-info h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,5vw,64px);margin-bottom:16px;}
+.contact-info p{font-size:14px;color:#444;line-height:1.7;margin-bottom:28px;}
+.contact-detail{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.04);}
+.contact-detail-icon{font-size:20px;width:40px;text-align:center;}
+.contact-detail-text{font-size:13px;color:#555;}
+.contact-detail-text strong{display:block;color:#fff;font-size:13px;margin-bottom:2px;}
+.contact-form-card{background:#0d0d0d;border:1px solid rgba(255,255,255,.05);border-radius:20px;padding:32px;}
+.form-group{margin-bottom:16px;}
+.form-label{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:#444;font-weight:600;display:block;margin-bottom:7px;}
+.form-input{width:100%;padding:12px 14px;background:#111;border:1px solid rgba(255,255,255,.07);border-radius:10px;color:#fff;font-size:13px;outline:none;font-family:inherit;transition:border-color .2s;}
+.form-input:focus{border-color:rgba(255,255,255,.2);}
+textarea.form-input{resize:vertical;min-height:120px;}
+.topic-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.topic-btn{padding:9px 12px;border:1px solid rgba(255,255,255,.07);border-radius:8px;background:transparent;color:#555;font-size:12px;cursor:pointer;text-align:left;transition:all .2s;}
+.topic-btn:hover,.topic-btn.selected{border-color:rgba(255,255,255,.2);color:#fff;}
+@media(max-width:768px){.contact-layout{grid-template-columns:1fr;}}
+</style></head><body>
+<div id="navContainer"></div>
+<main>
+<section style="padding:50px 0 0;text-align:center;"><div class="container">
+  <div class="section-title">Get In Touch</div>
+  <div class="section-heading" style="margin-bottom:8px;">Contact Us</div>
+  <p style="font-size:14px;color:#444;margin-bottom:0;">We typically respond within 24 hours.</p>
+</div></section>
+<section><div class="container">
+  <div class="contact-layout">
+    <div class="contact-info">
+      <h2>We're Here to Help.</h2>
+      <p>Questions about sizing, orders, authenticity, or shipping? Hit us up. Real responses from real people.</p>
+      <div class="contact-detail"><div class="contact-detail-icon">📧</div><div class="contact-detail-text"><strong>Email</strong>timoy@scaleflowz.us</div></div>
+      <div class="contact-detail"><div class="contact-detail-icon">📸</div><div class="contact-detail-text"><strong>Instagram</strong><a href="https://www.instagram.com/theillestsupply" target="_blank" style="color:#555;">@theillestsupply</a></div></div>
+      <div class="contact-detail"><div class="contact-detail-icon">⏱</div><div class="contact-detail-text"><strong>Response Time</strong>Within 24 hours, usually faster</div></div>
+      <div class="contact-detail"><div class="contact-detail-icon">📦</div><div class="contact-detail-text"><strong>Shipping Questions</strong>Check our <a href="shipping-policy.html" style="color:#555;text-decoration:underline;">Shipping Policy</a></div></div>
+      <div style="margin-top:28px;padding:20px;background:#0a0a0a;border-radius:14px;border:1px solid rgba(255,255,255,.04);">
+        <div style="font-size:11px;color:#333;letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px;">Support Topics</div>
+        <div style="font-size:13px;color:#333;line-height:1.8;">Order Status · Sizing Help · Authenticity Questions<br>Shipping & Tracking · Returns & Issues · General Questions</div>
+      </div>
+    </div>
+    <div class="contact-form-card">
+      <div style="font-size:13px;font-weight:700;letter-spacing:.06em;margin-bottom:20px;">Send a Message</div>
+      <div class="form-group"><label class="form-label">Topic</label>
+        <div class="topic-grid" id="topicGrid">
+          <button class="topic-btn" onclick="selectTopic(this)">Order Status</button>
+          <button class="topic-btn" onclick="selectTopic(this)">Sizing Help</button>
+          <button class="topic-btn" onclick="selectTopic(this)">Authenticity</button>
+          <button class="topic-btn" onclick="selectTopic(this)">Shipping</button>
+          <button class="topic-btn" onclick="selectTopic(this)">Returns</button>
+          <button class="topic-btn" onclick="selectTopic(this)">Other</button>
+        </div>
+      </div>
+      <div class="form-group"><label class="form-label">Your Name</label><input type="text" class="form-input" id="cName" placeholder="Full name"></div>
+      <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" id="cEmail" placeholder="your@email.com"></div>
+      <div class="form-group"><label class="form-label">Message</label><textarea class="form-input" id="cMsg" placeholder="Tell us how we can help..."></textarea></div>
+      <button onclick="submitContact()" class="btn-primary" style="width:100%;padding:14px;border-radius:12px;font-size:14px;">Send Message</button>
+      <p id="contactSuccess" style="display:none;text-align:center;color:#22c55e;font-size:13px;margin-top:12px;">✓ Message sent! We'll be in touch within 24 hours.</p>
+    </div>
+  </div>
+</div></section>
+</main>
+<div id="footerContainer"></div>
+<script src="cart.js"></script><script src="products.js"></script>
+<script>
+document.getElementById('globalStyles').textContent=getGlobalCSS();
+document.getElementById('navContainer').innerHTML=getNavHTML('');
+document.getElementById('footerContainer').innerHTML=getFooterHTML();
+function selectTopic(btn){document.querySelectorAll('.topic-btn').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');}
+function submitContact(){
+  const name=document.getElementById('cName').value.trim();
+  const email=document.getElementById('cEmail').value.trim();
+  const msg=document.getElementById('cMsg').value.trim();
+  if(!name||!email||!msg){Cart.flashMsg('Please fill in all fields.','warn');return;}
+  document.getElementById('contactSuccess').style.display='block';
+  document.getElementById('cName').value='';document.getElementById('cEmail').value='';document.getElementById('cMsg').value='';
+}
+</script>
+</body></html>

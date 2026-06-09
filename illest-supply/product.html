@@ -2,526 +2,315 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Product — The Illest Supply</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title id="pageTitle">Product | The Illest Supply</title>
+<meta name="description" id="pageDesc" content="Authenticated designer piece from The Illest Supply."/>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style id="globalStyles"></style>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
-body{background:#080808;color:#fff;font-family:'Inter',sans-serif;min-height:100vh;padding-bottom:100px;}
+.breadcrumb{font-size:11px;color:#333;padding:16px 0;letter-spacing:0.04em;}
+.breadcrumb a{color:#333;transition:color .2s;}.breadcrumb a:hover{color:#fff;}
+.breadcrumb span{color:#555;}
 
-nav{display:flex;align-items:center;justify-content:space-between;padding:18px 24px;border-bottom:1px solid rgba(255,255,255,0.05);position:sticky;top:0;background:rgba(8,8,8,0.97);z-index:100;backdrop-filter:blur(12px);}
-.nav-logo{height:48px;mix-blend-mode:screen;animation:spinY 10s linear infinite;}
-@keyframes spinY{from{transform:rotateY(0deg);}to{transform:rotateY(360deg);}}
-.nav-back{color:#fff;opacity:0.6;font-size:14px;text-decoration:none;letter-spacing:0.04em;transition:opacity .2s;}
-.nav-back:hover{opacity:1;}
+.product-layout{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;}
+.product-gallery{position:sticky;top:90px;}
+.main-img-wrap{aspect-ratio:1;border-radius:20px;overflow:hidden;background:#0a0a0a;margin-bottom:12px;position:relative;}
+.main-img-wrap img,.main-img-wrap video{width:100%;height:100%;object-fit:cover;}
+.thumb-row{display:flex;gap:8px;}
+.thumb{width:64px;height:64px;border-radius:10px;overflow:hidden;cursor:pointer;border:2px solid transparent;transition:border-color .2s;background:#0a0a0a;}
+.thumb.active{border-color:#fff;}
+.thumb img{width:100%;height:100%;object-fit:cover;}
 
-.page{max-width:500px;margin:0 auto;padding:28px 20px 120px;}
+.product-detail{padding:8px 0;}
+.pd-category{font-size:10px;letter-spacing:0.2em;color:#444;text-transform:uppercase;font-weight:600;margin-bottom:8px;}
+.pd-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,4vw,52px);line-height:1;margin-bottom:12px;letter-spacing:0.02em;}
+.pd-price-row{display:flex;align-items:baseline;gap:12px;margin-bottom:6px;}
+.pd-price{font-size:28px;font-weight:800;}
+.pd-orig{font-size:16px;color:#333;text-decoration:line-through;}
+.pd-save{font-size:13px;color:#22c55e;font-weight:700;}
+.pd-sold{font-size:12px;color:#333;margin-bottom:20px;}
 
-/* MEDIA */
-.media-wrap{width:100%;aspect-ratio:4/5;border-radius:20px;overflow:hidden;background:#111;margin-bottom:22px;position:relative;}
-.media-wrap img,.media-wrap video{width:100%;height:100%;object-fit:cover;}
-.media-dots{display:flex;justify-content:center;gap:6px;margin-top:-14px;margin-bottom:18px;position:relative;z-index:2;}
-.media-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.2);cursor:pointer;transition:background .2s;}
-.media-dot.active{background:#fff;}
+.pd-badges{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
+.pd-badge{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:0.08em;padding:7px 14px;border-radius:50px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:#888;}
+.pd-badge.green{background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.2);color:#22c55e;}
+.pd-badge.yellow{background:rgba(234,179,8,.08);border-color:rgba(234,179,8,.2);color:#eab308;}
 
-/* BADGES */
-.badge-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
-.badge{padding:5px 12px;border-radius:50px;font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;}
-.badge.hot{background:#c00;color:#fff;}
-.badge.new{background:#fff;color:#000;}
-.badge.limited{background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;}
-.badge.save{background:rgba(34,197,94,0.15);color:#22c55e;}
+.size-label{font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#444;font-weight:600;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;}
+.size-label a{color:#555;font-size:11px;}
+.size-label a:hover{color:#fff;}
+.size-grid{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;}
+.sz-btn{padding:10px 16px;border-radius:10px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:#666;font-size:13px;font-weight:600;cursor:pointer;transition:all .18s;min-width:52px;text-align:center;}
+.sz-btn:hover{border-color:rgba(255,255,255,0.3);color:#fff;}
+.sz-btn.selected{border-color:#fff;color:#fff;background:rgba(255,255,255,0.08);}
+.sz-btn.oos{opacity:.2;cursor:not-allowed;pointer-events:none;text-decoration:line-through;}
+.size-error{font-size:12px;color:#ef4444;margin-bottom:12px;display:none;}
 
-/* PRODUCT INFO */
-.product-name{font-size:28px;font-weight:800;letter-spacing:0.01em;margin-bottom:10px;line-height:1.2;}
-.price-row{display:flex;align-items:center;gap:10px;margin-bottom:24px;flex-wrap:wrap;}
-.price-current{font-size:30px;font-weight:800;color:#ef4444;text-shadow:0 0 16px rgba(239,68,68,0.4);}
-.price-original{font-size:17px;color:#555;text-decoration:line-through;}
-.price-save{font-size:12px;font-weight:700;color:#22c55e;background:rgba(34,197,94,0.1);padding:3px 10px;border-radius:50px;}
+.qty-row{display:flex;align-items:center;gap:16px;margin-bottom:20px;}
+.qty-label{font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#444;font-weight:600;}
+.qty-control{display:flex;align-items:center;gap:10px;background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:4px;}
+.qty-control button{width:32px;height:32px;border-radius:8px;border:none;background:transparent;color:#fff;font-size:16px;cursor:pointer;}
+.qty-control span{min-width:32px;text-align:center;font-size:15px;font-weight:700;}
 
-/* SIZE / COLOR */
-.section-label{font-size:12px;letter-spacing:0.14em;color:#555;text-transform:uppercase;font-weight:600;margin-bottom:10px;}
-.options-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px;}
-.opt-btn{padding:10px 18px;border-radius:10px;border:1px solid rgba(255,255,255,0.12);background:transparent;color:#ccc;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;min-width:48px;text-align:center;}
-.opt-btn:hover:not(.oos){border-color:#fff;color:#fff;background:rgba(255,255,255,0.06);}
-.opt-btn.selected{border-color:#fff;background:#fff;color:#000;}
-.opt-btn.oos{border-color:rgba(255,255,255,0.04);color:#333;cursor:not-allowed;text-decoration:line-through;}
+.pd-actions{display:flex;flex-direction:column;gap:10px;margin-bottom:24px;}
+.pd-atc{padding:16px;background:#fff;color:#000;border:none;border-radius:14px;font-size:14px;font-weight:700;letter-spacing:0.07em;cursor:pointer;transition:background .2s;}
+.pd-atc:hover{background:#e5e5e5;}
+.pd-bn{padding:15px;background:transparent;color:#fff;border:1px solid rgba(255,255,255,0.2);border-radius:14px;font-size:14px;font-weight:600;letter-spacing:0.06em;cursor:pointer;transition:all .2s;}
+.pd-bn:hover{border-color:#fff;background:rgba(255,255,255,0.05);}
+.pd-sold-out-btn{padding:16px;background:#111;color:#444;border:1px solid rgba(255,255,255,0.04);border-radius:14px;font-size:14px;font-weight:700;letter-spacing:0.07em;cursor:not-allowed;}
 
-/* STOCK */
-.stock-msg{font-size:12px;color:#f59e0b;font-weight:600;letter-spacing:0.06em;margin-bottom:20px;}
-.stock-bar{height:3px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;margin-top:6px;}
-.stock-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,#f59e0b,#ef4444);}
+.trust-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:28px;}
+.trust-pill{display:flex;align-items:center;gap:6px;font-size:11px;color:#444;padding:6px 12px;background:#0d0d0d;border:1px solid rgba(255,255,255,0.05);border-radius:50px;}
 
-/* FORM */
-.form-section{background:#0e0e0e;border:1px solid rgba(255,255,255,0.06);border-radius:20px;padding:22px 18px;margin-top:8px;}
-.form-title{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:0.06em;margin-bottom:16px;}
-.form-row{margin-bottom:12px;}
-.form-row label{display:block;font-size:11px;letter-spacing:0.1em;color:#555;text-transform:uppercase;font-weight:600;margin-bottom:5px;}
-.form-row input,.form-row textarea,.form-row select{width:100%;background:#080808;border:1px solid rgba(255,255,255,0.08);border-radius:10px;color:#fff;font-size:15px;padding:11px 14px;font-family:'Inter',sans-serif;outline:none;transition:border-color .2s;}
-.form-row input:focus,.form-row textarea:focus,.form-row select:focus{border-color:rgba(255,255,255,0.28);}
-.form-row textarea{resize:vertical;min-height:70px;}
-.form-note{font-size:12px;color:#444;margin-top:10px;line-height:1.6;text-align:center;}
+.pd-tabs{border-bottom:1px solid rgba(255,255,255,0.06);display:flex;gap:0;margin-bottom:20px;}
+.pd-tab{padding:12px 20px;font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#333;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .2s;}
+.pd-tab.active,.pd-tab:hover{color:#fff;border-bottom-color:#fff;}
+.pd-tab-content{display:none;}
+.pd-tab-content.active{display:block;}
+.pd-desc{font-size:13px;color:#555;line-height:1.7;}
+.pd-specs table{width:100%;border-collapse:collapse;}
+.pd-specs tr{border-bottom:1px solid rgba(255,255,255,0.04);}
+.pd-specs td{padding:10px 0;font-size:13px;color:#555;}
+.pd-specs td:first-child{color:#888;width:40%;}
 
-/* STICKY BAR */
-.sticky-bar{position:fixed;bottom:0;left:0;right:0;z-index:500;background:rgba(10,10,10,0.97);border-top:1px solid rgba(255,255,255,0.08);padding:14px 20px;display:flex;gap:10px;backdrop-filter:blur(12px);}
-.sticky-btn{flex:1;padding:16px;border-radius:14px;font-size:14px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;border:none;cursor:pointer;transition:all .2s;}
-.sticky-btn.primary{background:#fff;color:#000;}
-.sticky-btn.primary:hover{background:#f0f0f0;}
-.sticky-btn.secondary{background:transparent;border:1px solid rgba(255,255,255,0.18);color:#fff;}
-.sticky-btn.secondary:hover{background:rgba(255,255,255,0.06);}
-.sticky-btn:disabled{opacity:0.4;cursor:not-allowed;}
+.related-section{padding:60px 0 40px;}
 
-/* TOAST */
-.toast{position:fixed;top:80px;left:50%;transform:translateX(-50%) translateY(-20px);background:#22c55e;color:#fff;font-size:12px;font-weight:700;letter-spacing:0.08em;padding:10px 24px;border-radius:50px;opacity:0;transition:all .3s;z-index:999;pointer-events:none;white-space:nowrap;}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-
-@media(max-width:400px){
-  .page{padding:20px 14px 120px;}
-  .product-name{font-size:24px;}
+/* STICKY MOBILE BUY BAR */
+.sticky-buy-bar{display:none;position:fixed;bottom:0;left:0;right:0;padding:12px 16px;background:#080808;border-top:1px solid rgba(255,255,255,0.06);z-index:400;gap:10px;}
+@media(max-width:768px){
+  .product-layout{grid-template-columns:1fr;gap:24px;}
+  .product-gallery{position:static;}
+  .sticky-buy-bar{display:flex;}
+  .pd-actions{display:none;}
 }
-
-/* OOS NOTIFY */
-
-/* SOCIAL PROOF */
-.social-proof-bar{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:10px 16px;margin-bottom:18px;font-size:13px;color:#aaa;}
-.social-proof-bar .dot{width:7px;height:7px;border-radius:50%;background:#22c55e;box-shadow:0 0 6px #22c55e;flex-shrink:0;animation:pulse-dot 2s ease-in-out infinite;}
-@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.5;transform:scale(0.8);}}
-.social-proof-bar strong{color:#fff;font-weight:700;}
-
-.sold-ticker{background:rgba(239,68,68,0.07);border:1px solid rgba(239,68,68,0.15);border-radius:10px;padding:10px 16px;margin-bottom:18px;font-size:13px;color:#f87171;display:flex;align-items:center;gap:8px;}
-.sold-ticker .fire{font-size:14px;}
-
-.trust-strip{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:22px;}
-.trust-chip{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:8px;padding:7px 12px;font-size:12px;color:#888;}
-.trust-chip span{font-size:12px;}
-
-.oos-notify-box{display:none;background:#0e0e0e;border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:16px 18px;margin-bottom:16px;}
-.oos-notify-box.show{display:block;}
-.oos-notify-box .label{font-size:11px;letter-spacing:0.12em;color:#555;text-transform:uppercase;font-weight:600;margin-bottom:8px;}
-.oos-notify-box .hint{font-size:13px;color:#444;margin-bottom:10px;}
-.oos-row{display:flex;gap:8px;}
-.oos-email{flex:1;background:#080808;border:1px solid rgba(255,255,255,0.1);border-radius:9px;color:#fff;font-size:13px;padding:9px 13px;font-family:inherit;outline:none;}
-.oos-email:focus{border-color:rgba(255,255,255,0.3);}
-.oos-submit{padding:10px 20px;border-radius:9px;background:#fff;color:#000;font-size:12px;font-weight:700;letter-spacing:0.08em;border:none;cursor:pointer;white-space:nowrap;}
-.oos-submit:hover{background:#eee;}
-.oos-success{font-size:13px;color:#22c55e;font-weight:600;margin-top:8px;display:none;}
-.oos-trigger{font-size:12px;color:#555;cursor:pointer;letter-spacing:0.06em;margin-top:-14px;margin-bottom:18px;display:block;}
-.oos-trigger:hover{color:#fff;}
-.oos-trigger span{text-decoration:underline;}
-
 </style>
 </head>
 <body>
+<div id="navContainer"></div>
+<main>
+<section style="padding-bottom:60px;">
+  <div class="container">
+    <div class="breadcrumb"><a href="index.html">Home</a> › <a href="shop.html">Shop</a> › <span id="breadProduct">Product</span></div>
+    <div class="product-layout">
+      <!-- GALLERY -->
+      <div class="product-gallery">
+        <div class="main-img-wrap" id="mainMedia"></div>
+        <div class="thumb-row" id="thumbRow"></div>
+      </div>
+      <!-- DETAILS -->
+      <div class="product-detail">
+        <div class="pd-category" id="pdCat"></div>
+        <div class="pd-name" id="pdName">Loading...</div>
+        <div class="pd-price-row">
+          <span class="pd-price" id="pdPrice"></span>
+          <span class="pd-orig" id="pdOrig"></span>
+          <span class="pd-save" id="pdSave"></span>
+        </div>
+        <div class="pd-sold" id="pdSold"></div>
+        <div class="pd-badges" id="pdBadges"></div>
 
-<nav>
-  <a class="nav-back" href="index.html">← Back</a>
-  <img class="nav-logo" src="https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/409f6a116_918D9A7E-D61E-4658-A7B6-5DF1F8B5AC78.png" alt="Illest Supply"/>
-  <div style="display:flex;align-items:center;gap:16px;">
-    <a href="reviews.html" style="color:#fff;opacity:0.6;font-size:12px;text-decoration:none;letter-spacing:0.06em;">Reviews</a>
-    <a href="faq.html" style="color:#fff;opacity:0.6;font-size:12px;text-decoration:none;letter-spacing:0.06em;">FAQ</a>
-    <a href="https://www.instagram.com/theillestsupply?igsh=OGt3cndoZ3RjamQ%3D&utm_source=qr" target="_blank" style="font-size:18px;text-decoration:none;">📷</a>
+        <div class="size-label"><span>Select Size</span><a href="size-chart.html">Size Guide →</a></div>
+        <div class="size-grid" id="sizeGrid"></div>
+        <div class="size-error" id="sizeError">Please select a size before adding to cart.</div>
+
+        <div class="qty-row">
+          <span class="qty-label">Qty</span>
+          <div class="qty-control">
+            <button onclick="changeQty(-1)">−</button>
+            <span id="qtyVal">1</span>
+            <button onclick="changeQty(1)">+</button>
+          </div>
+        </div>
+
+        <div class="pd-actions" id="pdActions"></div>
+
+        <div class="trust-row">
+          <div class="trust-pill">🔐 Authenticated</div>
+          <div class="trust-pill">📦 Ships in 1–3 days</div>
+          <div class="trust-pill">🎁 Free over $150</div>
+          <div class="trust-pill">✅ Secure Checkout</div>
+        </div>
+
+        <div class="pd-tabs">
+          <div class="pd-tab active" onclick="switchTab('desc',this)">Description</div>
+          <div class="pd-tab" onclick="switchTab('specs',this)">Details</div>
+          <div class="pd-tab" onclick="switchTab('ship',this)">Shipping</div>
+        </div>
+        <div class="pd-tab-content active" id="tab-desc">
+          <div class="pd-desc" id="pdDesc"></div>
+        </div>
+        <div class="pd-tab-content" id="tab-specs">
+          <div class="pd-specs" id="pdSpecs"></div>
+        </div>
+        <div class="pd-tab-content" id="tab-ship">
+          <div class="pd-desc">
+            <strong style="color:#fff;display:block;margin-bottom:8px;">Shipping Info</strong>
+            Standard Shipping: 1–3 business days · Free on orders over $150.<br><br>
+            Orders are processed within 24 hours. Tracking info will be sent to your email after purchase.<br><br>
+            <a href="shipping-policy.html" style="color:#555;font-size:12px;text-decoration:underline;">View Full Shipping Policy →</a>
+          </div>
+        </div>
+        <p style="font-size:11px;color:#222;margin-top:20px;line-height:1.6;">The Illest Supply is an independent resale shop. Brand names are used only to describe the items being sold. All items are inspected before listing.</p>
+      </div>
+    </div>
   </div>
-</nav>
+</section>
 
-<div class="page" id="page">
-  <div style="text-align:center;padding:60px 0;color:#333;">Loading product…</div>
+<!-- RELATED -->
+<section class="related-section" style="background:#050505;">
+  <div class="container">
+    <div class="section-title">You Might Also Like</div>
+    <div class="section-heading">Related Products</div>
+    <div class="products-grid" id="relatedGrid"></div>
+  </div>
+</section>
+</main>
+
+<!-- STICKY MOBILE BUY BAR -->
+<div class="sticky-buy-bar">
+  <button onclick="pdAddToCart()" class="pd-atc" style="flex:1;padding:14px;border-radius:12px;font-size:13px;">Add to Cart</button>
+  <button onclick="pdBuyNow()" class="pd-bn" style="flex:1;padding:13px;border-radius:12px;font-size:13px;border:1px solid rgba(255,255,255,.2);">Buy Now</button>
 </div>
 
-<!-- STICKY BAR -->
-<div class="sticky-bar" id="stickyBar" style="display:none;">
-  <a class="sticky-btn secondary" id="btnWA" href="#" target="_blank" style="text-align:center;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px;">💬 WHATSAPP</a>
-  <button class="sticky-btn primary" id="btnSubmit" onclick="submitInquiry()">SEND INQUIRY →</button>
-</div>
-
-<div class="toast" id="toast"></div>
-
+<div id="footerContainer"></div>
+<script src="cart.js"></script>
+<script src="products.js"></script>
 <script>
-const PRODUCTS = [
-  {
-    id:1, name:"Balenciaga Slides", category:"SLIDES", price:130, origPrice:200,
-    video:"https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/3a44c0ebc_d411fd6a5_IMG_3816.mov",
-    tag:"HOT", type:"shoe", stock:65
-  },
-  {
-    id:2, name:"Prada Cups (Black)", category:"SNEAKERS", price:170, origPrice:240,
-    imgs:[
-      "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/ab18f8c12_CBA80A5F-97CF-45C5-AA11-522922875DE3.png",
-      "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/6b287f63d_AA36F7DE-F3CD-47CF-BAFB-FEE327EF145A.png"
-    ],
-    tag:"HOT", type:"shoe", stock:70,
-    colors:["Black","White"]
-  },
-  {
-    id:3, name:"Prada Cups (Blue)", category:"SNEAKERS", price:170, origPrice:240,
-    imgs:[
-      "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/effd672da_F748D361-0A5E-4D84-B7CE-21A80BF31A03.png",
-      "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/f4b027634_74A998F7-E15E-4E87-8A68-5C2D9880512F.png"
-    ],
-    tag:"HOT", type:"shoe", stock:70,
-    colors:["Blue","Navy"]
-  },
-  {
-    id:4, name:"Dior Slides", category:"SLIDES", price:130, origPrice:195,
-    video:"https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/4b32b8095_5b35fc966_IMG_3817.mov",
-    tag:"HOT", type:"shoe", stock:60
-  },
-  {
-    id:5, name:"Vale Forever College Jorts", category:"BOTTOMS", price:64.99, origPrice:100,
-    imgs:[
-      "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/eac22a547_FF86E6B6-910B-416D-8894-171D71295C5C.png",
-      "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/040af7300_AdobeExpress-file3.png"
-    ],
-    tag:"LIMITED", type:"short", stock:35
-  },
-  {
-    id:6, name:"Vale Forever Jorts", category:"BOTTOMS", price:69.99, origPrice:110,
-    imgs:[
-      "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/35ae1e2e5_AdobeExpress-file3.png"
-    ],
-    tag:"LIMITED", type:"short", stock:28
-  },
-  {
-    id:7, name:"Vale Forever Jorts (Rhinestone)", category:"BOTTOMS", price:79.99, origPrice:120,
-    imgs:[
-      "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/607e2c691_CF43C058-BCF4-41FB-963A-95E3D9C3D886.png",
-      "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/e6a45f9dd_FEF16C09-1B37-4184-95F3-F18D4A350911.png"
-    ],
-    tag:"LIMITED", type:"short", stock:20
-  },
-  {
-    id:8, name:"Vale Forever Bad Dreams Jorts", category:"BOTTOMS", price:79.99, origPrice:120,
-    imgs:[
-      "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/05a792aed_AdobeExpress-file.png",
-      "https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/3dd13263d_AdobeExpress-file3.png"
-    ],
-    tag:"LIMITED", type:"short", stock:15
-  },
-  {
-    id:9, name:"Asics Gel Kayano 14 Pink Glow", category:"SNEAKERS", price:110, origPrice:160,
-    video:"https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/a3863a27a_a3a6a46f6_IMG_38152.mov",
-    tag:"HOT", type:"shoe", stock:65
-  },
-  {
-    id:10, name:"Rick Owens", category:"SNEAKERS", price:150, origPrice:220,
-    video:"https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/5933676ed_424a09905_IMG_38132.mov",
-    tag:"HOT", type:"shoe", stock:75
-  },
-  {
-    id:11, name:"Bottegas (Green)", category:"SNEAKERS", price:150, origPrice:210,
-    video:"https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/eac53cd23_5dd2172fc_IMG_3820.mov",
-    tag:"NEW", type:"shoe", stock:80
-  },
-  {
-    id:12, name:"Bottegas (Blue)", category:"SNEAKERS", price:150, origPrice:210,
-    video:"https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/261fd2257_888b8f45f_IMG_3821.mov",
-    tag:"NEW", type:"shoe", stock:80
-  },
-  {
-    id:13, name:"Bottegas (Pink)", category:"SNEAKERS", price:150, origPrice:210,
-    video:"https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/44c290b36_9874363bd_IMG_3823.mov",
-    tag:"NEW", type:"shoe", stock:80
-  },
-];
+document.getElementById('globalStyles').textContent = getGlobalCSS();
+document.getElementById('navContainer').innerHTML = getNavHTML('shop');
+document.getElementById('footerContainer').innerHTML = getFooterHTML();
 
-const SHOE_SIZES = [
-  {us:'6',women:'7.5',oos:false},{us:'6.5',women:'8',oos:false},{us:'7',women:'8.5',oos:false},
-  {us:'7.5',women:'9',oos:false},{us:'8',women:'9.5',oos:true},{us:'8.5',women:'10',oos:true},
-  {us:'9',women:'10.5',oos:true},{us:'9.5',women:'11',oos:true},{us:'10',women:'11.5',oos:true},
-  {us:'10.5',women:'12',oos:true},{us:'11',women:'12.5',oos:false},{us:'12',women:'13.5',oos:false},{us:'13',women:'14.5',oos:false}
-];
-const SHORT_SIZES = [{label:'XS',oos:true},{label:'S',oos:false},{label:'M',oos:false},{label:'L',oos:false},{label:'XL',oos:true}];
+let currentProduct = null;
+let selectedSize = null;
+let qty = 1;
 
-let product = null;
-let selectedSize = '';
-let selectedColor = '';
-let currentImg = 0;
+const params = new URLSearchParams(location.search);
+const pid = parseInt(params.get('id'));
+currentProduct = getProduct(pid);
 
-function getSave(p,o){return Math.round((1-p/o)*100);}
+if (!currentProduct) { document.querySelector('main').innerHTML = '<div style="text-align:center;padding:100px 20px;"><h2>Product not found</h2><a href="shop.html" class="btn-outline" style="margin-top:16px;display:inline-block;">Back to Shop</a></div>'; }
+else {
+  const p = currentProduct;
+  const save = getSavePercent(p);
+  const soldOut = p.isSoldOut || Object.values(p.stock||{}).every(v=>v===0);
 
-function init() {
-  const params = new URLSearchParams(window.location.search);
-  const id = parseInt(params.get('id'));
-  product = PRODUCTS.find(p => p.id === id);
-  if(!product){ document.getElementById('page').innerHTML = '<div style="text-align:center;padding:80px 0;color:#555;">Product not found. <a href="index.html" style="color:#fff;">← Back to store</a></div>'; return; }
-  document.title = product.name + ' — The Illest Supply';
-  render();
-  document.getElementById('stickyBar').style.display = 'flex';
-  // Set WhatsApp link with product pre-filled
-  const waMsg = encodeURIComponent('Hi! I\'m interested in ' + product.name + ' ($' + product.price + '). Is it available?');
-  document.getElementById('btnWA').href = 'https://wa.me/?text=' + waMsg;
-}
+  document.getElementById('pageTitle').textContent = `${p.name} | The Illest Supply`;
+  document.getElementById('pageDesc').content = p.desc;
+  document.getElementById('breadProduct').textContent = p.name;
+  document.getElementById('pdCat').textContent = `${p.brand} · ${p.category}`;
+  document.getElementById('pdName').textContent = p.name;
+  document.getElementById('pdPrice').textContent = `$${p.price}`;
+  document.getElementById('pdOrig').textContent = `$${p.origPrice}`;
+  document.getElementById('pdSave').textContent = `-${save}%`;
+  document.getElementById('pdSold').textContent = soldOut ? 'All pairs gone' : `${p.sold}+ sold`;
+  document.getElementById('pdDesc').textContent = p.desc;
 
-function render() {
-  const p = product;
-  const save = getSave(p.price, p.origPrice);
-  const allMedia = [];
-  if(p.video) allMedia.push({type:'video',src:p.video});
-  if(p.imgs) p.imgs.forEach(src => allMedia.push({type:'img',src}));
-
-  let mediaHTML = '';
-  if(allMedia.length > 0) {
-    const m = allMedia[0];
-    if(m.type==='video') mediaHTML = `<video src="${m.src}" autoplay muted loop playsinline style="width:100%;height:100%;object-fit:cover;"></video>`;
-    else mediaHTML = `<img src="${m.src}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;"/>`;
+  // Gallery
+  const mainMedia = document.getElementById('mainMedia');
+  if (p.video) {
+    mainMedia.innerHTML = `<video src="${p.video}" autoplay muted loop playsinline></video>`;
+  } else {
+    mainMedia.innerHTML = `<img src="${p.img}" alt="${p.name}" id="mainImg">`;
   }
 
-  let dotsHTML = '';
-  if(allMedia.length > 1) {
-    dotsHTML = `<div class="media-dots">${allMedia.map((_,i)=>`<div class="media-dot${i===0?' active':''}" onclick="switchMedia(${i})"></div>`).join('')}</div>`;
-  }
-
-  let badgeHTML = '';
-  if(p.tag==='HOT') badgeHTML += `<span class="badge hot">🔥 HOT</span>`;
-  if(p.tag==='NEW') badgeHTML += `<span class="badge new">NEW</span>`;
-  if(p.tag==='LIMITED') badgeHTML += `<span class="badge limited">⚡ LIMITED</span>`;
-  badgeHTML += `<span class="badge save">SAVE ${save}%</span>`;
-
-  let sizeHTML = '';
-  if(p.type==='shoe') {
-    sizeHTML = `
-      <div class="section-label">Select Size <span style="color:#888;font-size:11px;margin-left:6px;">Women's size in ()</span></div>
-      <div class="options-row" id="sizeOpts">
-        ${SHOE_SIZES.map(s=>`
-          <button class="opt-btn${s.oos?' oos':''}" onclick="${s.oos?'':` pickSize('${s.us}',this)`}" title="${s.oos?'Out of Stock':''}">
-            ${s.us}<br><span style="font-size:10px;opacity:0.5;">(${s.women}W)</span>
-          </button>`).join('')}
-      </div>`;
-  } else if(p.type==='short') {
-    sizeHTML = `
-      <div class="section-label">Select Size</div>
-      <div class="options-row" id="sizeOpts">
-        ${SHORT_SIZES.map(s=>`
-          <button class="opt-btn${s.oos?' oos':''}" onclick="${s.oos?'':` pickSize('${s.label}',this)`}" title="${s.oos?'Out of Stock':''}">
-            ${s.label}
-          </button>`).join('')}
-      </div>`;
-  }
-
-  let colorHTML = '';
-  if(p.colors && p.colors.length) {
-    colorHTML = `
-      <div class="section-label" style="margin-top:4px;">Select Color</div>
-      <div class="options-row" id="colorOpts">
-        ${p.colors.map(c=>`<button class="opt-btn" onclick="pickColor('${c}',this)">${c}</button>`).join('')}
-      </div>`;
-  }
-
-  let stockHTML = '';
-  if(p.type==='short') {
-    const msgs = ['Only 3 left!','Almost gone!','2 remaining!','Last few!'];
-    const msg = p.stock <= 20 ? msgs[p.id % msgs.length] : 'Selling fast';
-    stockHTML = `<div class="stock-msg">⚠️ ${msg} · ${p.stock}% claimed<div class="stock-bar"><div class="stock-fill" style="width:${p.stock}%;"></div></div></div>`;
-  }
-
-  document.getElementById('page').innerHTML = `
-    <div class="media-wrap" id="mediaWrap">${mediaHTML}</div>
-    ${dotsHTML}
-    <div class="badge-row">${badgeHTML}</div>
-    <div class="product-name">${p.name}</div>
-    <div class="price-row">
-      <span class="price-current">$${p.price}</span>
-      <span class="price-original">$${p.origPrice}</span>
-      <span class="price-save">SAVE ${save}%</span>
-    </div>
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
-      <span style="font-size:13px;color:#22c55e;font-weight:600;letter-spacing:0.04em;">📦 Ships in 1–3 days</span>
-      <span style="color:#333;">·</span>
-      <a href="size-chart.html" style="font-size:13px;color:#888;text-decoration:none;letter-spacing:0.04em;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#888'">📏 Size Chart</a>
-    </div>
-    <div class="social-proof-bar" id="viewerBar">
-      <div class="dot"></div>
-      <span><strong id="viewerCount">—</strong> people are viewing this right now</span>
-    </div>
-    <div class="sold-ticker" id="soldTicker" style="display:none;">
-      <span class="fire">🔥</span>
-      <span id="soldTickerText"></span>
-    </div>
-    <div class="trust-strip">
-      <div class="trust-chip"><span>✓</span> Authenticated</div>
-      <div class="trust-chip"><span>🔒</span> Secure Inquiry</div>
-      <div class="trust-chip"><span>⭐</span> 2,000+ Sales</div>
-      <div class="trust-chip"><span>⚡</span> Fast Replies</div>
-    </div>
-    ${sizeHTML}
-    ${colorHTML}
-    ${stockHTML}
-    <div class="oos-notify-box" id="oosNotifyBox">
-      <div class="label">🔔 Notify When Back In Stock</div>
-      <div class="hint">We\'ll email you when your size is available.</div>
-      <div class="oos-row">
-        <input class="oos-email" id="oosEmail" type="email" placeholder="your@email.com"/>
-        <button class="oos-submit" onclick="submitOosNotify()">Notify Me</button>
-      </div>
-      <div class="oos-success">✓ You\'re on the list!</div>
-    </div>
-
-    <div class="form-section" id="inquiryForm">
-      <div class="form-title">INQUIRE / ORDER</div>
-      <div class="form-row">
-        <label>Your Name</label>
-        <input type="text" id="fName" placeholder="e.g. Jordan M." />
-      </div>
-      <div class="form-row">
-        <label>Email</label>
-        <input type="email" id="fEmail" placeholder="your@email.com" />
-      </div>
-      <div class="form-row">
-        <label>Message (optional)</label>
-        <textarea id="fMsg" placeholder="Any questions, special requests, or notes…"></textarea>
-      </div>
-      <p class="form-note">We'll reply within a few hours via email 🔥</p>
-    </div>
-  `;
-
-  // Store media for switching
-  window._media = allMedia;
-  // Init social proof
-  initSocialProof(p.name);
-}
-
-function switchMedia(i) {
-  currentImg = i;
-  const m = window._media[i];
-  const wrap = document.getElementById('mediaWrap');
-  if(m.type==='video') wrap.innerHTML = `<video src="${m.src}" autoplay muted loop playsinline style="width:100%;height:100%;object-fit:cover;"></video>`;
-  else wrap.innerHTML = `<img src="${m.src}" alt="" style="width:100%;height:100%;object-fit:cover;"/>`;
-  document.querySelectorAll('.media-dot').forEach((d,idx)=>d.classList.toggle('active',idx===i));
-}
-
-function pickSize(s, btn) {
-  selectedSize = s;
-  document.querySelectorAll('#sizeOpts .opt-btn:not(.oos)').forEach(b=>b.classList.remove('selected'));
-  btn.classList.add('selected');
-}
-
-function pickColor(c, btn) {
-  selectedColor = c;
-  document.querySelectorAll('#colorOpts .opt-btn').forEach(b=>b.classList.remove('selected'));
-  btn.classList.add('selected');
-}
-
-function scrollToForm() {
-  document.getElementById('inquiryForm').scrollIntoView({behavior:'smooth', block:'start'});
-}
-
-function showToast(msg, color) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.style.background = color || '#22c55e';
-  t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'), 3000);
-}
-
-async function submitInquiry() {
-  const name = document.getElementById('fName')?.value.trim();
-  const email = document.getElementById('fEmail')?.value.trim();
-  const msg = document.getElementById('fMsg')?.value.trim();
-  if(!name || !email) { scrollToForm(); showToast('Please fill in your name & email', '#ef4444'); return; }
-  if(product.type !== 'none' && !selectedSize) { showToast('Please select a size first ↑', '#f59e0b'); return; }
-  const btn = document.getElementById('btnSubmit');
-  btn.disabled = true; btn.textContent = 'Sending…';
-  try {
-    await fetch('https://api.base44.com/api/apps/6a21ea02495f72afbc2ec54c/functions/sendInquiry', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({
-        name, email, message: msg,
-        product: product.name,
-        size: selectedSize || 'Not selected',
-        color: selectedColor || 'N/A',
-        price: product.price
-      })
-    });
-    btn.textContent = '✓ Sent!';
-    showToast('Inquiry sent! We\'ll hit you back soon 🔥');
-    setTimeout(()=>{ btn.disabled=false; btn.textContent='SEND INQUIRY →'; }, 3000);
-  } catch(e) {
-    btn.textContent = 'Error — try again';
-    btn.disabled = false;
-    showToast('Something went wrong, try again', '#ef4444');
-  }
-}
-
-init();
-
-// OOS NOTIFY
-function showOosNotify(productName, size) {
-  var box = document.getElementById('oosNotifyBox');
-  if (!box) return;
-  box.classList.add('show');
-  box.querySelector('.hint').textContent = 'Get notified when ' + productName + ' (' + size + ') is back in stock.';
-  box.dataset.product = productName;
-  box.dataset.size = size;
-  box.scrollIntoView({behavior:'smooth', block:'nearest'});
-}
-
-function submitOosNotify() {
-  var box = document.getElementById('oosNotifyBox');
-  var email = document.getElementById('oosEmail').value.trim();
-  if (!email || !email.includes('@')) { alert('Enter a valid email'); return; }
-  var btn = box.querySelector('.oos-submit');
-  btn.textContent = 'Saving...';
-  btn.disabled = true;
-  fetch('https://api.base44.com/api/apps/6a21ea02495f72afbc2ec54c/functions/adminApi?action=notifyOos', {
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({product_name: box.dataset.product, size: box.dataset.size, email: email})
-  }).then(function(){
-    box.querySelector('.oos-success').style.display = 'block';
-    box.querySelector('.oos-row').style.display = 'none';
-    box.querySelector('.hint').textContent = "We'll email you as soon as it\'s back!";
-  }).catch(function(){
-    box.querySelector('.oos-success').style.display = 'block';
-    box.querySelector('.oos-row').style.display = 'none';
+  const thumbs = p.imgs||[p.img];
+  const thumbRow = document.getElementById('thumbRow');
+  thumbs.forEach((src,i) => {
+    const d = document.createElement('div');
+    d.className = 'thumb' + (i===0?' active':'');
+    d.innerHTML = `<img src="${src}" alt="${p.name}">`;
+    d.onclick = () => {
+      document.querySelectorAll('.thumb').forEach(t=>t.classList.remove('active'));
+      d.classList.add('active');
+      if (!p.video) document.getElementById('mainImg').src = src;
+    };
+    thumbRow.appendChild(d);
   });
+
+  // Badges
+  const badgeMap = {AUTH:'green',HOT:'',NEW:'',LOW:'yellow',SOLD:''};
+  const badgeLabels = {AUTH:'✓ Authenticated',HOT:'🔥 Trending',NEW:'New Arrival',LOW:'⚠ Low Stock',SOLD:'Sold Out'};
+  document.getElementById('pdBadges').innerHTML = (p.badges||[]).map(b=>`<div class="pd-badge ${badgeMap[b]||''}">${badgeLabels[b]||b}</div>`).join('');
+
+  // Sizes
+  const sg = document.getElementById('sizeGrid');
+  (p.sizes||[]).forEach(s => {
+    const inStock = (p.stock[s]||0) > 0;
+    const btn = document.createElement('button');
+    btn.className = 'sz-btn' + (inStock?'':' oos');
+    btn.textContent = s;
+    btn.dataset.size = s;
+    if (inStock) btn.onclick = () => {
+      document.querySelectorAll('.sz-btn').forEach(b=>b.classList.remove('selected'));
+      btn.classList.add('selected');
+      selectedSize = s;
+      document.getElementById('sizeError').style.display='none';
+    };
+    sg.appendChild(btn);
+  });
+
+  // Specs
+  document.getElementById('pdSpecs').innerHTML = `
+    <table>
+      <tr><td>Brand</td><td>${p.brand}</td></tr>
+      <tr><td>Category</td><td>${p.category}</td></tr>
+      <tr><td>Condition</td><td>${p.condition}</td></tr>
+      <tr><td>Authentication</td><td>Verified before listing</td></tr>
+      <tr><td>Shipping</td><td>1–3 business days</td></tr>
+      <tr><td>Returns</td><td>Final sale — see returns policy</td></tr>
+    </table>`;
+
+  // Actions
+  const actDiv = document.getElementById('pdActions');
+  if (soldOut) {
+    actDiv.innerHTML = `<button class="pd-sold-out-btn">Sold Out</button>`;
+  } else {
+    actDiv.innerHTML = `
+      <button class="pd-atc" onclick="pdAddToCart()">Add to Cart</button>
+      <button class="pd-bn" onclick="pdBuyNow()">⚡ Buy Now</button>`;
+  }
+
+  // Related
+  const related = PRODUCTS.filter(pr => pr.id !== p.id && (pr.category===p.category||pr.brand===p.brand) && !pr.isSoldOut).slice(0,4);
+  document.getElementById('relatedGrid').innerHTML = related.length
+    ? related.map(pr=>renderProductCard(pr)).join('')
+    : PRODUCTS.filter(pr=>pr.id!==p.id&&!pr.isSoldOut).slice(0,4).map(pr=>renderProductCard(pr)).join('');
 }
 
-
-// ── SOCIAL PROOF ──────────────────────────────────────────────────────────
-function initSocialProof(productName) {
-  // Viewer count — random between 3-12, fluctuates
-  var base = 3 + Math.floor(Math.abs(hashStr(productName)) % 9);
-  var current = base;
-  function setViewers() {
-    var delta = Math.floor(Math.random() * 3) - 1; // -1, 0, or +1
-    current = Math.max(2, Math.min(18, current + delta));
-    var el = document.getElementById('viewerCount');
-    if (el) el.textContent = current;
-  }
-  setViewers();
-  setInterval(setViewers, 4500);
-
-  // Sold ticker — random "sold X hours ago" messages
-  var soldMessages = [
-    'Someone in New York just ordered this',
-    'Last sold 2 hours ago',
-    'Last sold 4 hours ago',
-    '3 people bought this today',
-    'Sold twice this week',
-    'Last sold 6 hours ago',
-    'Someone just copped a size 9',
-    'Selling fast — 4 sold this week',
-  ];
-  var msg = soldMessages[Math.abs(hashStr(productName + 'sold')) % soldMessages.length];
-  var ticker = document.getElementById('soldTicker');
-  var tickerText = document.getElementById('soldTickerText');
-  if (ticker && tickerText) {
-    tickerText.textContent = msg;
-    // Show after a 1.5s delay for effect
-    setTimeout(function() { ticker.style.display = 'flex'; }, 1500);
-  }
+function changeQty(dir) {
+  qty = Math.max(1, Math.min(10, qty + dir));
+  document.getElementById('qtyVal').textContent = qty;
 }
 
-function hashStr(str) {
-  var hash = 0;
-  for (var i = 0; i < str.length; i++) {
-    hash = ((hash << 5) - hash) + str.charCodeAt(i);
-    hash |= 0;
+function pdAddToCart() {
+  if (!currentProduct) return;
+  const needsSize = currentProduct.sizes && currentProduct.sizes.length > 0;
+  if (needsSize && !selectedSize) {
+    document.getElementById('sizeError').style.display='block';
+    document.getElementById('sizeGrid').scrollIntoView({behavior:'smooth',block:'nearest'});
+    return;
   }
-  return hash;
+  for (let i=0;i<qty;i++) Cart.add(currentProduct, selectedSize);
+  Cart.openDrawer();
 }
 
+function pdBuyNow() {
+  if (!currentProduct) return;
+  const needsSize = currentProduct.sizes && currentProduct.sizes.length > 0;
+  if (needsSize && !selectedSize) {
+    document.getElementById('sizeError').style.display='block';
+    return;
+  }
+  for (let i=0;i<qty;i++) Cart.add(currentProduct, selectedSize);
+  window.location.href = 'checkout.html';
+}
+
+function switchTab(name, el) {
+  document.querySelectorAll('.pd-tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.pd-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(`tab-${name}`).classList.add('active');
+  el.classList.add('active');
+}
 </script>
 </body>
 </html>

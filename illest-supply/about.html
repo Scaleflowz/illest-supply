@@ -1,0 +1,62 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>About | The Illest Supply</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style id="globalStyles"></style>
+<style>
+.about-hero{text-align:center;padding:80px 20px 60px;}
+.about-hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(60px,8vw,100px);line-height:.95;margin-bottom:20px;}
+.about-hero h1 em{font-style:normal;color:transparent;-webkit-text-stroke:1px rgba(255,255,255,.3);}
+.about-hero p{font-size:16px;color:#444;max-width:560px;margin:0 auto;line-height:1.7;}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin:40px 0;}
+.about-card{background:#0d0d0d;border:1px solid rgba(255,255,255,.05);border-radius:20px;padding:36px;}
+.about-card h3{font-family:'Bebas Neue',sans-serif;font-size:28px;margin-bottom:12px;}
+.about-card p{font-size:13px;color:#444;line-height:1.7;}
+.about-stat{text-align:center;padding:32px;}
+.about-stat-num{font-family:'Bebas Neue',sans-serif;font-size:clamp(48px,6vw,80px);color:#fff;}
+.about-stat-label{font-size:12px;color:#333;letter-spacing:.1em;text-transform:uppercase;margin-top:4px;}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);background:#0a0a0a;border:1px solid rgba(255,255,255,.05);border-radius:20px;}
+.stats-row .about-stat{border-right:1px solid rgba(255,255,255,.04);}
+.stats-row .about-stat:last-child{border-right:none;}
+@media(max-width:768px){.about-grid{grid-template-columns:1fr;}.stats-row{grid-template-columns:1fr 1fr;}}
+</style></head><body>
+<div id="navContainer"></div>
+<main>
+<div class="about-hero">
+  <div class="container">
+    <div class="section-title">Our Story</div>
+    <h1>Built for the<br><em>Illest</em> Fits.</h1>
+    <p>The Illest Supply was built for people who want clean, authenticated designer and streetwear pieces without the guesswork. Every piece is selected with quality, style, and trust in mind.</p>
+  </div>
+</div>
+<section><div class="container">
+  <div class="stats-row">
+    <div class="about-stat"><div class="about-stat-num">2K+</div><div class="about-stat-label">Verified Sales</div></div>
+    <div class="about-stat"><div class="about-stat-num">4.9</div><div class="about-stat-label">Star Rating</div></div>
+    <div class="about-stat"><div class="about-stat-num">1–3</div><div class="about-stat-label">Day Shipping</div></div>
+    <div class="about-stat"><div class="about-stat-num">100%</div><div class="about-stat-label">Authenticated</div></div>
+  </div>
+</div></section>
+<section><div class="container">
+  <div class="about-grid">
+    <div class="about-card"><h3>What We Do</h3><p>We source and resell authenticated designer sneakers, slides, jorts, and streetwear pieces from top brands. Every item is inspected, photographed, and listed honestly — no surprises.</p></div>
+    <div class="about-card"><h3>Why We Started</h3><p>Designer resale shouldn't be sketchy. We built The Illest Supply to bring trust, speed, and premium quality to the resale market. Real pieces. Real people. Real fast.</p></div>
+    <div class="about-card"><h3>Our Promise</h3><p>Every item leaves our hands in the condition described. We don't cut corners on quality, condition, or authenticity. If something's off, we want to know.</p></div>
+    <div class="about-card"><h3>The Community</h3><p>This started on Instagram and grew through word of mouth. 2,000+ customers later, we're still building. Follow @theillestsupply for drops, restocks, and exclusives.</p></div>
+  </div>
+  <div style="text-align:center;margin-top:20px;padding:40px;background:#0a0a0a;border-radius:20px;border:1px solid rgba(255,255,255,.05);">
+    <div style="font-size:11px;color:#333;letter-spacing:.15em;text-transform:uppercase;margin-bottom:6px;">A note on our shop</div>
+    <p style="font-size:13px;color:#333;line-height:1.7;max-width:560px;margin:0 auto;">The Illest Supply is an independent resale shop. We are not affiliated with any brand listed. Brand names are used solely to describe the items being sold. All items are inspected for quality before listing.</p>
+  </div>
+</div></section>
+<section style="text-align:center;padding-bottom:80px;"><div class="container">
+  <div class="section-heading" style="margin-bottom:20px;">Come Shop With Us</div>
+  <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+    <a href="shop.html" class="btn-primary">Shop Now</a>
+    <a href="https://www.instagram.com/theillestsupply" target="_blank" class="btn-outline">Follow on Instagram</a>
+  </div>
+</div></section>
+</main>
+<div id="footerContainer"></div>
+<script src="cart.js"></script><script src="products.js"></script>
+<script>document.getElementById('globalStyles').textContent=getGlobalCSS();document.getElementById('navContainer').innerHTML=getNavHTML('about');document.getElementById('footerContainer').innerHTML=getFooterHTML();</script>
+</body></html>
