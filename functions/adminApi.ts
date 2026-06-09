@@ -230,6 +230,31 @@ Deno.serve(async (req: Request): Promise<Response> => {
       return Response.json({ success: true }, { headers: cors });
     }
 
+
+    // ── ORDER TRACKER ──────────────────────────────────────────────────────
+    if (action === "trackOrder") {
+      const { orderNumber, email } = await req.json();
+      if (!orderNumber || !email) return Response.json({ error: "Missing fields" }, { status: 400, headers: cors });
+      const inquiries = await db.Inquiry.list();
+      const order = inquiries.find((o: any) =>
+        (o.order_number === orderNumber || o.id?.slice(-8).toUpperCase() === orderNumber.replace('ILS-','').toUpperCase()) &&
+        o.customer_email?.toLowerCase() === email.toLowerCase()
+      );
+      if (!order) return Response.json({ error: "Not found" }, { status: 404, headers: cors });
+      return Response.json({
+        order: {
+          id: order.id,
+          orderNumber: order.order_number || 'ILS-' + order.id.slice(-4).toUpperCase(),
+          customerName: order.customer_name,
+          status: order.status || 'processing',
+          items: [{ productId: order.product_id, name: order.product_name, size: order.size, price: order.price, qty: 1, img: null }],
+          total: order.price,
+          trackingNumber: order.notes?.match(/tracking:(\S+)/i)?.[1] || null,
+          createdDate: order.created_date,
+        }
+      }, { headers: cors });
+    }
+
     return Response.json({ error: "Unknown action" }, { status: 400, headers: cors });
   } catch (e: any) {
     return Response.json({ error: e.message }, { status: 500, headers: cors });
