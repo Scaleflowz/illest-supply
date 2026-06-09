@@ -232,6 +232,84 @@ Deno.serve(async (req: Request): Promise<Response> => {
 
 
 
+
+    // ── ORDER CONFIRMATION EMAIL ───────────────────────────────────────────
+    if (action === "sendOrderConfirmationEmail") {
+      const { customer_name, customer_email, order_number, items, subtotal, shipping, tax, total, address } = await req.json();
+      if (!customer_email) return Response.json({ error: "Missing email" }, { status: 400, headers: cors });
+
+      const itemsHtml = (items || []).map((item: any) => `
+        <div style="display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.05);">
+          ${item.img ? `<img src="${item.img}" style="width:50px;height:50px;border-radius:8px;object-fit:cover;" alt="${item.name}">` : ''}
+          <div style="flex:1;">
+            <div style="color:#fff;font-size:14px;font-weight:700;">${item.name}</div>
+            ${item.size ? `<div style="color:#555;font-size:12px;margin-top:2px;">Size: ${item.size}</div>` : ''}
+            <div style="color:#555;font-size:12px;">Qty: ${item.qty || 1}</div>
+          </div>
+          <div style="color:#fff;font-size:14px;font-weight:800;">$${((item.price||0)*(item.qty||1)).toFixed(2)}</div>
+        </div>`).join('');
+
+      const addrHtml = address ? `${address.line1}${address.line2 ? ', ' + address.line2 : ''}, ${address.city}, ${address.state} ${address.zip}` : '—';
+
+      const emailHtml = `
+        <div style="background:#080808;padding:40px 20px;font-family:'Inter',sans-serif;">
+          <div style="max-width:520px;margin:0 auto;">
+            <div style="text-align:center;margin-bottom:28px;">
+              <img src="https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/409f6a116_918D9A7E-D61E-4658-A7B6-5DF1F8B5AC78.png" alt="The Illest Supply" style="height:56px;mix-blend-mode:screen;">
+            </div>
+            <div style="background:#0d0d0d;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:32px;">
+              <div style="text-align:center;margin-bottom:24px;">
+                <div style="font-size:32px;margin-bottom:8px;">✅</div>
+                <h2 style="color:#fff;font-size:22px;font-weight:800;letter-spacing:.04em;margin:0 0 6px;">Order Confirmed!</h2>
+                <p style="color:#666;font-size:13px;margin:0;">Thanks ${customer_name || 'for your order'} — we got it and we're on it.</p>
+              </div>
+              <div style="background:#111;border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:14px 18px;margin-bottom:20px;">
+                <div style="font-size:10px;color:#555;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px;">Order Number</div>
+                <div style="color:#fff;font-size:15px;font-weight:800;letter-spacing:.06em;">${order_number}</div>
+              </div>
+              <div style="background:#111;border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:14px 18px;margin-bottom:20px;">
+                <div style="font-size:10px;color:#555;letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px;">Items Ordered</div>
+                ${itemsHtml}
+              </div>
+              <div style="background:#111;border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:14px 18px;margin-bottom:20px;">
+                <div style="font-size:10px;color:#555;letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px;">Order Total</div>
+                <div style="display:flex;justify-content:space-between;font-size:12px;color:#666;margin-bottom:6px;"><span>Subtotal</span><span>$${(subtotal||0).toFixed(2)}</span></div>
+                <div style="display:flex;justify-content:space-between;font-size:12px;color:#666;margin-bottom:6px;"><span>Shipping</span><span>${shipping===0?'FREE':'$'+(shipping||0).toFixed(2)}</span></div>
+                <div style="display:flex;justify-content:space-between;font-size:12px;color:#666;margin-bottom:10px;"><span>Tax</span><span>$${(tax||0).toFixed(2)}</span></div>
+                <div style="display:flex;justify-content:space-between;font-size:16px;font-weight:800;color:#fff;border-top:1px solid rgba(255,255,255,.08);padding-top:10px;"><span>Total</span><span>$${(total||0).toFixed(2)}</span></div>
+              </div>
+              <div style="background:#111;border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:14px 18px;margin-bottom:24px;">
+                <div style="font-size:10px;color:#555;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;">Shipping To</div>
+                <div style="color:#aaa;font-size:13px;line-height:1.6;">${addrHtml}</div>
+              </div>
+              <div style="background:rgba(234,179,8,.06);border:1px solid rgba(234,179,8,.15);border-radius:10px;padding:14px 18px;margin-bottom:24px;text-align:center;">
+                <div style="color:#eab308;font-size:12px;font-weight:600;">⏳ Payment Pending</div>
+                <div style="color:#666;font-size:12px;margin-top:4px;">We'll contact you shortly to process payment and confirm your order.</div>
+              </div>
+              <a href="https://illestsupply.com/order-tracker.html" style="display:block;text-align:center;background:#fff;color:#000;font-size:13px;font-weight:700;letter-spacing:.07em;padding:14px;border-radius:10px;text-decoration:none;margin-bottom:16px;">TRACK YOUR ORDER →</a>
+              <p style="color:#444;font-size:12px;text-align:center;margin:0;line-height:1.6;">
+                Questions? DM us at <a href="https://www.instagram.com/theillestsupply" style="color:#666;">@theillestsupply</a><br>
+                or reply to this email
+              </p>
+            </div>
+            <p style="color:#333;font-size:11px;text-align:center;margin-top:20px;">© 2026 The Illest Supply · illestsupply.com</p>
+          </div>
+        </div>`;
+
+      await fetch("https://superagent-bc2ec54c.base44.app/functions/sendInquiry", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          to: customer_email,
+          subject: `Order Confirmed ✅ ${order_number} – The Illest Supply`,
+          body: emailHtml,
+          type: "confirmation"
+        })
+      });
+
+      return Response.json({ success: true }, { headers: cors });
+    }
+
     // ── SHIPPING CONFIRMATION EMAIL ────────────────────────────────────────
     if (action === "sendShippingEmail") {
       const { id, customer_name, customer_email, product_name, size, price, tracking_number } = await req.json();
