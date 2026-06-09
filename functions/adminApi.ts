@@ -231,6 +231,65 @@ Deno.serve(async (req: Request): Promise<Response> => {
     }
 
 
+
+    // ── SHIPPING CONFIRMATION EMAIL ────────────────────────────────────────
+    if (action === "sendShippingEmail") {
+      const { id, customer_name, customer_email, product_name, size, price, tracking_number } = await req.json();
+      const trackingUrl = tracking_number
+        ? `https://track.aftership.com/usps/${tracking_number}`
+        : `https://illestsupply.com/order-tracker.html`;
+
+      const emailHtml = `
+        <div style="background:#080808;padding:40px 20px;font-family:'Inter',sans-serif;">
+          <div style="max-width:520px;margin:0 auto;">
+            <div style="text-align:center;margin-bottom:32px;">
+              <img src="https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/409f6a116_918D9A7E-D61E-4658-A7B6-5DF1F8B5AC78.png" alt="The Illest Supply" style="height:60px;mix-blend-mode:screen;">
+            </div>
+            <div style="background:#0d0d0d;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:32px;">
+              <h2 style="color:#fff;font-size:22px;font-weight:800;letter-spacing:.04em;margin:0 0 6px;">Your order is on its way 📦</h2>
+              <p style="color:#666;font-size:14px;margin:0 0 24px;">Hey ${customer_name || 'there'}, your order has shipped! Here's everything you need.</p>
+              <div style="background:#111;border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:18px;margin-bottom:24px;">
+                <div style="font-size:11px;color:#555;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;">Order Summary</div>
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <div>
+                    <div style="color:#fff;font-size:14px;font-weight:700;">${product_name || 'Your Item'}</div>
+                    <div style="color:#555;font-size:12px;margin-top:3px;">Size: ${size || '—'}</div>
+                  </div>
+                  <div style="color:#fff;font-size:16px;font-weight:800;">$${price || '—'}</div>
+                </div>
+              </div>
+              ${tracking_number ? `
+              <div style="background:#111;border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:18px;margin-bottom:24px;">
+                <div style="font-size:11px;color:#555;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;">USPS Tracking</div>
+                <div style="color:#fff;font-size:14px;font-weight:700;font-family:monospace;letter-spacing:.05em;">${tracking_number}</div>
+              </div>` : ''}
+              <a href="${trackingUrl}" style="display:block;text-align:center;background:#fff;color:#000;font-size:13px;font-weight:700;letter-spacing:.07em;padding:15px;border-radius:10px;text-decoration:none;margin-bottom:20px;">
+                ${tracking_number ? 'TRACK MY PACKAGE →' : 'TRACK YOUR ORDER →'}
+              </a>
+              <p style="color:#444;font-size:12px;text-align:center;margin:0;line-height:1.6;">
+                Questions? Reply to this email or DM us on Instagram<br>
+                <a href="https://www.instagram.com/theillestsupply" style="color:#666;">@theillestsupply</a>
+              </p>
+            </div>
+            <p style="color:#333;font-size:11px;text-align:center;margin-top:20px;">© 2026 The Illest Supply · illestsupply.com</p>
+          </div>
+        </div>`;
+
+      // Send via existing sendInquiry function
+      await fetch("https://superagent-bc2ec54c.base44.app/functions/sendInquiry", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          to: customer_email,
+          subject: `Your order has shipped! ${tracking_number ? '📦 ' + tracking_number : ''}`,
+          body: emailHtml,
+          type: "shipping"
+        })
+      });
+
+      return Response.json({ success: true }, { headers: cors });
+    }
+
     // ── ORDER TRACKER ──────────────────────────────────────────────────────
     if (action === "trackOrder") {
       const { orderNumber, email } = await req.json();
