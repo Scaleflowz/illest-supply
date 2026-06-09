@@ -124,7 +124,12 @@ const REVIEWS=[
 ];
 
 document.getElementById('reviewsGrid').innerHTML=REVIEWS.map((r,i)=>{
-  const topMedia = '';
+  let topMedia = '';
+  if(r.video){
+    topMedia = `<div class="review-media"><video src="${r.video}" autoplay muted loop playsinline style="width:100%;border-radius:12px;max-height:320px;object-fit:cover;display:block;"></video></div>`;
+  } else if(r.img){
+    topMedia = `<div class="review-media"><img src="${r.img}" alt="customer photo" loading="lazy" style="width:100%;border-radius:12px;max-height:320px;object-fit:cover;display:block;"></div>`;
+  }
 
   const cls = r.featured ? 'review-card featured' : 'review-card';
   return `<div class="${cls}">
