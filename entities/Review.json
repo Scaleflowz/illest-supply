@@ -1,0 +1,45 @@
+{
+  "type": "object",
+  "properties": {
+    "customerName": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "instagramHandle": {
+      "type": "string"
+    },
+    "productPurchased": {
+      "type": "string"
+    },
+    "rating": {
+      "type": "number"
+    },
+    "reviewTitle": {
+      "type": "string"
+    },
+    "reviewMessage": {
+      "type": "string"
+    },
+    "photoUrl": {
+      "type": "string"
+    },
+    "verifiedPurchase": {
+      "type": "boolean"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "rejected"
+      ]
+    },
+    "featured": {
+      "type": "boolean"
+    }
+  },
+  "required": [],
+  "name": "Review"
+}

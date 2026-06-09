@@ -158,17 +158,47 @@
 <section style="background:#050505;padding:60px 0;">
   <div class="container">
     <div style="text-align:center;margin-bottom:40px;">
-      <div class="section-title">Why Choose Us</div>
-      <div class="section-heading">Why Shop With<br>Illest Supply?</div>
+      <div class="section-title">Real Talk</div>
+      <div class="section-heading">What Customers Are Saying</div>
     </div>
-    <div class="why-grid">
-      
-      <div class="why-card"><div class="why-icon">⚡</div><div class="why-title">Fast 1–3 Day Shipping</div><div class="why-desc">Orders ship fast. Track your package from confirmation to your door.</div></div>
-      <div class="why-card"><div class="why-icon">🎁</div><div class="why-title">Free Shipping Over $150</div><div class="why-desc">Hit the threshold and shipping is on us. Simple.</div></div>
-      <div class="why-card"><div class="why-icon">💯</div><div class="why-title">Trusted by 2,000+ Customers</div><div class="why-desc">Built on real reviews and repeat buyers. The community speaks for itself.</div></div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;" id="reviewsPreview">
+      <div style="text-align:center;padding:40px;color:#444;grid-column:1/-1;">Loading reviews...</div>
+    </div>
+    <div style="text-align:center;margin-top:28px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <a href="reviews.html" class="btn-outline">Read All Reviews</a>
+      <button class="btn-primary" onclick="window.location.href='reviews.html?write=1'">✍️ Write a Review</button>
     </div>
   </div>
 </section>
+<script>
+(async function loadHomeReviews(){
+  try{
+    const r = await fetch('https://superagent-bc2ec54c.base44.app/functions/reviewsApi?action=list&limit=6');
+    const d = await r.json();
+    const reviews = (d.reviews||[]).filter(rv=>rv.rating===5).slice(0,6);
+    if(!reviews.length){ document.getElementById('reviewsPreview').innerHTML=''; return; }
+    document.getElementById('reviewsPreview').innerHTML = reviews.map(rv=>{
+      const stars = '★'.repeat(rv.rating);
+      const title = rv.reviewTitle ? `<div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:8px;">${rv.reviewTitle}</div>`:'';
+      const ig = rv.instagramHandle ? `<span style="color:#444;font-size:11px;margin-left:4px;">${rv.instagramHandle}</span>`:'';
+      const photo = rv.photoUrl ? `<img src="${rv.photoUrl}" style="width:100%;max-height:180px;object-fit:cover;border-radius:8px;margin-bottom:10px;" loading="lazy">`:'';
+      return `<div style="background:#0d0d0d;border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:22px;">
+        ${photo}
+        <div style="font-size:14px;color:#f59e0b;letter-spacing:2px;margin-bottom:8px;">${stars}</div>
+        ${title}
+        <div style="font-size:13px;color:#666;line-height:1.75;margin-bottom:14px;">"${rv.reviewMessage}"</div>
+        <div style="display:flex;justify-content:space-between;align-items:flex-end;">
+          <div>
+            <div style="font-size:13px;font-weight:700;color:#fff;">${rv.customerName}${ig}</div>
+            <div style="font-size:11px;color:#444;margin-top:2px;">${rv.productPurchased}</div>
+          </div>
+          ${rv.verifiedPurchase?'<span style="font-size:10px;font-weight:700;letter-spacing:.08em;color:#22c55e;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.15);padding:4px 10px;border-radius:50px;">VERIFIED</span>':''}
+        </div>
+      </div>`;
+    }).join('');
+  } catch(e){ document.getElementById('reviewsPreview').innerHTML=''; }
+})();
+</script>
 
 <!-- HOW IT WORKS -->
 <section>
