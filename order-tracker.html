@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Track Your Order – The Illest Supply</title>
+  <link rel="icon" href="https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/409f6a116_918D9A7E-D61E-4658-A7B6-5DF1F8B5AC78.png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Bebas+Neue&display=swap" rel="stylesheet">
+  <style id="globalStyles"></style>
+  <style>
+    .tracker-wrap {
+      min-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 60px 20px 80px;
+    }
+    .tracker-heading {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(36px, 6vw, 60px);
+      letter-spacing: .06em;
+      color: #fff;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+    .tracker-sub {
+      font-size: 13px;
+      color: #555;
+      margin-bottom: 40px;
+      text-align: center;
+      letter-spacing: .04em;
+    }
+    .tracker-form {
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .tracker-form input {
+      width: 100%;
+      padding: 14px 18px;
+      background: #0d0d0d;
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 10px;
+      color: #fff;
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .tracker-form input::placeholder { color: #444; }
+    .tracker-form input:focus { border-color: rgba(255,255,255,.3); }
+    .tracker-form button {
+      width: 100%;
+      padding: 15px;
+      background: #fff;
+      color: #000;
+      border: none;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: .07em;
+      cursor: pointer;
+      transition: opacity .2s;
+    }
+    .tracker-form button:hover { opacity: .85; }
+
+    /* Result card */
+    #trackResult { width: 100%; max-width: 480px; margin-top: 28px; }
+
+    .order-card {
+      background: #0d0d0d;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    .order-card-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .order-id { font-size: 12px; color: #555; letter-spacing: .04em; margin-bottom: 4px; }
+    .order-name { font-size: 15px; font-weight: 700; color: #fff; }
+    .order-status-pill {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      padding: 5px 12px;
+      border-radius: 20px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .status-processing { background: rgba(234,179,8,.12); color: #eab308; border: 1px solid rgba(234,179,8,.2); }
+    .status-shipped    { background: rgba(59,130,246,.12); color: #60a5fa; border: 1px solid rgba(59,130,246,.2); }
+    .status-delivered  { background: rgba(34,197,94,.12);  color: #4ade80; border: 1px solid rgba(34,197,94,.2); }
+    .status-cancelled  { background: rgba(239,68,68,.12);  color: #f87171; border: 1px solid rgba(239,68,68,.2); }
+
+    .order-items { padding: 18px 24px; border-bottom: 1px solid rgba(255,255,255,.06); }
+    .order-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 10px 0;
+    }
+    .order-item + .order-item { border-top: 1px solid rgba(255,255,255,.05); }
+    .order-item-img {
+      width: 52px;
+      height: 52px;
+      border-radius: 8px;
+      object-fit: cover;
+      background: #1a1a1a;
+      flex-shrink: 0;
+    }
+    .order-item-info { flex: 1; }
+    .order-item-name { font-size: 13px; font-weight: 600; color: #fff; margin-bottom: 3px; }
+    .order-item-meta { font-size: 12px; color: #555; }
+    .order-item-price { font-size: 14px; font-weight: 700; color: #fff; }
+
+    /* Progress steps */
+    .order-progress { padding: 22px 24px 18px; }
+    .progress-label { font-size: 11px; color: #555; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 18px; }
+    .steps { display: flex; align-items: flex-start; justify-content: space-between; position: relative; }
+    .steps::before {
+      content: '';
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      right: 14px;
+      height: 1px;
+      background: rgba(255,255,255,.08);
+      z-index: 0;
+    }
+    .steps-fill {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      height: 1px;
+      background: #fff;
+      z-index: 1;
+      transition: width .5s ease;
+    }
+    .step { display: flex; flex-direction: column; align-items: center; gap: 8px; z-index: 2; flex: 1; }
+    .step-dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,.15);
+      background: #080808;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: #333;
+      transition: all .3s;
+    }
+    .step.done .step-dot   { background: #fff; color: #000; border-color: #fff; }
+    .step.active .step-dot { background: #333; color: #fff; border-color: rgba(255,255,255,.4); }
+    .step-label { font-size: 10px; color: #444; letter-spacing: .04em; text-align: center; line-height: 1.3; }
+    .step.done .step-label, .step.active .step-label { color: #aaa; }
+
+    .order-footer {
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid rgba(255,255,255,.06);
+    }
+    .order-footer-detail { font-size: 12px; color: #444; }
+    .order-footer-detail span { color: #888; display: block; margin-top: 2px; font-size: 13px; }
+    .order-total { font-size: 16px; font-weight: 800; color: #fff; }
+
+    /* Error / empty */
+    .track-error {
+      text-align: center;
+      padding: 32px 20px;
+      color: #555;
+      font-size: 14px;
+      border: 1px solid rgba(255,255,255,.06);
+      border-radius: 14px;
+      background: #0d0d0d;
+    }
+    .track-error strong { display: block; color: #888; font-size: 15px; margin-bottom: 6px; }
+  </style>
+</head>
+<body>
+  <div id="navContainer"></div>
+  <main class="tracker-wrap">
+    <h1 class="tracker-heading">Track Your Order</h1>
+    <p class="tracker-sub">Enter your order number and the email used at checkout</p>
+    <div class="tracker-form">
+      <input type="text" id="orderInput" placeholder="Order number (e.g. ILS-1001)" autocomplete="off">
+      <input type="email" id="emailInput" placeholder="Email address">
+      <button onclick="trackOrder()">TRACK ORDER</button>
+    </div>
+    <div id="trackResult"></div>
+  </main>
+  <div id="footerContainer"></div>
+
+  <script src="cart.js?v=3"></script>
+  <script src="products.js?v=11"></script>
+  <script>
+    document.getElementById('globalStyles').textContent = getGlobalCSS();
+    document.getElementById('navContainer').innerHTML = getNavHTML('track');
+    document.getElementById('footerContainer').innerHTML = getFooterHTML();
+
+    const ADMIN_API = 'https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/functions/adminApi';
+
+    async function trackOrder() {
+      const orderNum = document.getElementById('orderInput').value.trim();
+      const email    = document.getElementById('emailInput').value.trim().toLowerCase();
+      const result   = document.getElementById('trackResult');
+
+      if (!orderNum || !email) {
+        result.innerHTML = `<div class="track-error"><strong>Missing info</strong>Please enter both your order number and email.</div>`;
+        return;
+      }
+
+      result.innerHTML = `<div class="track-error" style="color:#555;">Looking up your order…</div>`;
+
+      try {
+        const res  = await fetch(ADMIN_API, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'trackOrder', orderNumber: orderNum, email })
+        });
+        const data = await res.json();
+
+        if (!data || data.error || !data.order) {
+          result.innerHTML = `<div class="track-error"><strong>Order not found</strong>Double-check your order number and email, or <a href="contact.html" style="color:#fff;text-decoration:underline;">contact us</a>.</div>`;
+          return;
+        }
+
+        renderOrderCard(data.order, result);
+      } catch(e) {
+        result.innerHTML = `<div class="track-error"><strong>Something went wrong</strong>Please try again or <a href="contact.html" style="color:#fff;text-decoration:underline;">contact us</a>.</div>`;
+      }
+    }
+
+    function renderOrderCard(o, container) {
+      const statusMap = {
+        processing: { label: 'Processing',  cls: 'status-processing', step: 1 },
+        shipped:    { label: 'Shipped',      cls: 'status-shipped',    step: 2 },
+        delivered:  { label: 'Delivered',    cls: 'status-delivered',  step: 3 },
+        cancelled:  { label: 'Cancelled',    cls: 'status-cancelled',  step: 0 },
+      };
+      const s = statusMap[o.status] || statusMap.processing;
+
+      const stepDefs = [
+        { icon: '✓', label: 'Order\nConfirmed' },
+        { icon: '⟳', label: 'Processing' },
+        { icon: '📦', label: 'Shipped' },
+        { icon: '✓', label: 'Delivered' },
+      ];
+
+      const fillPct = ['0%', '0%', '33%', '66%', '100%'][s.step] || '0%';
+
+      const stepsHTML = stepDefs.map((st, i) => {
+        const done   = i < s.step;
+        const active = i === s.step;
+        return `<div class="step ${done?'done':''} ${active?'active':''}">
+          <div class="step-dot">${done ? '✓' : st.icon}</div>
+          <div class="step-label">${st.label.replace('\n','<br>')}</div>
+        </div>`;
+      }).join('');
+
+      const itemsHTML = (o.items || []).map(item => {
+        const prod = PRODUCTS.find(p => p.id == item.productId) || {};
+        const img  = item.img || prod.img || '';
+        return `<div class="order-item">
+          ${img ? `<img src="${img}" class="order-item-img" alt="${item.name}">` : `<div class="order-item-img"></div>`}
+          <div class="order-item-info">
+            <div class="order-item-name">${item.name}</div>
+            <div class="order-item-meta">Size ${item.size} · Qty ${item.qty || 1}</div>
+          </div>
+          <div class="order-item-price">$${item.price}</div>
+        </div>`;
+      }).join('');
+
+      const dateStr = o.createdDate ? new Date(o.createdDate).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' }) : '—';
+
+      container.innerHTML = `
+        <div class="order-card">
+          <div class="order-card-header">
+            <div>
+              <div class="order-id">ORDER ${o.orderNumber || o.id?.slice(-8).toUpperCase()}</div>
+              <div class="order-name">${o.customerName || 'Customer'}</div>
+            </div>
+            <div class="order-status-pill ${s.cls}">${s.label.toUpperCase()}</div>
+          </div>
+          ${itemsHTML ? `<div class="order-items">${itemsHTML}</div>` : ''}
+          <div class="order-progress">
+            <div class="progress-label">Shipment Status</div>
+            <div class="steps" id="stepsRow">
+              <div class="steps-fill" id="stepsFill" style="width:0%"></div>
+              ${stepsHTML}
+            </div>
+          </div>
+          <div class="order-footer">
+            <div class="order-footer-detail">
+              Ordered <span>${dateStr}</span>
+            </div>
+            ${o.trackingNumber ? `<div class="order-footer-detail" style="text-align:right;">Tracking<span>${o.trackingNumber}</span></div>` : ''}
+            <div class="order-total">$${o.total || '—'}</div>
+          </div>
+        </div>`;
+
+      // Animate progress bar
+      setTimeout(() => {
+        const fill = document.getElementById('stepsFill');
+        if (fill) fill.style.width = fillPct;
+      }, 100);
+    }
+
+    // Allow Enter key to submit
+    ['orderInput','emailInput'].forEach(id => {
+      document.getElementById(id).addEventListener('keydown', e => { if(e.key==='Enter') trackOrder(); });
+    });
+  </script>
+</body>
+</html>
