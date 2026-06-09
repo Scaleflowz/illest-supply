@@ -17,10 +17,10 @@
 .review-card{background:#0d0d0d;border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:10px;}
 .review-card.featured{grid-column:span 2;border-color:rgba(201,169,110,.25);background:#0f0e0b;}
 .review-card.wide{grid-column:span 3;}
-.review-media{border-radius:12px;overflow:hidden;}
-.review-media img,.review-media video{width:100%;object-fit:cover;display:block;border-radius:12px;max-height:360px;}
-.review-media-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:4px;}
-.review-media-row .review-media img,.review-media-row .review-media video{max-height:220px;}
+
+
+
+
 .review-stars{font-size:14px;color:#f59e0b;letter-spacing:2px;}
 .review-text{font-size:13px;color:#777;line-height:1.75;flex:1;}
 .review-meta{display:flex;justify-content:space-between;align-items:flex-end;margin-top:4px;}
@@ -31,7 +31,7 @@
 @media(max-width:768px){
   .reviews-grid{grid-template-columns:1fr;}
   .review-card.featured,.review-card.wide{grid-column:span 1;}
-  .review-media-row{grid-template-columns:1fr;}
+  
 }
 </style></head><body>
 <div id="navContainer"></div>
@@ -72,47 +72,32 @@ const REVIEWS=[
   {
     name:"Malik D.", user:"@malik.drip", stars:5, featured:true, verified:true,
     product:"Asics Gel Kayano 14",
-    text:"These are actual deadstock. Came in the OG box, tissue paper, everything. The silver/white colorway is clean as hell in person — way better than photos. Shipped fast, packed tight. Not my first order from Illest and won't be my last.",
-    mediaRow:[
-      {type:"video", src:"https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/6076a3128_cf5861558_RenderedVideo.mp4"},
-      {type:"img",   src:"https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/4f38bf281_IMG_0613.jpg"}
-    ]
+    text:"These are actual deadstock. Came in the OG box, tissue paper, everything. The silver/white colorway is clean as hell in person — way better than photos. Shipped fast, packed tight. Not my first order from Illest and won't be my last."
   },
   {
     name:"Darius W.", user:"@dariuswfit", stars:5, featured:true, verified:true,
     product:"Balenciaga Slides",
-    text:"Dropped these on my IG story and my DMs went crazy. The condition is perfect, came double-boxed. This is the only spot I'm copping from now on.",
-    mediaRow:[
-      {type:"video", src:"https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/8d9168699_424a09905_IMG_38132.mp4"},
-      {type:"img",   src:"https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/2d8da1069_22f63ea22_IMG_2481.jpg"}
-    ]
+    text:"Dropped these on my IG story and my DMs went crazy. The condition is perfect, came double-boxed. This is the only spot I'm copping from now on."
   },
   {
     name:"Keisha T.", user:"@keishafit", stars:5, featured:true, verified:true,
     product:"Dior Slides",
-    text:"Literally couldn't believe these were real when I first saw the price. Opened the box and they're 100% legit. Packaging was immaculate and they came in 2 days. Illest Supply is the real deal.",
-    mediaRow:[
-      {type:"video", src:"https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/d833a590b_a3a6a46f6_IMG_38152.mp4"},
-      {type:"img",   src:"https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/7d87064d3_733a313ba_IMG_2927.jpg"}
-    ]
+    text:"Literally couldn't believe these were real when I first saw the price. Opened the box and they're 100% legit. Packaging was immaculate and they came in 2 days. Illest Supply is the real deal."
   },
   {
     name:"Jordan M.", user:"@jordan.fits", stars:5, verified:true,
     product:"Bottega Veneta (Green)",
-    text:"Bottegas came through immaculate. Exactly as described, packed perfectly, and the color is unreal in person. Placed the order Monday, had them by Wednesday.",
-    img:"https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/ba5c91a38_db7274e2d_IMG_2481.jpg"
+    text:"Bottegas came through immaculate. Exactly as described, packed perfectly, and the color is unreal in person. Placed the order Monday, had them by Wednesday."
   },
   {
     name:"Priya M.", user:"@priyamood", stars:5, verified:true,
     product:"Asics Gel Kayano 14 Pink Glow",
-    text:"Pink Glow Asics are so clean. Got mine in under 3 days. The box was sealed, deadstock condition. I'm obsessed. Ordering again next drop.",
-    video:"https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/2bfba45ef_fdba18512_51cb75de-43cf-461f-849e-1f05d6d5a6a.mp4"
+    text:"Pink Glow Asics are so clean. Got mine in under 3 days. The box was sealed, deadstock condition. I'm obsessed. Ordering again next drop."
   },
   {
     name:"Noah C.", user:"@noahcold", stars:5, verified:true,
     product:"Asics Gel Kayano 14",
-    text:"Ordered the Asics and they came exactly as shown. Deadstock, correct size, fast. This is my go-to spot now for everything designer.",
-    img:"https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/files/mp/public/6a21ea02495f72afbc2ec54c/5d6e4a6eb_7c8eeb4d5_IMG_2488.png"
+    text:"Ordered the Asics and they came exactly as shown. Deadstock, correct size, fast. This is my go-to spot now for everything designer."
   },
   {name:"Maya R.",user:"@maya.style",stars:5,verified:true,product:"Asics Gel Kayano 14 Pink Glow",text:"Deadstock, packed properly, size was perfect. These sold out everywhere — glad I found them here. Will be back for the next drop for sure."},
   {name:"Tyler J.",user:"@tylrjay",stars:5,verified:true,product:"Rick Owens",text:"Rick Owens for that price? These go crazy. Legit, fast shipping, no cap. The Illest Supply actually delivers every time."},
@@ -139,18 +124,7 @@ const REVIEWS=[
 ];
 
 document.getElementById('reviewsGrid').innerHTML=REVIEWS.map((r,i)=>{
-  let topMedia = '';
-  if(r.mediaRow){
-    topMedia = `<div class="review-media-row">${r.mediaRow.map(m=>
-      m.type==='video'
-        ? `<div class="review-media"><video src="${m.src}" autoplay muted loop playsinline></video></div>`
-        : `<div class="review-media"><img src="${m.src}" alt="customer photo" loading="lazy"></div>`
-    ).join('')}</div>`;
-  } else if(r.video){
-    topMedia = `<div class="review-media"><video src="${r.video}" autoplay muted loop playsinline></video></div>`;
-  } else if(r.img){
-    topMedia = `<div class="review-media"><img src="${r.img}" alt="customer photo" loading="lazy"></div>`;
-  }
+  const topMedia = '';
 
   const cls = r.featured ? 'review-card featured' : 'review-card';
   return `<div class="${cls}">
