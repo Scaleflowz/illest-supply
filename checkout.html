@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Checkout | The Illest Supply</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style id="globalStyles"></style>
+<style>
+.checkout-wrap{display:grid;grid-template-columns:1fr 400px;gap:40px;padding:40px 0 80px;align-items:start;}
+.checkout-form-side{}
+.checkout-section{background:#0d0d0d;border:1px solid rgba(255,255,255,0.05);border-radius:16px;padding:28px;margin-bottom:20px;}
+.checkout-section-title{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:#ef4444;font-weight:600;margin-bottom:20px;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+.form-row.single{grid-template-columns:1fr;}
+.form-group{display:flex;flex-direction:column;gap:6px;}
+.form-label{font-size:11px;color:#444;letter-spacing:0.08em;font-weight:600;text-transform:uppercase;}
+.form-input{padding:12px 14px;background:#111;border:1px solid rgba(255,255,255,0.07);border-radius:10px;color:#fff;font-size:13px;outline:none;transition:border-color .2s;font-family:inherit;}
+.form-input:focus{border-color:rgba(255,255,255,0.2);}
+.form-input.error{border-color:#ef4444;}
+.form-error{font-size:11px;color:#ef4444;display:none;}
+
+.shipping-opts{display:flex;flex-direction:column;gap:10px;}
+.ship-opt{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border:1px solid rgba(255,255,255,0.08);border-radius:12px;cursor:pointer;transition:border-color .2s;}
+.ship-opt:hover,.ship-opt.selected{border-color:rgba(255,255,255,0.25);}
+.ship-opt input{accent-color:#fff;margin-right:10px;}
+.ship-opt-info{font-size:13px;font-weight:600;}
+.ship-opt-sub{font-size:11px;color:#444;}
+.ship-opt-price{font-size:13px;font-weight:700;}
+
+.payment-placeholder{background:#111;border:1px dashed rgba(255,255,255,0.08);border-radius:12px;padding:32px;text-align:center;}
+.payment-placeholder h4{font-size:15px;font-weight:700;margin-bottom:8px;}
+.payment-placeholder p{font-size:13px;color:#444;line-height:1.6;margin-bottom:16px;}
+.payment-options{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:20px;}
+.pay-method{padding:10px 20px;border:1px solid rgba(255,255,255,0.08);border-radius:8px;font-size:12px;font-weight:600;color:#555;cursor:pointer;transition:all .2s;}
+.pay-method:hover,.pay-method.selected{border-color:rgba(255,255,255,.2);color:#fff;}
+
+/* ORDER SUMMARY */
+.order-summary-side{position:sticky;top:90px;}
+.summary-card{background:#0d0d0d;border:1px solid rgba(255,255,255,0.05);border-radius:16px;padding:24px;}
+.summary-title{font-size:13px;font-weight:700;letter-spacing:0.06em;margin-bottom:20px;}
+.summary-items{margin-bottom:16px;}
+.summary-item{display:flex;gap:12px;margin-bottom:12px;}
+.summary-item-img{width:56px;height:56px;border-radius:8px;object-fit:cover;background:#111;position:relative;flex-shrink:0;}
+.summary-item-qty-badge{position:absolute;top:-6px;right:-6px;background:#555;color:#fff;font-size:10px;font-weight:700;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+.summary-item-info{flex:1;}
+.summary-item-name{font-size:12px;font-weight:600;}
+.summary-item-size{font-size:11px;color:#444;}
+.summary-item-price{font-size:12px;font-weight:700;margin-top:2px;}
+.summary-divider{border:none;border-top:1px solid rgba(255,255,255,0.05);margin:14px 0;}
+.summary-row{display:flex;justify-content:space-between;font-size:13px;color:#555;margin-bottom:8px;}
+.summary-row.total{font-size:16px;font-weight:800;color:#fff;margin-top:4px;}
+.summary-row.free{color:#22c55e;}
+.place-order-btn{width:100%;padding:16px;background:#fff;color:#000;border:none;border-radius:12px;font-size:14px;font-weight:800;letter-spacing:0.07em;cursor:pointer;margin-top:16px;transition:background .2s;}
+.place-order-btn:hover{background:#e5e5e5;}
+.place-order-btn:disabled{opacity:.4;cursor:not-allowed;}
+.secure-note{text-align:center;font-size:11px;color:#333;margin-top:10px;}
+
+@media(max-width:900px){
+  .checkout-wrap{grid-template-columns:1fr;}
+  .order-summary-side{position:static;}
+  .form-row{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+<div id="navContainer"></div>
+<main>
+  <div class="container">
+    <div style="padding:20px 0 0;"><a href="shop.html" style="font-size:13px;color:#444;">← Continue Shopping</a></div>
+    <div style="padding:20px 0;border-bottom:1px solid rgba(255,255,255,0.05);margin-bottom:28px;">
+      <h1 style="font-family:'Bebas Neue',sans-serif;font-size:40px;letter-spacing:0.04em;">Secure Checkout</h1>
+    </div>
+
+    <div class="checkout-wrap">
+      <!-- FORM -->
+      <div class="checkout-form-side">
+        <!-- CONTACT -->
+        <div class="checkout-section">
+          <div class="checkout-section-title">01 · Contact Information</div>
+          <div class="form-row single">
+            <div class="form-group"><label class="form-label">Email Address *</label><input type="email" class="form-input" id="email" placeholder="your@email.com"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">First Name *</label><input type="text" class="form-input" id="firstName" placeholder="First"></div>
+            <div class="form-group"><label class="form-label">Last Name *</label><input type="text" class="form-input" id="lastName" placeholder="Last"></div>
+          </div>
+          <div class="form-row single">
+            <div class="form-group"><label class="form-label">Phone Number</label><input type="tel" class="form-input" id="phone" placeholder="(555) 000-0000"></div>
+          </div>
+        </div>
+
+        <!-- SHIPPING ADDRESS -->
+        <div class="checkout-section">
+          <div class="checkout-section-title">02 · Shipping Address</div>
+          <div class="form-row single">
+            <div class="form-group"><label class="form-label">Address Line 1 *</label><input type="text" class="form-input" id="addr1" placeholder="123 Main St"></div>
+          </div>
+          <div class="form-row single">
+            <div class="form-group"><label class="form-label">Address Line 2</label><input type="text" class="form-input" id="addr2" placeholder="Apt, Suite, Unit (optional)"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">City *</label><input type="text" class="form-input" id="city" placeholder="City"></div>
+            <div class="form-group"><label class="form-label">State *</label><input type="text" class="form-input" id="state" placeholder="NY" maxlength="2"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">ZIP Code *</label><input type="text" class="form-input" id="zip" placeholder="10001" maxlength="10"></div>
+            <div class="form-group"><label class="form-label">Country *</label>
+              <select class="form-input" id="country"><option value="US">United States</option><option value="CA">Canada</option><option value="GB">United Kingdom</option><option value="AU">Australia</option></select>
+            </div>
+          </div>
+        </div>
+
+        <!-- SHIPPING METHOD -->
+        <div class="checkout-section">
+          <div class="checkout-section-title">03 · Shipping Method</div>
+          <div class="shipping-opts">
+            <label class="ship-opt selected" id="shipOpt1">
+              <input type="radio" name="shipMethod" value="standard" checked onchange="updateSummary()">
+              <div>
+                <div class="ship-opt-info">Standard Shipping</div>
+                <div class="ship-opt-sub">1–3 business days</div>
+              </div>
+              <div class="ship-opt-price" id="shipOptPrice1">—</div>
+            </label>
+          </div>
+          <div style="font-size:11px;color:#333;margin-top:12px;">Free shipping on orders over $150. Tracking emailed after shipment.</div>
+        </div>
+
+        <!-- PAYMENT -->
+        <div class="checkout-section">
+          <div class="checkout-section-title">04 · Payment Method</div>
+          <div class="payment-placeholder">
+            <h4>Payment Setup Required</h4>
+            <p>Payment processing will be available once Stripe is connected.<br>Your order info will be saved and we'll reach out to complete payment.</p>
+            <div class="payment-options">
+              <div class="pay-method selected">💳 Credit / Debit Card</div>
+              <div class="pay-method">PayPal</div>
+              <div class="pay-method">CashApp</div>
+            </div>
+            <div style="font-size:11px;color:#333;">Stripe integration is the next setup step. Contact timoy@scaleflowz.us to complete your order.</div>
+          </div>
+        </div>
+
+        <div id="formErrorMsg" style="display:none;padding:14px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);border-radius:10px;font-size:13px;color:#ef4444;margin-bottom:16px;"></div>
+      </div>
+
+      <!-- ORDER SUMMARY -->
+      <div class="order-summary-side">
+        <div class="summary-card">
+          <div class="summary-title">Order Summary</div>
+          <div class="summary-items" id="summaryItems"></div>
+          <hr class="summary-divider">
+          <div class="summary-row"><span>Subtotal</span><span id="sumSubtotal">$0.00</span></div>
+          <div class="summary-row" id="sumShipRow"><span>Shipping</span><span id="sumShipping">$0.00</span></div>
+          <div class="summary-row"><span>Est. Tax</span><span id="sumTax">$0.00</span></div>
+          <hr class="summary-divider">
+          <div class="summary-row total"><span>Total</span><span id="sumTotal">$0.00</span></div>
+          <button class="place-order-btn" onclick="placeOrder()" id="placeOrderBtn">Place Order →</button>
+          <div class="secure-note">🔒 Secure checkout · Your info is protected</div>
+        </div>
+        <div style="font-size:11px;color:#222;margin-top:12px;line-height:1.6;text-align:center;">The Illest Supply is an independent resale shop. Brand names describe items only. All items are inspected before listing.</div>
+      </div>
+    </div>
+  </div>
+</main>
+<div id="footerContainer"></div>
+<script src="cart.js"></script>
+<script src="products.js"></script>
+<script>
+document.getElementById('globalStyles').textContent = getGlobalCSS();
+document.getElementById('navContainer').innerHTML = getNavHTML('');
+document.getElementById('footerContainer').innerHTML = getFooterHTML();
+
+function updateSummary() {
+  const items = Cart.get();
+  const sub = Cart.subtotal();
+  const ship = Cart.shipping();
+  const tax = Cart.tax();
+  const total = Cart.total();
+
+  if (items.length === 0) {
+    document.getElementById('summaryItems').innerHTML = '<p style="font-size:13px;color:#333;text-align:center;padding:20px 0;">Your cart is empty. <a href="shop.html" style="color:#555;">Shop now →</a></p>';
+    document.getElementById('placeOrderBtn').disabled = true;
+    return;
+  }
+
+  document.getElementById('summaryItems').innerHTML = items.map(i => `
+    <div class="summary-item">
+      <div style="position:relative;flex-shrink:0;">
+        <img class="summary-item-img" src="${i.img}" alt="${i.name}">
+        <div class="summary-item-qty-badge">${i.qty}</div>
+      </div>
+      <div class="summary-item-info">
+        <div class="summary-item-name">${i.name}</div>
+        ${i.size ? `<div class="summary-item-size">Size: ${i.size}</div>` : ''}
+        <div class="summary-item-price">$${(i.price*i.qty).toFixed(2)}</div>
+      </div>
+    </div>`).join('');
+
+  document.getElementById('sumSubtotal').textContent = `$${sub.toFixed(2)}`;
+  const shipEl = document.getElementById('sumShipping');
+  const shipRow = document.getElementById('sumShipRow');
+  if (ship === 0) { shipEl.innerHTML = '<span style="color:#22c55e">FREE</span>'; shipRow.classList.add('free'); }
+  else { shipEl.textContent = `$${ship.toFixed(2)}`; shipRow.classList.remove('free'); }
+  document.getElementById('sumTax').textContent = `$${tax.toFixed(2)}`;
+  document.getElementById('sumTotal').textContent = `$${total.toFixed(2)}`;
+  document.getElementById('shipOptPrice1').textContent = ship === 0 ? 'FREE' : `$${ship.toFixed(2)}`;
+}
+
+function validate() {
+  const fields = [
+    {id:'email', label:'Email', pattern:/^[^\s@]+@[^\s@]+\.[^\s@]+$/},
+    {id:'firstName', label:'First Name'},
+    {id:'lastName', label:'Last Name'},
+    {id:'addr1', label:'Address'},
+    {id:'city', label:'City'},
+    {id:'state', label:'State'},
+    {id:'zip', label:'ZIP Code'},
+  ];
+  let errors = [];
+  fields.forEach(f => {
+    const el = document.getElementById(f.id);
+    const val = el?.value?.trim();
+    if (!val) { errors.push(`${f.label} is required.`); el?.classList.add('error'); }
+    else if (f.pattern && !f.pattern.test(val)) { errors.push(`${f.label} is invalid.`); el?.classList.add('error'); }
+    else el?.classList.remove('error');
+  });
+  return errors;
+}
+
+function placeOrder() {
+  const errors = validate();
+  if (errors.length) {
+    const errEl = document.getElementById('formErrorMsg');
+    errEl.style.display='block';
+    errEl.textContent = errors[0];
+    window.scrollTo({top:0,behavior:'smooth'});
+    return;
+  }
+  if (Cart.get().length === 0) { alert('Your cart is empty.'); return; }
+
+  // Build order
+  const order = {
+    orderNumber: 'ILS-' + Date.now().toString(36).toUpperCase(),
+    email: document.getElementById('email').value.trim(),
+    name: `${document.getElementById('firstName').value.trim()} ${document.getElementById('lastName').value.trim()}`,
+    phone: document.getElementById('phone').value.trim(),
+    address: {
+      line1: document.getElementById('addr1').value.trim(),
+      line2: document.getElementById('addr2').value.trim(),
+      city: document.getElementById('city').value.trim(),
+      state: document.getElementById('state').value.trim(),
+      zip: document.getElementById('zip').value.trim(),
+      country: document.getElementById('country').value,
+    },
+    items: Cart.get(),
+    subtotal: Cart.subtotal(),
+    shipping: Cart.shipping(),
+    tax: Cart.tax(),
+    total: Cart.total(),
+    status: 'pending_payment',
+    createdAt: new Date().toISOString()
+  };
+
+  // Save to session storage for confirmation page
+  sessionStorage.setItem('lastOrder', JSON.stringify(order));
+  Cart.clear();
+  window.location.href = 'order-confirmation.html';
+}
+
+// Input event listeners for real-time error clearing
+document.querySelectorAll('.form-input').forEach(el => {
+  el.addEventListener('input', () => {
+    el.classList.remove('error');
+    document.getElementById('formErrorMsg').style.display='none';
+  });
+});
+
+updateSummary();
+</script>
+</body>
+</html>
