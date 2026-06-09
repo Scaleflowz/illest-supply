@@ -415,7 +415,7 @@ document.getElementById('bestSellersGrid').innerHTML = getFeatured().map(p => re
       sessionStorage.setItem(POPUP_KEY, '1');
       var body = document.getElementById('popupBody');
       if(body){
-        body.innerHTML = '<div class="popup-success"><div class="ps-icon">🔥</div><h3>You're In.</h3><p>We'll hit you first when the next drop goes live.</p></div>';
+        body.innerHTML = '<div class="popup-success"><div class="ps-icon">🔥</div><h3>You\'re In.</h3><p>We'll hit you first when the next drop goes live.</p></div>';
       }
       setTimeout(closePopup, 2800);
     })
