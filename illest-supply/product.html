@@ -192,7 +192,8 @@ document.getElementById('globalStyles').textContent = getGlobalCSS();
 document.getElementById('navContainer').innerHTML = getNavHTML('shop');
 document.getElementById('footerContainer').innerHTML = getFooterHTML();
 
-document.addEventListener('overridesLoaded', function() {
+// Wait for overrides then render product
+function renderProductPage() {
 let currentProduct = null;
 let selectedSize = null;
 let qty = 1;
@@ -338,7 +339,13 @@ function switchTab(name, el) {
   el.classList.add('active');
 }
 
-});
+}
+
+if (window.__overridesReady) {
+  renderProductPage();
+} else {
+  window.__overridesCallback = renderProductPage;
+}
 </script>
 </body>
 </html>
