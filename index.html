@@ -9,13 +9,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style id="globalStyles"></style>
 <style>
-.hero{text-align:left;padding:80px 0 70px;position:relative;overflow:hidden;}
+.hero{text-align:left;padding:60px 0 60px;position:relative;overflow:hidden;}
 .hero::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 20% 50%,rgba(255,255,255,0.03) 0%,transparent 70%);pointer-events:none;}
 .hero .container{position:relative;z-index:1;}
-.hero-brand-logo{width:120px;margin:0 0 24px;display:block;animation:spinY 25s linear infinite;mix-blend-mode:screen;}
-.hero-headline{font-family:'Bebas Neue',sans-serif;font-size:clamp(72px,12vw,155px);line-height:0.88;letter-spacing:0.02em;margin-bottom:20px;}
-.hero-solid{color:#c9a96e;}
-.hero-outline{color:transparent;-webkit-text-stroke:2px #c9a96e;}
+.hero-brand-logo{width:140px;margin:0 auto 32px;display:block;animation:spinY 25s linear infinite;mix-blend-mode:screen;}
+.hero-headline{font-family:'Bebas Neue',sans-serif;font-size:clamp(80px,18vw,160px);line-height:0.9;letter-spacing:0.01em;margin-bottom:24px;display:block;}
+.hero-solid{color:#ffffff;display:block;}
+.hero-outline{color:transparent;-webkit-text-stroke:2.5px rgba(255,255,255,0.45);display:block;}
 .hero-sub{font-size:14px;color:#555;letter-spacing:0.04em;margin-bottom:32px;max-width:420px;line-height:1.6;}
 .hero-btns{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:40px;}
 .hero-trust{display:flex;gap:24px;flex-wrap:wrap;}
@@ -74,8 +74,10 @@
     <video autoplay muted loop playsinline src="https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/fdba18512_51cb75de-43cf-461f-849e-1f05d6d5a56a.mp4"></video>
   </div>
   <div class="container">
+  <div style="text-align:center;">
   <img class="hero-brand-logo" src="https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/409f6a116_918D9A7E-D61E-4658-A7B6-5DF1F8B5AC78.png" alt="The Illest Supply">
-  <h1 class="hero-headline"><span class="hero-solid">DRESS</span> <span class="hero-outline">DIFFERENT</span><br><span class="hero-solid">STAY</span> <span class="hero-outline">ILLEST</span></h1>
+  </div>
+  <h1 class="hero-headline"><span class="hero-solid">DRESS</span><span class="hero-outline">DIFFERENT</span><span class="hero-solid">STAY <span style="color:transparent;-webkit-text-stroke:2.5px rgba(255,255,255,0.45);">ILLEST</span></span></h1>
   <p class="hero-sub">Authenticated designer pieces. Shop, select your size, buy now.</p>
   <div class="hero-btns">
     <a href="shop.html" class="btn-primary">Shop Now</a>
