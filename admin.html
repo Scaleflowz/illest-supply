@@ -677,9 +677,32 @@ function filterInq(q) {
 }
 
 function setStatus(id, status) {
-  fetch(API+'?action=updateInquiry',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id,status:status})});
-  toast('Status updated ✓');
-  loadDash();
+  fetch(API+'?action=updateInquiry',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:id,status:status})})
+    .then(function() {
+      toast('Status updated ✓');
+      loadDash();
+      // Auto-send shipping email when marked as Shipped
+      if (status === 'Shipped') {
+        var order = allInq.find(function(o){ return o.id === id; });
+        if (order && order.customer_email) {
+          var tracking = getTracking(order.notes || '');
+          fetch(API+'?action=sendShippingEmail',{
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({
+              id: id,
+              customer_name: order.customer_name,
+              customer_email: order.customer_email,
+              product_name: order.product_name,
+              size: order.size,
+              price: order.price,
+              tracking_number: tracking
+            })
+          }).then(function(){ toast('Shipping email sent to customer ✓'); });
+        }
+      }
+      loadInq();
+    });
 }
 
 function setNote(id, notes) {
