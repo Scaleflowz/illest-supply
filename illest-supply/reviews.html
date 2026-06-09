@@ -1,289 +1,68 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Reviews — The Illest Supply</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Reviews | The Illest Supply</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style id="globalStyles"></style>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
-body{background:#080808;color:#fff;font-family:'Inter',sans-serif;min-height:100vh;}
-nav{display:flex;align-items:center;justify-content:space-between;padding:18px 28px;border-bottom:1px solid rgba(255,255,255,0.05);background:rgba(8,8,8,0.97);position:sticky;top:0;z-index:100;backdrop-filter:blur(12px);}
-.nav-logo{height:48px;mix-blend-mode:screen;animation:spinY 25s linear infinite;}
-@keyframes spinY{from{transform:rotateY(0deg);}to{transform:rotateY(360deg);}}
-.nav-links{display:flex;align-items:center;gap:20px;}
-.nav-links a{color:#fff;opacity:0.6;font-size:14px;text-decoration:none;letter-spacing:0.06em;transition:opacity .2s;}
-.nav-links a:hover{opacity:1;}
-
-/* SOLD FEED */
-.sold-feed{background:rgba(239,68,68,0.06);border-bottom:1px solid rgba(239,68,68,0.12);padding:10px 28px;overflow:hidden;white-space:nowrap;}
-.sold-feed-inner{display:inline-block;animation:scroll-feed 28s linear infinite;}
-.sold-feed-inner:hover{animation-play-state:paused;}
-.sold-item{display:inline-flex;align-items:center;gap:8px;margin-right:52px;font-size:12px;color:#f87171;}
-.sold-item .dot{width:6px;height:6px;border-radius:50%;background:#ef4444;flex-shrink:0;}
-@keyframes scroll-feed{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
-
-.page-header{text-align:center;padding:52px 20px 32px;}
-.page-eyebrow{font-size:12px;letter-spacing:0.2em;color:#555;text-transform:uppercase;font-weight:600;margin-bottom:10px;}
-.page-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(48px,8vw,80px);line-height:0.95;letter-spacing:0.02em;margin-bottom:14px;}
-.rating-summary{font-size:14px;color:#666;margin-top:4px;}
-.stars-big{color:#f59e0b;font-size:20px;margin-bottom:6px;}
-
-/* RATING BREAKDOWN */
-.rating-breakdown{max-width:340px;margin:28px auto 0;padding:0 20px;}
-.rb-row{display:flex;align-items:center;gap:10px;margin-bottom:7px;}
-.rb-stars{font-size:12px;color:#888;min-width:38px;}
-.rb-bar-bg{flex:1;height:4px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;}
-.rb-bar-fill{height:100%;background:#f59e0b;border-radius:2px;}
-.rb-count{font-size:12px;color:#444;min-width:28px;text-align:right;}
-
-.container{max-width:980px;margin:0 auto;padding:0 20px 80px;}
-
-.trust-row{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-bottom:40px;}
-.trust-pill{display:inline-flex;align-items:center;gap:8px;background:#0e0e0e;border:1px solid rgba(255,255,255,0.07);border-radius:50px;padding:11px 22px;font-size:13px;font-weight:600;letter-spacing:0.06em;color:#888;}
-.trust-pill span{font-size:16px;}
-
-.filter-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px;}
-.filter-btn{padding:9px 20px;border-radius:50px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:#666;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;letter-spacing:0.04em;}
-.filter-btn:hover,.filter-btn.active{border-color:#fff;color:#fff;background:rgba(255,255,255,0.06);}
-
-.reviews-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px;margin-bottom:40px;}
-.review-card{background:#0e0e0e;border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:20px 18px;transition:border-color .2s;}
-.review-card:hover{border-color:rgba(255,255,255,0.12);}
-.review-card.hidden{display:none;}
-.review-top{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
-.avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#222,#111);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#666;flex-shrink:0;}
-.review-name{font-size:14px;font-weight:700;color:#ccc;}
-.review-date{font-size:12px;color:#444;margin-top:2px;}
-.review-stars{color:#f59e0b;font-size:13px;margin-bottom:8px;letter-spacing:2px;}
-.review-text{font-size:13px;color:#666;line-height:1.65;}
-.review-footer{display:flex;align-items:center;justify-content:space-between;margin-top:12px;flex-wrap:wrap;gap:6px;}
-.review-verified{font-size:11px;color:#22c55e;font-weight:700;letter-spacing:0.08em;}
-.review-product{font-size:12px;color:#333;font-style:italic;}
-.review-platform{font-size:10px;font-weight:700;letter-spacing:0.06em;padding:2px 8px;border-radius:50px;}
-.review-platform.verified{background:rgba(34,197,94,0.1);color:#22c55e;}
-
-/* SUMMARY CTA */
-.summary-cta{text-align:center;background:#0e0e0e;border:1px solid rgba(255,255,255,0.06);border-radius:20px;padding:36px 24px;margin-bottom:20px;}
-.summary-cta .big-num{font-family:'Bebas Neue',sans-serif;font-size:72px;color:#fff;line-height:1;}
-.summary-cta .big-label{font-size:13px;color:#555;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:20px;}
-.summary-cta .cta-btn{display:inline-flex;align-items:center;gap:8px;padding:13px 34px;border-radius:50px;border:none;background:#fff;color:#000;font-size:13px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;cursor:pointer;transition:background .2s;}
-.summary-cta .cta-btn:hover{background:#eee;}
-
-.back-btn{display:inline-flex;align-items:center;gap:8px;padding:12px 28px;border-radius:50px;border:1px solid rgba(255,255,255,0.15);color:#fff;background:transparent;font-size:13px;font-weight:700;letter-spacing:0.1em;text-decoration:none;text-transform:uppercase;transition:all .2s;margin-top:8px;}
-.back-btn:hover{background:#fff;color:#000;}
-
-footer{padding:28px;text-align:center;border-top:1px solid rgba(255,255,255,0.04);}
-footer p{font-size:12px;color:#333;letter-spacing:0.08em;}
-
-@media(max-width:600px){
-  nav{padding:12px 16px;}
-  .sold-feed{padding:10px 16px;}
-  .container{padding:0 14px 60px;}
-  .trust-row{gap:8px;}
-
-}
-</style>
-</head>
-<body>
-
-<nav>
-  <img class="nav-logo" src="https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/409f6a116_918D9A7E-D61E-4658-A7B6-5DF1F8B5AC78.png" alt="Illest Supply"/>
-  <div class="nav-links">
-    <a href="index.html">← Store</a>
-    <a href="faq.html">FAQ</a>
-    <a href="size-chart.html">Size Chart</a>
-    <a href="https://www.instagram.com/theillestsupply?igsh=OGt3cndoZ3RjamQ%3D&utm_source=qr" target="_blank">📷</a>
+.reviews-hero{text-align:center;padding:60px 20px 40px;}
+.reviews-hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(52px,7vw,88px);margin-bottom:10px;}
+.rating-summary{display:flex;align-items:center;justify-content:center;gap:32px;margin:24px 0 40px;flex-wrap:wrap;}
+.rating-big{font-family:'Bebas Neue',sans-serif;font-size:80px;line-height:1;}
+.rating-stars{font-size:22px;color:#f59e0b;letter-spacing:3px;margin-bottom:4px;}
+.rating-count{font-size:13px;color:#333;}
+.reviews-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.review-card{background:#0d0d0d;border:1px solid rgba(255,255,255,.05);border-radius:16px;padding:24px;}
+.review-stars{font-size:13px;color:#f59e0b;margin-bottom:10px;}
+.review-text{font-size:13px;color:#666;line-height:1.7;margin-bottom:16px;}
+.review-meta{display:flex;justify-content:space-between;align-items:flex-end;}
+.review-name{font-size:13px;font-weight:700;}
+.review-product{font-size:11px;color:#333;margin-top:2px;}
+.verified-badge{font-size:10px;font-weight:700;letter-spacing:.1em;color:#22c55e;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.15);padding:4px 10px;border-radius:50px;}
+@media(max-width:768px){.reviews-grid{grid-template-columns:1fr;}}
+</style></head><body>
+<div id="navContainer"></div>
+<main>
+<div class="reviews-hero"><div class="container">
+  <div class="section-title">Real Talk</div>
+  <h1>Customer Reviews</h1>
+  <div class="rating-summary">
+    <div><div class="rating-big">4.9</div></div>
+    <div><div class="rating-stars">★★★★★</div><div class="rating-count">Based on 2,000+ verified sales</div></div>
   </div>
-</nav>
-
-<!-- LIVE SOLD FEED -->
-<div class="sold-feed">
-  <div class="sold-feed-inner" id="soldFeed"></div>
-</div>
-
-<div class="page-header">
-  <div class="page-eyebrow">The Illest Supply</div>
-  <div class="page-title">WHAT THEY SAY</div>
-  <div class="stars-big">★★★★★</div>
-  <div class="rating-summary">4.9 out of 5 · 2,000+ verified sales</div>
-  <div class="rating-breakdown">
-    <div class="rb-row"><div class="rb-stars">★★★★★</div><div class="rb-bar-bg"><div class="rb-bar-fill" style="width:94%;"></div></div><div class="rb-count">1,880</div></div>
-    <div class="rb-row"><div class="rb-stars">★★★★</div><div class="rb-bar-bg"><div class="rb-bar-fill" style="width:5%;"></div></div><div class="rb-count">100</div></div>
-    <div class="rb-row"><div class="rb-stars">★★★</div><div class="rb-bar-bg"><div class="rb-bar-fill" style="width:1%;"></div></div><div class="rb-count">20</div></div>
-    <div class="rb-row"><div class="rb-stars">★★</div><div class="rb-bar-bg"><div class="rb-bar-fill" style="width:0%;"></div></div><div class="rb-count">0</div></div>
-    <div class="rb-row"><div class="rb-stars">★</div><div class="rb-bar-bg"><div class="rb-bar-fill" style="width:0%;"></div></div><div class="rb-count">0</div></div>
+</div></div>
+<section><div class="container">
+  <div class="reviews-grid" id="reviewsGrid"></div>
+  <div style="text-align:center;margin-top:40px;padding:32px;background:#0a0a0a;border:1px solid rgba(255,255,255,.05);border-radius:20px;">
+    <div style="font-size:15px;font-weight:700;margin-bottom:6px;">Shop the pieces people are talking about</div>
+    <p style="font-size:13px;color:#333;margin-bottom:20px;">Every review is from a real customer. Every piece is verified before it ships.</p>
+    <a href="shop.html" class="btn-primary">Shop Now</a>
   </div>
-</div>
-
-<div class="container">
-
-  <div class="trust-row">
-    <div class="trust-pill"><span>✓</span> Verified Seller</div>
-    <div class="trust-pill"><span>🔒</span> Authenticated Items</div>
-    <div class="trust-pill"><span>📦</span> Ships in 1–3 Days</div>
-    <div class="trust-pill"><span>💬</span> Fast Responses</div>
-  </div>
-
-
-  <!-- FILTER BUTTONS -->
-  <div class="filter-row">
-    <button class="filter-btn active" onclick="filterReviews('all', this)">All Reviews</button>
-    <button class="filter-btn" onclick="filterReviews('sneakers', this)">Sneakers</button>
-    <button class="filter-btn" onclick="filterReviews('slides', this)">Slides</button>
-    <button class="filter-btn" onclick="filterReviews('jorts', this)">Jorts</button>
-    <button class="filter-btn" onclick="filterReviews('accessories', this)">Accessories</button>
-  </div>
-
-  <div class="reviews-grid" id="reviewsGrid">
-
-    <div class="review-card" data-cat="sneakers">
-      <div class="review-top"><div class="avatar">NB</div><div><div class="review-name">nayabfit</div><div class="review-date">3 days ago</div></div></div>
-      <div class="review-stars">★★★★★</div>
-      <div class="review-text">"My third order from Illest Supply. Never disappointed. The Asics were fresh, correct size, fast delivery. This is my go-to spot now fr."</div>
-      <div class="review-footer"><div class="review-verified">✓ VERIFIED PURCHASE</div><span class="review-platform verified">✓ VERIFIED</span></div>
-      <div class="review-product">Asics Gel Kayano 14</div>
-    </div>
-
-    <div class="review-card" data-cat="slides">
-      <div class="review-top"><div class="avatar">JM</div><div><div class="review-name">jordanmike_</div><div class="review-date">5 days ago</div></div></div>
-      <div class="review-stars">★★★★★</div>
-      <div class="review-text">"Slides came exactly as described. Super fast shipping, packaged really well. Already got compliments wearing them out. Def buying again."</div>
-      <div class="review-footer"><div class="review-verified">✓ VERIFIED PURCHASE</div><span class="review-platform verified">✓ VERIFIED</span></div>
-      <div class="review-product">Balenciaga Slides</div>
-    </div>
-
-    <div class="review-card" data-cat="jorts">
-      <div class="review-top"><div class="avatar">KL</div><div><div class="review-name">kaylaloves_fits</div><div class="review-date">1 week ago</div></div></div>
-      <div class="review-stars">★★★★★</div>
-      <div class="review-text">"Got the Vale Forever jorts and I am OBSESSED. The quality is insane for the price. Seller was super responsive and shipped same day."</div>
-      <div class="review-footer"><div class="review-verified">✓ VERIFIED PURCHASE</div><span class="review-platform verified">✓ VERIFIED</span></div>
-      <div class="review-product">Vale Forever College Jorts</div>
-    </div>
-
-    <div class="review-card" data-cat="accessories">
-      <div class="review-top"><div class="avatar">TR</div><div><div class="review-name">trey.refresh</div><div class="review-date">1 week ago</div></div></div>
-      <div class="review-stars">★★★★★</div>
-      <div class="review-text">"Honestly thought it was too good to be true at this price point but nah, completely legit. Prada cups are real, came with everything. 10/10."</div>
-      <div class="review-footer"><div class="review-verified">✓ VERIFIED PURCHASE</div><span class="review-platform verified">✓ VERIFIED</span></div>
-      <div class="review-product">Prada Cup (Black)</div>
-    </div>
-
-    <div class="review-card" data-cat="sneakers">
-      <div class="review-top"><div class="avatar">DV</div><div><div class="review-name">dariusvibe</div><div class="review-date">2 weeks ago</div></div></div>
-      <div class="review-stars">★★★★★</div>
-      <div class="review-text">"Rick Owens came in perfect condition. Seller even messaged me to confirm the size before shipping. That's the kind of service you don't get everywhere."</div>
-      <div class="review-footer"><div class="review-verified">✓ VERIFIED PURCHASE</div><span class="review-platform verified">✓ VERIFIED</span></div>
-      <div class="review-product">Rick Owens</div>
-    </div>
-
-    <div class="review-card" data-cat="sneakers">
-      <div class="review-top"><div class="avatar">AM</div><div><div class="review-name">amara.drip</div><div class="review-date">2 weeks ago</div></div></div>
-      <div class="review-stars">★★★★★</div>
-      <div class="review-text">"Got the Bottegas and they're everything. Came with dust bag, looked brand new. Pricing is unreal compared to retail. Already told 5 of my friends."</div>
-      <div class="review-footer"><div class="review-verified">✓ VERIFIED PURCHASE</div><span class="review-platform verified">✓ VERIFIED</span></div>
-      <div class="review-product">Bottegas (Green)</div>
-    </div>
-
-    <div class="review-card" data-cat="slides">
-      <div class="review-top"><div class="avatar">SL</div><div><div class="review-name">sasha.luxe</div><div class="review-date">3 weeks ago</div></div></div>
-      <div class="review-stars">★★★★★</div>
-      <div class="review-text">"Dior slides are absolutely stunning. Exactly as pictured, no issues. Packaging was clean and professional. Will 100% shop again."</div>
-      <div class="review-footer"><div class="review-verified">✓ VERIFIED PURCHASE</div><span class="review-platform verified">✓ VERIFIED</span></div>
-      <div class="review-product">Dior Slides</div>
-    </div>
-
-    <div class="review-card" data-cat="jorts">
-      <div class="review-top"><div class="avatar">MK</div><div><div class="review-name">mkfitcheck</div><div class="review-date">3 weeks ago</div></div></div>
-      <div class="review-stars">★★★★★</div>
-      <div class="review-text">"Rhinestone jorts hit different in person. Photos don't do them justice. Fast reply on Instagram when I had a size question. Smooth process."</div>
-      <div class="review-footer"><div class="review-verified">✓ VERIFIED PURCHASE</div><span class="review-platform verified">✓ VERIFIED</span></div>
-      <div class="review-product">Vale Forever Jorts (Rhinestone)</div>
-    </div>
-
-    <div class="review-card" data-cat="jorts">
-      <div class="review-top"><div class="avatar">JT</div><div><div class="review-name">jtdripped</div><div class="review-date">1 month ago</div></div></div>
-      <div class="review-stars">★★★★★</div>
-      <div class="review-text">"Ordered the Bad Dreams jorts — came in 2 days. Seller was responsive the whole time. Quality is fire, the graphics are clean. Highly recommend."</div>
-      <div class="review-footer"><div class="review-verified">✓ VERIFIED PURCHASE</div><span class="review-platform verified">✓ VERIFIED</span></div>
-      <div class="review-product">Vale Forever Bad Dreams Jorts</div>
-    </div>
-
-    <div class="review-card" data-cat="sneakers">
-      <div class="review-top"><div class="avatar">RX</div><div><div class="review-name">roxiefits__</div><div class="review-date">1 month ago</div></div></div>
-      <div class="review-stars">★★★★★</div>
-      <div class="review-text">"Pink Bottegas just dropped into my life and I'm never looking back. The color is perfect, fit is true to size. Seller packed them super carefully."</div>
-      <div class="review-footer"><div class="review-verified">✓ VERIFIED PURCHASE</div><span class="review-platform verified">✓ VERIFIED</span></div>
-      <div class="review-product">Bottegas (Pink)</div>
-    </div>
-
-    <div class="review-card" data-cat="accessories">
-      <div class="review-top"><div class="avatar">CW</div><div><div class="review-name">cw.collector</div><div class="review-date">1 month ago</div></div></div>
-      <div class="review-stars">★★★★★</div>
-      <div class="review-text">"Blue Prada cup is unreal. Have it on my shelf right now. Came in a box with the logo, completely authentic. Great communication throughout."</div>
-      <div class="review-footer"><div class="review-verified">✓ VERIFIED PURCHASE</div><span class="review-platform verified">✓ VERIFIED</span></div>
-      <div class="review-product">Prada Cup (Blue)</div>
-    </div>
-
-    <div class="review-card" data-cat="slides">
-      <div class="review-top"><div class="avatar">LM</div><div><div class="review-name">luxemoves</div><div class="review-date">6 weeks ago</div></div></div>
-      <div class="review-stars">★★★★★</div>
-      <div class="review-text">"Second pair of Balenciaga slides I've bought from here. First ones were so good I had to get another colorway. Customer for life."</div>
-      <div class="review-footer"><div class="review-verified">✓ VERIFIED PURCHASE</div><span class="review-platform verified">✓ VERIFIED</span></div>
-      <div class="review-product">Balenciaga Slides</div>
-    </div>
-
-  </div>
-
-  <!-- SUMMARY CTA -->
-  <div class="summary-cta">
-    <div class="big-num">2,000+</div>
-    <div class="big-label">Verified Sales</div>
-    <a class="cta-btn" href="index.html">Shop Now →</a>
-  </div>
-
-  <div style="text-align:center;">
-    <a class="back-btn" href="index.html">← Back to Store</a>
-  </div>
-
-</div>
-
-<footer>
-  <p>© 2025 The Illest Supply · <a href="https://www.instagram.com/theillestsupply?igsh=OGt3cndoZ3RjamQ%3D&utm_source=qr" target="_blank" style="color:#444;text-decoration:none;">@theillestsupply</a></p>
-</footer>
-
+</div></section>
+</main>
+<div id="footerContainer"></div>
+<script src="cart.js"></script><script src="products.js"></script>
 <script>
-// SOLD FEED
-var soldItems = [
-  '🔥 Someone just copped Balenciaga Slides (Size 10)',
-  '✓ Asics Gel Kayano 14 sold — 2 hours ago',
-  '🔥 Vale Forever Jorts (Rhinestone) just sold',
-  '✓ Rick Owens sold — 4 hours ago',
-  '🔥 Bottegas (Green) just copped',
-  '✓ Prada Cup (Black) sold — 1 hour ago',
-  '🔥 Dior Slides just sold',
-  '✓ Bottegas (Pink) sold — 3 hours ago',
-  '🔥 Bad Dreams Jorts sold — 5 hours ago',
-  '✓ Balenciaga Slides (Size 8) just copped',
+document.getElementById('globalStyles').textContent=getGlobalCSS();
+document.getElementById('navContainer').innerHTML=getNavHTML('reviews');
+document.getElementById('footerContainer').innerHTML=getFooterHTML();
+const REVIEWS=[
+  {name:"Jordan M.",user:"@jordan.fits",stars:5,text:"Bottegas came through immaculate. Exactly as described, packed perfectly, and shipped fast. These are my most complimented pair right now.",product:"Bottega Veneta (Green)",verified:true},
+  {name:"Maya R.",user:"@maya.style",stars:5,text:"Asics Gel Kayano 14 in the pink glow — deadstock, packed properly, size was perfect. Will be back for the next drop for sure.",product:"Asics Gel Kayano 14 Pink Glow",verified:true},
+  {name:"Tyler J.",user:"@tylrjay",stars:5,text:"Rick Owens for $150? These go crazy. Legit, fast shipping, no cap. The Illest Supply is real.",product:"Rick Owens Ramones",verified:true},
+  {name:"Aaliyah K.",user:"@aaliyah.k",stars:5,text:"Dior slides are perfect. Came in a week, exactly what was shown. Super clean. Already showed them off.",product:"Dior Slides",verified:true},
+  {name:"Marcus T.",user:"@marcustfit",stars:5,text:"Prada Cups are hard. Got the black pair, they're exactly as described. Clean packaging too.",product:"Prada Cup (Black)",verified:true},
+  {name:"Simone W.",user:"@simone_w",stars:5,text:"Balenciaga slides were clean and arrived super fast. Will definitely order again.",product:"Balenciaga Slides",verified:true},
+  {name:"Devon H.",user:"@devonhaze",stars:5,text:"Bottegas in blue are actually crazy. Got compliments the first day. Highly recommend The Illest Supply.",product:"Bottega Veneta (Blue)",verified:true},
+  {name:"Jasmine P.",user:"@jasminewears",stars:5,text:"The packaging is premium, the product is premium. You can tell they actually care about what they're selling.",product:"Dior Slides",verified:true},
+  {name:"Noah C.",user:"@noahcold",stars:5,text:"Ordered the Asics and they came exactly as shown. Deadstock, correct size, fast. No drama, just clean.",product:"Asics Gel Kayano 14 Pink Glow",verified:true},
 ];
-var feedHTML = soldItems.concat(soldItems).map(function(s){
-  return '<span class="sold-item"><span class="dot"></span>' + s + '</span>';
-}).join('');
-document.getElementById('soldFeed').innerHTML = feedHTML;
-
-// FILTER
-function filterReviews(cat, btn) {
-  document.querySelectorAll('.filter-btn').forEach(function(b){ b.classList.remove('active'); });
-  btn.classList.add('active');
-  document.querySelectorAll('.review-card').forEach(function(card){
-    if (cat === 'all' || card.dataset.cat === cat) {
-      card.classList.remove('hidden');
-    } else {
-      card.classList.add('hidden');
-    }
-  });
-}
+document.getElementById('reviewsGrid').innerHTML=REVIEWS.map(r=>`
+  <div class="review-card">
+    <div class="review-stars">${'★'.repeat(r.stars)}</div>
+    <div class="review-text">"${r.text}"</div>
+    <div class="review-meta">
+      <div><div class="review-name">${r.name} <span style="color:#333;font-weight:400;font-size:11px;">${r.user}</span></div><div class="review-product">${r.product}</div></div>
+      ${r.verified?'<div class="verified-badge">VERIFIED</div>':''}
+    </div>
+  </div>`).join('');
 </script>
-</body>
-</html>
+</body></html>
