@@ -191,6 +191,7 @@ input:checked + .tslider:before{transform:translateX(16px);background:#22c55e;}
       <div class="sb-item" id="nav-inv" onclick="goTo('inv')">📦 &nbsp;Inventory</div>
       <div class="sb-item" id="nav-cust" onclick="goTo('cust')">👥 &nbsp;Customers</div>
       <div class="sb-item" id="nav-drops" onclick="goTo('drops')">🔥 &nbsp;Drops</div>
+      <div class="sb-item" id="nav-reviews" onclick="goTo('reviews')">⭐ &nbsp;Reviews</div>
       <div id="teamNav"><div class="sb-item" id="nav-team" onclick="goTo('team')">🔑 &nbsp;Team</div></div>
       <div class="sb-footer">
         <div class="sb-user-name" id="sbName"></div>
@@ -290,7 +291,24 @@ input:checked + .tslider:before{transform:translateX(16px);background:#22c55e;}
         <div id="dropList"></div>
       </div>
 
-      <div class="page" id="page-team">
+            <div class="page" id="page-reviews">
+        <div class="page-title">REVIEWS</div>
+        <div class="page-sub">Moderate customer reviews before they go live</div>
+        <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;">
+          <button class="action-btn" onclick="loadPendingReviews()" style="background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.3);color:#f59e0b;">&#9203; Pending</button>
+          <button class="action-btn" onclick="loadAllAdminReviews('approved')" style="background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.2);color:#22c55e;">&#9989; Approved</button>
+          <button class="action-btn" onclick="loadAllAdminReviews('rejected')" style="background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.2);color:#ef4444;">&#10060; Rejected</button>
+        </div>
+        <div class="card">
+          <div style="overflow-x:auto;">
+            <table>
+              <thead><tr><th>Customer</th><th>Product</th><th>Rating</th><th>Review</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+              <tbody id="reviewsBody"><tr><td colspan="7" style="text-align:center;color:#444;padding:28px;">Click a filter above to load reviews</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+<div class="page" id="page-team">
         <div class="page-title">TEAM ACCESS</div>
         <div class="page-sub">Manage admin passcodes</div>
         <button class="btn btn-white" style="margin-bottom:20px;" onclick="openAddUser()">+ Add Member</button>
@@ -617,6 +635,75 @@ function toast(msg) {
   t.classList.add('show');
   setTimeout(function(){t.classList.remove('show');}, 2500);
 }
+
+// ── REVIEWS MODERATION ────────────────────────────────────
+var REVIEWS_API = 'https://superagent-bc2ec54c.base44.app/functions/reviewsApi';
+
+function loadPendingReviews() {
+  document.getElementById('reviewsBody').innerHTML = '<tr><td colspan="7" style="text-align:center;color:#444;padding:28px;">Loading...</td></tr>';
+  fetch(REVIEWS_API + '?action=pending&passcode=' + (me && me.passcode ? me.passcode : 'ILLEST2025'))
+    .then(function(r){return r.json();})
+    .then(function(d){ renderReviewRows(d.reviews||[]); })
+    .catch(function(){ document.getElementById('reviewsBody').innerHTML='<tr><td colspan="7" style="text-align:center;color:#444;">Error loading reviews</td></tr>'; });
+}
+
+function loadAllAdminReviews(status) {
+  document.getElementById('reviewsBody').innerHTML = '<tr><td colspan="7" style="text-align:center;color:#444;padding:28px;">Loading...</td></tr>';
+  fetch(REVIEWS_API + '?action=list&status='+status)
+    .then(function(r){return r.json();})
+    .then(function(d){ renderReviewRows(d.reviews||[]); })
+    .catch(function(){});
+}
+
+function renderReviewRows(reviews) {
+  if(!reviews.length){ document.getElementById('reviewsBody').innerHTML='<tr><td colspan="7" style="text-align:center;color:#444;padding:28px;">No reviews found</td></tr>'; return; }
+  var statusColors = {pending:'rgba(245,158,11,.15)',approved:'rgba(34,197,94,.1)',rejected:'rgba(239,68,68,.1)'};
+  var statusText = {pending:'#f59e0b',approved:'#22c55e',rejected:'#ef4444'};
+  document.getElementById('reviewsBody').innerHTML = reviews.map(function(r) {
+    var stars = '★'.repeat(r.rating||0)+'☆'.repeat(5-(r.rating||0));
+    var date = r.created_date ? new Date(r.created_date).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : '';
+    var msgShort = (r.reviewMessage||'').length > 80 ? (r.reviewMessage||'').substring(0,80)+'...' : (r.reviewMessage||'');
+    var sc = statusColors[r.status]||'';
+    var st = statusText[r.status]||'#888';
+    return '<tr>'
+      +'<td><div style="font-weight:700;color:#fff;">'+(r.customerName||'—')+'</div><div style="font-size:10px;color:#555;">'+(r.instagramHandle||r.email||'')+'</div></td>'
+      +'<td style="font-size:11px;">'+(r.productPurchased||'—')+'</td>'
+      +'<td style="color:#f59e0b;font-size:13px;">'+stars+'</td>'
+      +'<td><div style="font-size:12px;font-weight:600;color:#ccc;">'+(r.reviewTitle||'')+'</div><div style="font-size:11px;color:#555;">'+msgShort+'</div></td>'
+      +'<td><span style="background:'+sc+';color:'+st+';font-size:10px;font-weight:700;padding:4px 10px;border-radius:50px;text-transform:uppercase;">'+(r.status||'')+'</span></td>'
+      +'<td style="font-size:11px;color:#555;">'+date+'</td>'
+      +'<td>'
+        +(r.status!=='approved'?'<button onclick="moderateReview(''+r.id+'','approved')" style="background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.2);color:#22c55e;font-size:10px;padding:4px 10px;border-radius:6px;cursor:pointer;margin-right:4px;">Approve</button>':'')
+        +(r.status!=='rejected'?'<button onclick="moderateReview(''+r.id+'','rejected')" style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);color:#ef4444;font-size:10px;padding:4px 10px;border-radius:6px;cursor:pointer;margin-right:4px;">Reject</button>':'')
+        +'<button onclick="deleteReview(''+r.id+'')" style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);color:#666;font-size:10px;padding:4px 10px;border-radius:6px;cursor:pointer;">Delete</button>'
+        +(r.verifiedPurchase?'':' <button onclick="markVerified(''+r.id+'')" style="background:rgba(34,197,94,.06);border:1px solid rgba(34,197,94,.12);color:#22c55e;font-size:10px;padding:4px 8px;border-radius:6px;cursor:pointer;">✓ Verify</button>')
+      +'</td>'
+      +'</tr>';
+  }).join('');
+}
+
+function moderateReview(id, status) {
+  var pc = me && me.passcode ? me.passcode : 'ILLEST2025';
+  fetch(REVIEWS_API + '?action=moderate', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({passcode:pc,id:id,status:status})})
+    .then(function(r){return r.json();})
+    .then(function(d){ if(d.success) loadPendingReviews(); });
+}
+
+function deleteReview(id) {
+  if(!confirm('Delete this review?')) return;
+  var pc = me && me.passcode ? me.passcode : 'ILLEST2025';
+  fetch(REVIEWS_API + '?action=delete', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({passcode:pc,id:id})})
+    .then(function(r){return r.json();})
+    .then(function(d){ if(d.success) loadPendingReviews(); });
+}
+
+function markVerified(id) {
+  var pc = me && me.passcode ? me.passcode : 'ILLEST2025';
+  fetch(REVIEWS_API + '?action=moderate', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({passcode:pc,id:id,verifiedPurchase:true})})
+    .then(function(r){return r.json();})
+    .then(function(d){ if(d.success) loadPendingReviews(); });
+}
+
 </script>
 </body>
 </html>
