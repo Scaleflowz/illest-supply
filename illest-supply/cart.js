@@ -219,8 +219,8 @@ function getFooterHTML() {
     <div class="footer-top">
       <div class="footer-brand">
         <img src="https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/409f6a116_918D9A7E-D61E-4658-A7B6-5DF1F8B5AC78.png" alt="The Illest Supply" style="height:52px;mix-blend-mode:screen;opacity:.8;">
-        <p>Curated authenticated designer and streetwear pieces.</p>
-        <div class="footer-trust">Authenticated · Fast Shipping · Secure Checkout</div>
+        <p>Curated premium designer and streetwear pieces.</p>
+        <div class="footer-trust">Premium Quality · Fast Shipping · Secure Checkout</div>
         <a href="https://www.instagram.com/theillestsupply" target="_blank" class="footer-ig">@theillestsupply</a>
       </div>
       <div class="footer-col">
