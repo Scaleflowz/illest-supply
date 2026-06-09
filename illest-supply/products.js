@@ -7,7 +7,7 @@ const PRODUCTS = [
     id: 1, name: "Balenciaga Slides", slug: "balenciaga-slides",
     price: 89, origPrice: 145, category: "slides", brand: "Balenciaga",
     condition: "Brand New / Deadstock", isNewArrival: false, isBestSeller: true, isSoldOut: false,
-    badges: ["AUTH", "HOT"],
+    badges: ["HOT"],
     desc: "Iconic Balenciaga pool slides. Clean colorway, premium rubber sole. Deadstock condition.",
     sizes: ["6","7","8","9","10","11","12","13"],
     stock: {"6":2,"7":3,"8":4,"9":3,"10":2,"11":1,"12":0,"13":0},
@@ -19,7 +19,7 @@ const PRODUCTS = [
     id: 2, name: "Prada Cup (Black)", slug: "prada-cup-black",
     price: 95, origPrice: 165, category: "sneakers", brand: "Prada",
     condition: "Brand New", isNewArrival: false, isBestSeller: true, isSoldOut: false,
-    badges: ["AUTH", "HOT"],
+    badges: ["HOT"],
     desc: "Prada Cup sneaker in classic black. Lightweight sole, premium leather upper.",
     sizes: ["7","8","9","10","11","12"],
     stock: {"7":2,"8":3,"9":2,"10":3,"11":1,"12":1},
@@ -31,7 +31,7 @@ const PRODUCTS = [
     id: 3, name: "Prada Cup (Blue)", slug: "prada-cup-blue",
     price: 95, origPrice: 165, category: "sneakers", brand: "Prada",
     condition: "Brand New", isNewArrival: false, isBestSeller: false, isSoldOut: false,
-    badges: ["AUTH", "NEW"],
+    badges: ["NEW"],
     desc: "Prada Cup in ocean blue. Clean colorway for premium everyday wear.",
     sizes: ["7","8","9","10","11","12"],
     stock: {"7":1,"8":2,"9":3,"10":2,"11":2,"12":1},
@@ -43,7 +43,7 @@ const PRODUCTS = [
     id: 4, name: "Dior Slides", slug: "dior-slides",
     price: 120, origPrice: 195, category: "slides", brand: "Dior",
     condition: "Brand New / Deadstock", isNewArrival: true, isBestSeller: true, isSoldOut: false,
-    badges: ["AUTH", "NEW", "HOT"],
+    badges: ["NEW", "HOT"],
     desc: "Dior Aqua slides — the silhouette of the season. Premium rubber, clean Dior branding.",
     sizes: ["6","7","8","9","10","11","12"],
     stock: {"6":1,"7":3,"8":4,"9":3,"10":2,"11":1,"12":1},
@@ -103,7 +103,7 @@ const PRODUCTS = [
     id: 9, name: "Asics Gel Kayano 14 Pink Glow", slug: "asics-gel-kayano-14-pink-glow",
     price: 110, origPrice: 175, category: "sneakers", brand: "Asics",
     condition: "Brand New / Deadstock", isNewArrival: true, isBestSeller: true, isSoldOut: false,
-    badges: ["AUTH", "NEW", "HOT"],
+    badges: ["NEW", "HOT"],
     desc: "Asics Gel Kayano 14 in the rare Pink Glow colorway. Chunky 90s silhouette. All sizes verified.",
     sizes: ["6","7","8","9","10","11","12"],
     stock: {"6":1,"7":2,"8":3,"9":3,"10":2,"11":2,"12":1},
@@ -118,7 +118,7 @@ const PRODUCTS = [
     id: 10, name: "Rick Owens Ramones", slug: "rick-owens-ramones",
     price: 150, origPrice: 245, category: "sneakers", brand: "Rick Owens",
     condition: "Brand New / Deadstock", isNewArrival: true, isBestSeller: true, isSoldOut: false,
-    badges: ["AUTH", "NEW"],
+    badges: ["NEW"],
     desc: "Rick Owens Ramones low in white canvas. Signature geobasket sole. Luxury streetwear staple.",
     sizes: ["7","8","9","10","11","12"],
     stock: {"7":1,"8":2,"9":2,"10":3,"11":2,"12":1},
@@ -130,7 +130,7 @@ const PRODUCTS = [
     id: 11, name: "Bottega Veneta (Green)", slug: "bottega-veneta-green",
     price: 150, origPrice: 240, category: "sneakers", brand: "Bottega Veneta",
     condition: "Brand New / Deadstock", isNewArrival: true, isBestSeller: false, isSoldOut: false,
-    badges: ["AUTH", "NEW", "LOW"],
+    badges: ["NEW", "LOW"],
     desc: "Bottega Veneta Speedster sneaker in forest green. Woven leather upper. Limited stock.",
     sizes: ["7","8","9","10","11"],
     stock: {"7":1,"8":1,"9":2,"10":1,"11":1},
@@ -142,7 +142,7 @@ const PRODUCTS = [
     id: 12, name: "Bottega Veneta (Blue)", slug: "bottega-veneta-blue",
     price: 150, origPrice: 240, category: "sneakers", brand: "Bottega Veneta",
     condition: "Brand New / Deadstock", isNewArrival: true, isBestSeller: false, isSoldOut: false,
-    badges: ["AUTH", "NEW"],
+    badges: ["NEW"],
     desc: "Bottega Veneta in cobalt blue. Clean and rare.",
     sizes: ["7","8","9","10","11"],
     stock: {"7":1,"8":2,"9":2,"10":1,"11":1},
@@ -154,7 +154,7 @@ const PRODUCTS = [
     id: 13, name: "Bottega Veneta (Pink)", slug: "bottega-veneta-pink",
     price: 150, origPrice: 240, category: "sneakers", brand: "Bottega Veneta",
     condition: "Brand New / Deadstock", isNewArrival: true, isBestSeller: true, isSoldOut: false,
-    badges: ["AUTH", "NEW", "HOT"],
+    badges: ["NEW", "HOT"],
     desc: "Bottega Veneta in dusty rose/pink. The hardest colorway to find. Limited pairs.",
     sizes: ["7","8","9","10","11"],
     stock: {"7":1,"8":1,"9":1,"10":1,"11":1},
@@ -176,8 +176,8 @@ function renderProductCard(p, selectedSize = null) {
     ? `<video src="${p.video}" autoplay muted loop playsinline style="width:100%;height:100%;object-fit:cover;"></video>`
     : `<img src="${p.img}" alt="${p.name}" loading="lazy">`;
 
-  const badgeMap = {AUTH:'badge-auth',HOT:'badge-hot',NEW:'badge-new',LOW:'badge-low',SOLD:'badge-sold'};
-  const badgeLabels = {AUTH:'Authenticated',HOT:'🔥 Hot',NEW:'New',LOW:'Low Stock',SOLD:'Sold Out'};
+  const badgeMap = {HOT:'badge-hot',NEW:'badge-new',LOW:'badge-low',SOLD:'badge-sold'};
+  const badgeLabels = {HOT:'🔥 Hot',NEW:'New',LOW:'Low Stock',SOLD:'Sold Out'};
   const badgesHTML = (p.badges||[]).map(b=>`<span class="badge ${badgeMap[b]||''}">${badgeLabels[b]||b}</span>`).join('');
 
   let sizePills = '';
@@ -198,6 +198,7 @@ function renderProductCard(p, selectedSize = null) {
         ${mediaHTML}
         <div class="product-badge">${badgesHTML}</div>
         ${soldOut ? '<div class="sold-out-overlay"><div class="sold-out-tag">Sold Out</div></div>' : ''}
+        ${!soldOut ? `<div class="viewer-badge">👁 ${p.views||Math.floor(p.sold*3.2+7)} viewing</div>` : ''}
       </div>
       <div class="product-info">
         <div class="product-name">${p.name}</div>
@@ -207,7 +208,7 @@ function renderProductCard(p, selectedSize = null) {
           <span class="price-save">-${save}%</span>
         </div>
         <div class="sold-count">${soldOut ? '🚫 All pairs gone' : `🔥 ${p.sold}+ sold`}</div>
-        ${soldOut ? '' : `<div class="card-live-stats"><span>👁 ${p.views||Math.floor(p.sold*3.2+Math.floor(Math.random()*8))} viewing</span><span>🛒 ${p.inCart||Math.floor(p.sold*0.18+2)} in cart</span></div>`}
+
         ${(!soldOut && p.stock && Object.values(p.stock).reduce((a,b)=>a+b,0) <= 5) ? `<div class="low-stock-badge">⚠️ Only a few left</div>` : ''}
         ${sizePills ? `<div class="card-sizes" id="cs${p.id}">${sizePills}</div>` : ''}
         <div class="card-actions">

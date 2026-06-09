@@ -3,11 +3,24 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Shop | The Illest Supply — Authenticated Designer Streetwear</title>
-<meta name="description" content="Browse all authenticated designer sneakers, slides, bottoms, and streetwear pieces. Filter by size, brand, category, and price."/>
+<title>Shop | The Illest Supply</title>
+<meta name="description" content="Browse all designer sneakers, slides, bottoms, and streetwear. Filter by size, brand, category, and price."/>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<style id="globalStyles"></style>
+<style id="globalStyles">
+/* VIEWER BADGE ON CARD IMAGE */
+.viewer-badge{
+  position:absolute;bottom:10px;left:10px;
+  background:rgba(0,0,0,0.65);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,0.1);
+  color:#fff;font-size:11px;font-weight:700;
+  letter-spacing:0.05em;padding:5px 11px;
+  border-radius:50px;pointer-events:none;
+  white-space:nowrap;
+}
+.card-live-stats{display:none;}
+</style>
 <style>
 .shop-hero{padding:50px 0 30px;text-align:center;}
 .shop-hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(48px,6vw,80px);margin-bottom:8px;}
@@ -53,7 +66,7 @@
   <div class="container">
     <div class="section-title">Full Collection</div>
     <h1>Shop Everything</h1>
-    <p>Authenticated designer pieces. Every drop verified before listing.</p>
+    <p>Designer pieces. Real price. Real heat.</p>
   </div>
 </section>
 
