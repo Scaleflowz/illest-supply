@@ -256,3 +256,83 @@ function goToProduct(id) {
   const p = getProduct(id);
   if (p) window.location.href = `product.html?id=${p.id}`;
 }
+
+// ═══════════════════════════════════════════════
+// LIVE SYNC — pulls inventory + product overrides from admin API
+// and merges into PRODUCTS array so admin changes reflect on site
+// ═══════════════════════════════════════════════
+var PRODUCTS_LOADED = false;
+var PRODUCTS_READY_CBS = [];
+
+function onProductsReady(cb) {
+  if (PRODUCTS_LOADED) { cb(); return; }
+  PRODUCTS_READY_CBS.push(cb);
+}
+
+(function syncProductsFromAPI() {
+  var API = 'https://superagent-bc2ec54c.base44.app/functions/adminApi';
+  Promise.all([
+    fetch(API + '?action=getInventory').then(function(r){ return r.json(); }).catch(function(){ return []; }),
+    fetch(API + '?action=getProductOverrides').then(function(r){ return r.json(); }).catch(function(){ return []; })
+  ]).then(function(results) {
+    var inventory = results[0];
+    var overrides = results[1];
+
+    // Apply product overrides (price, badges, sold count, sold-out flags)
+    overrides.forEach(function(ov) {
+      var p = PRODUCTS.find(function(x){ return x.id === ov.product_id; });
+      if (!p) return;
+      if (ov.price != null)         p.price        = ov.price;
+      if (ov.orig_price != null)    p.origPrice    = ov.orig_price;
+      if (ov.sold_count != null)    p.sold         = ov.sold_count;
+      if (ov.is_sold_out != null)   p.isSoldOut    = ov.is_sold_out;
+      if (ov.is_new_arrival != null) p.isNewArrival = ov.is_new_arrival;
+      if (ov.is_best_seller != null) p.isBestSeller = ov.is_best_seller;
+      if (ov.badges != null && ov.badges !== '') {
+        p.badges = ov.badges.split(',').map(function(b){ return b.trim(); }).filter(Boolean);
+      }
+    });
+
+    // Apply live inventory — rebuild stock object per product
+    if (inventory && inventory.length) {
+      // Group by product_id
+      var stockMap = {};
+      inventory.forEach(function(item) {
+        var pid = item.product_id;
+        if (!stockMap[pid]) stockMap[pid] = {};
+        stockMap[pid][item.size] = item.in_stock ? (item.quantity || 1) : 0;
+      });
+
+      PRODUCTS.forEach(function(p) {
+        if (stockMap[p.id]) {
+          p.stock = stockMap[p.id];
+          // Auto-set isSoldOut if ALL sizes are 0
+          var totalStock = Object.values(p.stock).reduce(function(a, b){ return a + b; }, 0);
+          if (totalStock === 0) {
+            p.isSoldOut = true;
+            if (!p.badges.includes('SOLD')) {
+              p.badges = ['SOLD'];
+            }
+          }
+        }
+      });
+    }
+
+    PRODUCTS_LOADED = true;
+    PRODUCTS_READY_CBS.forEach(function(cb){ try{ cb(); }catch(e){} });
+    PRODUCTS_READY_CBS = [];
+
+    // Re-render product grids if they exist
+    if (typeof renderProducts === 'function') {
+      try { renderProducts(PRODUCTS); } catch(e) {}
+    }
+    if (typeof renderFilteredProducts === 'function') {
+      try { renderFilteredProducts(); } catch(e) {}
+    }
+  }).catch(function(err) {
+    console.warn('Products sync failed, using static data:', err);
+    PRODUCTS_LOADED = true;
+    PRODUCTS_READY_CBS.forEach(function(cb){ try{ cb(); }catch(e){} });
+    PRODUCTS_READY_CBS = [];
+  });
+})();

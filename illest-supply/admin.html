@@ -189,6 +189,7 @@ input:checked + .tslider:before{transform:translateX(16px);background:#22c55e;}
       <div class="sb-item active" id="nav-dash" onclick="goTo('dash')">📊 &nbsp;Analytics</div>
       <div class="sb-item" id="nav-inq" onclick="goTo('inq')">📥 &nbsp;Inquiries</div>
       <div class="sb-item" id="nav-inv" onclick="goTo('inv')">📦 &nbsp;Inventory</div>
+      <div class="sb-item" id="nav-products" onclick="goTo('products')">🏷️ &nbsp;Products</div>
       <div class="sb-item" id="nav-cust" onclick="goTo('cust')">👥 &nbsp;Customers</div>
       <div class="sb-item" id="nav-drops" onclick="goTo('drops')">🔥 &nbsp;Drops</div>
       <div class="sb-item" id="nav-reviews" onclick="goTo('reviews')">⭐ &nbsp;Reviews</div>
@@ -284,7 +285,13 @@ input:checked + .tslider:before{transform:translateX(16px);background:#22c55e;}
         </div>
       </div>
 
-      <div class="page" id="page-drops">
+            <div class="page" id="page-products">
+        <div class="page-title">Products</div>
+        <div class="page-sub">Edit pricing, badges, sold count and sold‑out status — changes sync live to the website instantly.</div>
+        <div id="productsGrid" style="display:flex;flex-direction:column;gap:12px;margin-top:4px;"></div>
+      </div>
+      
+<div class="page" id="page-drops">
         <div class="page-title">DROP MANAGEMENT</div>
         <div class="page-sub">Schedule upcoming product drops</div>
         <button class="btn btn-white" style="margin-bottom:20px;" onclick="openAddDrop()">+ Schedule Drop</button>
@@ -324,7 +331,7 @@ input:checked + .tslider:before{transform:translateX(16px);background:#22c55e;}
 <div class="toast" id="toast"></div>
 
 <script>
-var API = 'https://base44.app/api/apps/6a21ea02495f72afbc2ec54c/functions/adminApi';
+var API = 'https://superagent-bc2ec54c.base44.app/functions/adminApi';
 var CODES = {'ILLEST2025':{name:'Timoy',role:'owner'},'STAFF2025':{name:'Employee',role:'employee'}};
 var me = null;
 var allInq = [], allCust = [], allInv = [];
@@ -365,6 +372,7 @@ function goTo(p) {
   document.getElementById('page-'+p).classList.add('active');
   var nav = document.getElementById('nav-'+p);
   if (nav) nav.classList.add('active');
+  if (p === 'products') loadProducts();
 }
 
 // LOAD ALL
@@ -704,6 +712,120 @@ function markVerified(id) {
     .then(function(d){ if(d.success) loadPendingReviews(); });
 }
 
+
+  // ── PRODUCTS ──────────────────────────────────────────────────────────
+  var allProductOverrides = [];
+
+  function loadProducts() {
+    var grid = document.getElementById('productsGrid');
+    if (!grid) return;
+    grid.innerHTML = '<div style="color:#555;padding:20px;font-size:12px;">Loading products…</div>';
+
+    Promise.all([
+      fetch(API + '?action=getProductOverrides').then(function(r){ return r.json(); }).catch(function(){ return []; }),
+      fetch(API + '?action=getInventory').then(function(r){ return r.json(); }).catch(function(){ return []; })
+    ]).then(function(results) {
+      allProductOverrides = results[0] || [];
+      var inventory = results[1] || [];
+
+      // Build stock summary per product_id
+      var stockMap = {};
+      inventory.forEach(function(item) {
+        var pid = item.product_id;
+        if (!stockMap[pid]) stockMap[pid] = { total: 0, sizes: [] };
+        if (item.in_stock) stockMap[pid].total += (item.quantity || 1);
+        stockMap[pid].sizes.push(item.size + (item.in_stock ? '' : '✕'));
+      });
+
+      var staticProducts = [
+        {id:1,name:'Balenciaga Slides',price:89,origPrice:145,badges:'HOT',sold:89},
+        {id:2,name:'Prada Cup (Black)',price:95,origPrice:165,badges:'HOT',sold:54},
+        {id:3,name:'Prada Cup (Blue)',price:95,origPrice:165,badges:'NEW',sold:47},
+        {id:4,name:'Dior Slides',price:120,origPrice:195,badges:'NEW,HOT',sold:76},
+        {id:5,name:'Vale Forever College Jorts',price:64.99,origPrice:95,badges:'SOLD',sold:38},
+        {id:6,name:'Vale Forever Jorts',price:64.99,origPrice:95,badges:'',sold:22},
+        {id:9,name:'Asics Gel Kayano 14',price:110,origPrice:175,badges:'NEW',sold:31},
+        {id:10,name:'Rick Owens',price:145,origPrice:220,badges:'HOT',sold:19},
+        {id:11,name:'Bottegas (Green)',price:130,origPrice:195,badges:'NEW',sold:12},
+        {id:12,name:'Bottegas (Blue)',price:130,origPrice:195,badges:'',sold:8},
+        {id:13,name:'Bottegas (Pink)',price:130,origPrice:195,badges:'NEW',sold:15}
+      ];
+
+      grid.innerHTML = staticProducts.map(function(p) {
+        var ov = allProductOverrides.find(function(o){ return o.product_id === p.id; }) || {};
+        var price    = ov.price      != null ? ov.price      : p.price;
+        var origPrice= ov.orig_price != null ? ov.orig_price : p.origPrice;
+        var sold     = ov.sold_count != null ? ov.sold_count : p.sold;
+        var badges   = ov.badges     != null ? ov.badges     : p.badges;
+        var soldOut  = ov.is_sold_out != null ? ov.is_sold_out : false;
+        var isNew    = ov.is_new_arrival != null ? ov.is_new_arrival : false;
+        var isBest   = ov.is_best_seller != null ? ov.is_best_seller : false;
+        var stock    = stockMap[p.id] || { total: 0, sizes: [] };
+
+        return '<div class="inv-block" id="prod-row-'+p.id+'">'
+          + '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">'
+          + '<div>'
+          + '<div class="inv-name">'+p.name+'</div>'
+          + '<div style="font-size:10px;color:#444;margin-top:2px;">'+stock.total+' units in stock &nbsp;·&nbsp; '+stock.sizes.join(', ')+'</div>'
+          + '</div>'
+          + '<div style="display:flex;gap:8px;align-items:center;">'
+          + '<span class="badge '+(soldOut ? 'badge-cancelled' : 'badge-paid')+'">'+(soldOut ? 'SOLD OUT' : 'IN STOCK')+'</span>'
+          + '</div>'
+          + '</div>'
+          + '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:14px;">'
+          + '<div><label style="font-size:9px;color:#555;letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:4px;">Sale Price ($)</label>'
+          + '<input class="qty-in" style="width:100%;padding:6px 10px;" id="pp-price-'+p.id+'" value="'+price+'" /></div>'
+          + '<div><label style="font-size:9px;color:#555;letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:4px;">Original Price ($)</label>'
+          + '<input class="qty-in" style="width:100%;padding:6px 10px;" id="pp-orig-'+p.id+'" value="'+origPrice+'" /></div>'
+          + '<div><label style="font-size:9px;color:#555;letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:4px;">Sold Count</label>'
+          + '<input class="qty-in" style="width:100%;padding:6px 10px;" id="pp-sold-'+p.id+'" value="'+sold+'" /></div>'
+          + '<div><label style="font-size:9px;color:#555;letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:4px;">Badges (comma sep)</label>'
+          + '<input class="qty-in" style="width:100%;padding:6px 10px;" id="pp-badges-'+p.id+'" placeholder="NEW,HOT,SOLD" value="'+badges+'" /></div>'
+          + '</div>'
+          + '<div style="display:flex;align-items:center;gap:16px;margin-top:12px;flex-wrap:wrap;">'
+          + '<label style="display:flex;align-items:center;gap:6px;font-size:11px;cursor:pointer;">'
+          + '<input type="checkbox" id="pp-soldout-'+p.id+'" '+(soldOut?'checked':'')+' /> Mark as Sold Out</label>'
+          + '<label style="display:flex;align-items:center;gap:6px;font-size:11px;cursor:pointer;">'
+          + '<input type="checkbox" id="pp-new-'+p.id+'" '+(isNew?'checked':'')+' /> New Arrival</label>'
+          + '<label style="display:flex;align-items:center;gap:6px;font-size:11px;cursor:pointer;">'
+          + '<input type="checkbox" id="pp-best-'+p.id+'" '+(isBest?'checked':'')+' /> Best Seller</label>'
+          + '<button class="btn btn-white btn-sm" style="margin-left:auto;" onclick="saveProduct('+p.id+',''+p.name+'')">Save Changes</button>'
+          + '</div>'
+          + '</div>';
+      }).join('');
+    }).catch(function() {
+      grid.innerHTML = '<div style="color:#ef4444;padding:20px;font-size:12px;">Failed to load products. Check API connection.</div>';
+    });
+  }
+
+  function saveProduct(id, name) {
+    var price    = parseFloat(document.getElementById('pp-price-'+id).value) || 0;
+    var origPrice= parseFloat(document.getElementById('pp-orig-'+id).value) || 0;
+    var sold     = parseInt(document.getElementById('pp-sold-'+id).value) || 0;
+    var badges   = document.getElementById('pp-badges-'+id).value.trim();
+    var soldOut  = document.getElementById('pp-soldout-'+id).checked;
+    var isNew    = document.getElementById('pp-new-'+id).checked;
+    var isBest   = document.getElementById('pp-best-'+id).checked;
+
+    fetch(API+'?action=upsertProductOverride', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ product_id: id, product_name: name, price: price, orig_price: origPrice,
+        sold_count: sold, badges: badges, is_sold_out: soldOut, is_new_arrival: isNew, is_best_seller: isBest })
+    }).then(function(r){ return r.json(); }).then(function(d) {
+      if (d.success) toast('✓ '+name+' saved — site will reflect changes on next load');
+      else toast('Error: '+(d.error||'unknown'));
+    }).catch(function() { toast('Error saving product'); });
+  }
+
 </script>
 </body>
 </html>
+    <!-- PRODUCTS PAGE -->
+    <div id="products" class="page">
+      <div class="page-title">Products</div>
+      <div class="page-sub">Edit pricing, badges, sold count and sold-out status. Changes sync to the website instantly.</div>
+      <div id="productsGrid" style="display:flex;flex-direction:column;gap:12px;"></div>
+    </div>
+
+

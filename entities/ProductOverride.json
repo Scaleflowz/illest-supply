@@ -1,0 +1,37 @@
+{
+  "type": "object",
+  "properties": {
+    "product_id": {
+      "type": "number"
+    },
+    "product_name": {
+      "type": "string"
+    },
+    "price": {
+      "type": "number"
+    },
+    "orig_price": {
+      "type": "number"
+    },
+    "is_sold_out": {
+      "type": "boolean"
+    },
+    "badges": {
+      "type": "string"
+    },
+    "sold_count": {
+      "type": "number"
+    },
+    "is_new_arrival": {
+      "type": "boolean"
+    },
+    "is_best_seller": {
+      "type": "boolean"
+    },
+    "is_hidden": {
+      "type": "boolean"
+    }
+  },
+  "required": [],
+  "name": "ProductOverride"
+}
