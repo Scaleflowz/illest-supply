@@ -332,29 +332,47 @@ input:checked + .tslider:before{transform:translateX(16px);background:#22c55e;}
 
 <script>
 var API = 'https://superagent-bc2ec54c.base44.app/functions/adminApi';
-var CODES = {'ILLEST2025':{name:'Timoy',role:'owner'},'STAFF2025':{name:'Employee',role:'employee'}};
 var me = null;
 var allInq = [], allCust = [], allInv = [];
 
-// LOGIN
-document.getElementById('enterBtn').addEventListener('click', function() {
-  var code = document.getElementById('pc').value.trim().toUpperCase();
-  var user = CODES[code];
-  if (!user) {
-    document.getElementById('loginErr').style.display = 'block';
-    return;
-  }
-  me = {name: user.name, role: user.role};
-  document.getElementById('loginScreen').style.display = 'none';
-  document.getElementById('app').style.display = 'block';
-  document.getElementById('sbName').textContent = me.name;
-  document.getElementById('sbRole').textContent = me.role;
-  if (me.role === 'owner') document.getElementById('teamNav').style.display = 'block';
-  loadAll();
-});
+// LOGIN — hits live API so passcode changes in Team tab take effect immediately
+function doLogin() {
+  var code = document.getElementById('pc').value.trim();
+  if (!code) return;
+  var btn = document.getElementById('enterBtn');
+  btn.textContent = '...';
+  btn.disabled = true;
+  document.getElementById('loginErr').style.display = 'none';
 
+  fetch(API + '?action=login', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({passcode: code})
+  }).then(function(r){ return r.json(); }).then(function(d) {
+    btn.textContent = 'ENTER →';
+    btn.disabled = false;
+    if (d.error || !d.success) {
+      document.getElementById('loginErr').style.display = 'block';
+      return;
+    }
+    me = {id: d.user.id, name: d.user.name, role: d.user.role, passcode: d.user.passcode};
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    document.getElementById('sbName').textContent = me.name;
+    document.getElementById('sbRole').textContent = me.role;
+    if (me.role === 'owner') document.getElementById('teamNav').style.display = 'block';
+    loadAll();
+  }).catch(function() {
+    btn.textContent = 'ENTER →';
+    btn.disabled = false;
+    document.getElementById('loginErr').textContent = 'Connection error. Try again.';
+    document.getElementById('loginErr').style.display = 'block';
+  });
+}
+
+document.getElementById('enterBtn').addEventListener('click', doLogin);
 document.getElementById('pc').addEventListener('keydown', function(e) {
-  if (e.key === 'Enter') document.getElementById('enterBtn').click();
+  if (e.key === 'Enter') doLogin();
 });
 
 function doLogout() {
