@@ -206,7 +206,9 @@ function renderProductCard(p, selectedSize = null) {
           <span class="price-original">$${p.origPrice}</span>
           <span class="price-save">-${save}%</span>
         </div>
-        <div class="sold-count">${soldOut ? 'All pairs gone' : `${p.sold}+ sold`}</div>
+        <div class="sold-count">${soldOut ? '🚫 All pairs gone' : `🔥 ${p.sold}+ sold`}</div>
+        ${soldOut ? '' : `<div class="card-live-stats"><span>👁 ${p.views||Math.floor(p.sold*3.2+Math.floor(Math.random()*8))} viewing</span><span>🛒 ${p.inCart||Math.floor(p.sold*0.18+2)} in cart</span></div>`}
+        ${(!soldOut && p.stock && Object.values(p.stock).reduce((a,b)=>a+b,0) <= 5) ? `<div class="low-stock-badge">⚠️ Only a few left</div>` : ''}
         ${sizePills ? `<div class="card-sizes" id="cs${p.id}">${sizePills}</div>` : ''}
         <div class="card-actions">
           <button class="card-atc${soldOut?' disabled':''}" onclick="event.stopPropagation();addToCartFromCard(${p.id})" ${soldOut?'disabled':''}>
