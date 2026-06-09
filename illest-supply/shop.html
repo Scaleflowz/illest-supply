@@ -157,6 +157,33 @@
 <script src="cart.js?v=2"></script>
 <script src="products.js?v=10"></script>
 <script>
+// ── LIVE OVERRIDE LOADER ───────────────────────────────────────────
+(function() {
+  var API_OVERRIDES = 'https://superagent-bc2ec54c.base44.app/functions/adminApi?action=getProductOverrides';
+  fetch(API_OVERRIDES)
+    .then(function(r){ return r.json(); })
+    .then(function(overrides){
+      if (!Array.isArray(overrides)) return;
+      overrides.forEach(function(ov) {
+        var p = PRODUCTS.find(function(pr){ return pr.id === ov.product_id; });
+        if (!p) return;
+        if (ov.price      != null) p.price         = ov.price;
+        if (ov.orig_price != null) p.origPrice      = ov.orig_price;
+        if (ov.is_sold_out!= null) p.isSoldOut      = ov.is_sold_out;
+        if (ov.sold_count != null) p.sold           = ov.sold_count;
+        if (ov.badges  != null && ov.badges)  p.badges       = ov.badges;
+        if (ov.is_new_arrival!=null) p.isNewArrival = ov.is_new_arrival;
+        if (ov.is_best_seller!=null) p.isBestSeller = ov.is_best_seller;
+        if (ov.is_hidden != null) p.isHidden        = ov.is_hidden;
+      });
+      document.dispatchEvent(new Event('overridesLoaded'));
+    })
+    .catch(function(){ document.dispatchEvent(new Event('overridesLoaded')); });
+})();
+// ──────────────────────────────────────────────────────────────────
+</script>
+
+<script>
 document.getElementById('globalStyles').textContent = getGlobalCSS();
 document.getElementById('navContainer').innerHTML = getNavHTML('shop');
 document.getElementById('footerContainer').innerHTML = getFooterHTML();
@@ -224,7 +251,7 @@ const urlParams = new URLSearchParams(location.search);
 const urlQ = urlParams.get('q');
 if (urlQ) document.getElementById('shopSearch').value = urlQ;
 
-applyFilters();
+document.addEventListener("overridesLoaded", function() { applyFilters(); });
 </script>
 </body>
 </html>
