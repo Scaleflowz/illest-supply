@@ -167,6 +167,9 @@ input:checked + .tslider:before{transform:translateX(16px);background:#22c55e;}
   #page-dash .stats + div{grid-template-columns:1fr!important;}
   #page-dash .stats + div + div{grid-template-columns:1fr!important;}
 }
+
+  /* Product modal labels */
+  .pm-label { font-size: 10px; color: #666; letter-spacing: .08em; text-transform: uppercase; display: block; margin-bottom: 5px; }
 </style>
 </head>
 <body>
@@ -286,10 +289,146 @@ input:checked + .tslider:before{transform:translateX(16px);background:#22c55e;}
       </div>
 
             <div class="page" id="page-products">
-        <div class="page-title">Products</div>
-        <div class="page-sub">Edit pricing, badges, sold count and sold‑out status — changes sync live to the website instantly.</div>
-        <div id="productsGrid" style="display:flex;flex-direction:column;gap:12px;margin-top:4px;"></div>
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px;">
+    <div>
+      <div class="page-title" style="margin-bottom:4px;">Products</div>
+      <div class="page-sub">Add, remove, and edit products. Upload photos &amp; videos. Changes sync live instantly.</div>
+    </div>
+    <button class="btn btn-white" onclick="openAddProduct()">+ Add Product</button>
+  </div>
+  <div id="productsGrid" style="display:flex;flex-direction:column;gap:14px;"></div>
+</div>
+
+<!-- ADD / EDIT PRODUCT MODAL -->
+<div id="productModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:9000;align-items:center;justify-content:center;padding:16px;overflow-y:auto;">
+  <div style="background:#111;border:1px solid #222;border-radius:16px;width:100%;max-width:620px;padding:28px;position:relative;margin:auto;">
+    <button onclick="closeProductModal()" style="position:absolute;top:16px;right:16px;background:none;border:none;color:#666;font-size:20px;cursor:pointer;">✕</button>
+    <div id="productModalTitle" style="font-size:18px;font-weight:700;letter-spacing:.05em;margin-bottom:20px;">ADD PRODUCT</div>
+    <input type="hidden" id="pm-id" value="" />
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+      <div style="grid-column:1/-1;">
+        <label class="pm-label">Product Name *</label>
+        <input class="qty-in" id="pm-name" style="width:100%;padding:9px 12px;" placeholder="e.g. Nike Air Max 97" />
       </div>
+      <div style="grid-column:1/-1;">
+        <label class="pm-label">Brand *</label>
+        <input class="qty-in" id="pm-brand" style="width:100%;padding:9px 12px;" placeholder="e.g. Nike" />
+      </div>
+      <div>
+        <label class="pm-label">Sale Price ($) *</label>
+        <input class="qty-in" id="pm-price" type="number" style="width:100%;padding:9px 12px;" placeholder="89" />
+      </div>
+      <div>
+        <label class="pm-label">Original Price ($)</label>
+        <input class="qty-in" id="pm-orig" type="number" style="width:100%;padding:9px 12px;" placeholder="145" />
+      </div>
+      <div>
+        <label class="pm-label">Category</label>
+        <select class="qty-in" id="pm-cat" style="width:100%;padding:9px 12px;">
+          <option value="sneakers">Sneakers</option>
+          <option value="slides">Slides</option>
+          <option value="bottoms">Bottoms</option>
+          <option value="accessories">Accessories</option>
+        </select>
+      </div>
+      <div>
+        <label class="pm-label">Condition</label>
+        <select class="qty-in" id="pm-condition" style="width:100%;padding:9px 12px;">
+          <option value="Brand New / Deadstock">Brand New / Deadstock</option>
+          <option value="Like New">Like New</option>
+          <option value="Excellent">Excellent</option>
+          <option value="Good">Good</option>
+        </select>
+      </div>
+      <div style="grid-column:1/-1;">
+        <label class="pm-label">Description</label>
+        <textarea class="qty-in" id="pm-desc" rows="3" style="width:100%;padding:9px 12px;resize:vertical;" placeholder="Describe the product..."></textarea>
+      </div>
+      <div style="grid-column:1/-1;">
+        <label class="pm-label">Badges (comma-separated: NEW, HOT, LOW, SOLD)</label>
+        <input class="qty-in" id="pm-badges" style="width:100%;padding:9px 12px;" placeholder="NEW,HOT" />
+      </div>
+      <div>
+        <label class="pm-label">Available Sizes</label>
+        <input class="qty-in" id="pm-sizes" style="width:100%;padding:9px 12px;" placeholder="7,8,9,10,11 or S,M,L,XL" />
+      </div>
+      <div>
+        <label class="pm-label">Sold Count</label>
+        <input class="qty-in" id="pm-sold" type="number" style="width:100%;padding:9px 12px;" placeholder="0" value="0" />
+      </div>
+      <div style="grid-column:1/-1;display:flex;gap:20px;flex-wrap:wrap;">
+        <label style="display:flex;align-items:center;gap:7px;font-size:12px;cursor:pointer;">
+          <input type="checkbox" id="pm-soldout" /> Sold Out
+        </label>
+        <label style="display:flex;align-items:center;gap:7px;font-size:12px;cursor:pointer;">
+          <input type="checkbox" id="pm-newarr" /> New Arrival
+        </label>
+        <label style="display:flex;align-items:center;gap:7px;font-size:12px;cursor:pointer;">
+          <input type="checkbox" id="pm-bestseller" /> Best Seller
+        </label>
+        <label style="display:flex;align-items:center;gap:7px;font-size:12px;cursor:pointer;">
+          <input type="checkbox" id="pm-hidden" /> Hidden (not on store)
+        </label>
+      </div>
+
+      <!-- MEDIA UPLOAD -->
+      <div style="grid-column:1/-1;">
+        <label class="pm-label">Main Image URL</label>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <input class="qty-in" id="pm-img" style="flex:1;padding:9px 12px;" placeholder="https://..." />
+          <label style="background:#1a1a1a;border:1px solid #333;color:#ccc;padding:8px 14px;border-radius:8px;font-size:11px;cursor:pointer;white-space:nowrap;">
+            📷 Upload
+            <input type="file" accept="image/*" style="display:none;" onchange="uploadProductMedia(this,'pm-img','pm-img-preview')" />
+          </label>
+        </div>
+        <div id="pm-img-preview" style="margin-top:8px;"></div>
+      </div>
+
+      <div style="grid-column:1/-1;">
+        <label class="pm-label">Additional Images (one URL per line)</label>
+        <div style="display:flex;gap:8px;align-items:flex-start;">
+          <textarea class="qty-in" id="pm-imgs" rows="3" style="flex:1;padding:9px 12px;resize:vertical;" placeholder="https://image1.jpg&#10;https://image2.jpg"></textarea>
+          <label style="background:#1a1a1a;border:1px solid #333;color:#ccc;padding:8px 14px;border-radius:8px;font-size:11px;cursor:pointer;white-space:nowrap;margin-top:2px;">
+            📷 Upload
+            <input type="file" accept="image/*" multiple style="display:none;" onchange="uploadProductMediaMulti(this,'pm-imgs')" />
+          </label>
+        </div>
+      </div>
+
+      <div style="grid-column:1/-1;">
+        <label class="pm-label">Product Video URL</label>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <input class="qty-in" id="pm-video" style="flex:1;padding:9px 12px;" placeholder="https://...mp4" />
+          <label style="background:#1a1a1a;border:1px solid #333;color:#ccc;padding:8px 14px;border-radius:8px;font-size:11px;cursor:pointer;white-space:nowrap;">
+            🎥 Upload
+            <input type="file" accept="video/mp4,video/mov,video/*" style="display:none;" onchange="uploadProductMedia(this,'pm-video','pm-video-preview')" />
+          </label>
+        </div>
+        <div id="pm-video-preview" style="margin-top:8px;"></div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:10px;margin-top:24px;justify-content:flex-end;">
+      <button class="btn" onclick="closeProductModal()" style="background:transparent;border:1px solid #333;color:#888;">Cancel</button>
+      <button class="btn btn-white" onclick="saveProductModal()" id="pm-save-btn">Save Product</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM DELETE MODAL -->
+<div id="deleteProductModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:9100;align-items:center;justify-content:center;padding:16px;">
+  <div style="background:#111;border:1px solid #333;border-radius:16px;padding:28px;max-width:400px;width:100%;text-align:center;">
+    <div style="font-size:32px;margin-bottom:12px;">🗑️</div>
+    <div style="font-weight:700;font-size:16px;margin-bottom:8px;">Remove Product?</div>
+    <div id="deleteProductName" style="color:#888;font-size:13px;margin-bottom:20px;"></div>
+    <div style="color:#ef4444;font-size:12px;margin-bottom:20px;">This will hide the product from the store. You can re-add it any time.</div>
+    <div style="display:flex;gap:10px;justify-content:center;">
+      <button class="btn" onclick="closeDeleteModal()" style="background:transparent;border:1px solid #333;color:#888;">Cancel</button>
+      <button class="btn" id="confirmDeleteBtn" style="background:#ef4444;border:none;color:#fff;">Remove Product</button>
+    </div>
+  </div>
+</div>
       
 <div class="page" id="page-drops">
         <div class="page-title">DROP MANAGEMENT</div>
@@ -760,108 +899,326 @@ function markVerified(el) {
   var allProductOverrides = [];
 
   function loadProducts() {
-    var grid = document.getElementById('productsGrid');
-    if (!grid) return;
-    grid.innerHTML = '<div style="color:#555;padding:20px;font-size:12px;">Loading products…</div>';
+  var grid = document.getElementById('productsGrid');
+  if (!grid) return;
+  grid.innerHTML = '<div style="color:#555;padding:20px;font-size:12px;">Loading products…</div>';
 
-    Promise.all([
-      fetch(API + '?action=getProductOverrides').then(function(r){ return r.json(); }).catch(function(){ return []; }),
-      fetch(API + '?action=getInventory').then(function(r){ return r.json(); }).catch(function(){ return []; })
-    ]).then(function(results) {
-      allProductOverrides = results[0] || [];
-      var inventory = results[1] || [];
+  Promise.all([
+    fetch(API + '?action=getProductOverrides').then(function(r){ return r.json(); }).catch(function(){ return []; }),
+    fetch(API + '?action=getInventory').then(function(r){ return r.json(); }).catch(function(){ return []; })
+  ]).then(function(results) {
+    allProductOverrides = results[0] || [];
+    var inventory = results[1] || [];
 
-      // Build stock summary per product_id
-      var stockMap = {};
-      inventory.forEach(function(item) {
-        var pid = item.product_id;
-        if (!stockMap[pid]) stockMap[pid] = { total: 0, sizes: [] };
-        if (item.in_stock) stockMap[pid].total += (item.quantity || 1);
-        stockMap[pid].sizes.push(item.size + (item.in_stock ? '' : '✕'));
-      });
-
-      var staticProducts = [
-        {id:1,name:'Balenciaga Slides',price:89,origPrice:145,badges:'HOT',sold:89},
-        {id:2,name:'Prada Cup (Black)',price:95,origPrice:165,badges:'HOT',sold:54},
-        {id:3,name:'Prada Cup (Blue)',price:95,origPrice:165,badges:'NEW',sold:47},
-        {id:4,name:'Dior Slides',price:120,origPrice:195,badges:'NEW,HOT',sold:76},
-        {id:5,name:'Vale Forever College Jorts',price:64.99,origPrice:95,badges:'SOLD',sold:38},
-        {id:6,name:'Vale Forever Jorts',price:64.99,origPrice:95,badges:'',sold:22},
-        {id:9,name:'Asics Gel Kayano 14',price:110,origPrice:175,badges:'NEW',sold:31},
-        {id:10,name:'Rick Owens',price:145,origPrice:220,badges:'HOT',sold:19},
-        {id:11,name:'Bottegas (Green)',price:130,origPrice:195,badges:'NEW',sold:12},
-        {id:12,name:'Bottegas (Blue)',price:130,origPrice:195,badges:'',sold:8},
-        {id:13,name:'Bottegas (Pink)',price:130,origPrice:195,badges:'NEW',sold:15}
-      ];
-
-      grid.innerHTML = staticProducts.map(function(p) {
-        var ov = allProductOverrides.find(function(o){ return o.product_id === p.id; }) || {};
-        var price    = ov.price      != null ? ov.price      : p.price;
-        var origPrice= ov.orig_price != null ? ov.orig_price : p.origPrice;
-        var sold     = ov.sold_count != null ? ov.sold_count : p.sold;
-        var badges   = ov.badges     != null ? ov.badges     : p.badges;
-        var soldOut  = ov.is_sold_out != null ? ov.is_sold_out : false;
-        var isNew    = ov.is_new_arrival != null ? ov.is_new_arrival : false;
-        var isBest   = ov.is_best_seller != null ? ov.is_best_seller : false;
-        var stock    = stockMap[p.id] || { total: 0, sizes: [] };
-
-        return '<div class="inv-block" id="prod-row-'+p.id+'">'
-          + '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">'
-          + '<div>'
-          + '<div class="inv-name">'+p.name+'</div>'
-          + '<div style="font-size:10px;color:#444;margin-top:2px;">'+stock.total+' units in stock &nbsp;·&nbsp; '+stock.sizes.join(', ')+'</div>'
-          + '</div>'
-          + '<div style="display:flex;gap:8px;align-items:center;">'
-          + '<span class="badge '+(soldOut ? 'badge-cancelled' : 'badge-paid')+'">'+(soldOut ? 'SOLD OUT' : 'IN STOCK')+'</span>'
-          + '</div>'
-          + '</div>'
-          + '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:14px;">'
-          + '<div><label style="font-size:9px;color:#555;letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:4px;">Sale Price ($)</label>'
-          + '<input class="qty-in" style="width:100%;padding:6px 10px;" id="pp-price-'+p.id+'" value="'+price+'" /></div>'
-          + '<div><label style="font-size:9px;color:#555;letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:4px;">Original Price ($)</label>'
-          + '<input class="qty-in" style="width:100%;padding:6px 10px;" id="pp-orig-'+p.id+'" value="'+origPrice+'" /></div>'
-          + '<div><label style="font-size:9px;color:#555;letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:4px;">Sold Count</label>'
-          + '<input class="qty-in" style="width:100%;padding:6px 10px;" id="pp-sold-'+p.id+'" value="'+sold+'" /></div>'
-          + '<div><label style="font-size:9px;color:#555;letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:4px;">Badges (comma sep)</label>'
-          + '<input class="qty-in" style="width:100%;padding:6px 10px;" id="pp-badges-'+p.id+'" placeholder="NEW,HOT,SOLD" value="'+badges+'" /></div>'
-          + '</div>'
-          + '<div style="display:flex;align-items:center;gap:16px;margin-top:12px;flex-wrap:wrap;">'
-          + '<label style="display:flex;align-items:center;gap:6px;font-size:11px;cursor:pointer;">'
-          + '<input type="checkbox" id="pp-soldout-'+p.id+'" '+(soldOut?'checked':'')+' /> Mark as Sold Out</label>'
-          + '<label style="display:flex;align-items:center;gap:6px;font-size:11px;cursor:pointer;">'
-          + '<input type="checkbox" id="pp-new-'+p.id+'" '+(isNew?'checked':'')+' /> New Arrival</label>'
-          + '<label style="display:flex;align-items:center;gap:6px;font-size:11px;cursor:pointer;">'
-          + '<input type="checkbox" id="pp-best-'+p.id+'" '+(isBest?'checked':'')+' /> Best Seller</label>'
-          + '<button class="btn btn-white btn-sm" data-pid="'+p.id+'" data-pname="'+p.name+'" style="margin-left:auto;" onclick="saveProduct(this)">Save Changes</button>'
-          + '</div>'
-          + '</div>';
-      }).join('');
-    }).catch(function() {
-      grid.innerHTML = '<div style="color:#ef4444;padding:20px;font-size:12px;">Failed to load products. Check API connection.</div>';
+    // Build stock summary per product_id
+    var stockMap = {};
+    inventory.forEach(function(item) {
+      var pid = item.product_id;
+      if (!stockMap[pid]) stockMap[pid] = { total: 0, sizes: [] };
+      if (item.in_stock) stockMap[pid].total += (item.quantity || 1);
+      stockMap[pid].sizes.push(item.size + (item.in_stock ? '' : '✕'));
     });
-  }
 
-  function saveProduct(el) {
+    var staticProducts = [
+      {id:1,  name:'Balenciaga Slides',        price:89,   origPrice:145, badges:'HOT',     sold:89,  img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/05a792aed_AdobeExpress-file.png', video:null, category:'slides',   brand:'Balenciaga', condition:'Brand New / Deadstock', desc:'Iconic Balenciaga pool slides.',  sizes:['6','7','8','9','10','11','12','13']},
+      {id:2,  name:'Prada Cup (Black)',         price:95,   origPrice:165, badges:'HOT',     sold:54,  img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/35ae1e2e5_AdobeExpress-file.png', video:null, category:'sneakers', brand:'Prada',      condition:'Brand New / Deadstock', desc:'Prada America\'s Cup sneakers.',  sizes:['7','8','9','10','11','12']},
+      {id:3,  name:'Prada Cup (Blue)',          price:95,   origPrice:165, badges:'NEW',     sold:47,  img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/3dd13263d_AdobeExpress-file3.png', video:null, category:'sneakers', brand:'Prada',      condition:'Brand New / Deadstock', desc:'Prada Cup in blue colorway.',    sizes:['7','8','9','10','11','12']},
+      {id:4,  name:'Dior Slides',               price:120,  origPrice:195, badges:'NEW,HOT', sold:76,  img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/040af7300_AdobeExpress-file3.png', video:null, category:'slides',   brand:'Dior',       condition:'Brand New / Deadstock', desc:'Dior logo slides.',              sizes:['6','7','8','9','10','11','12']},
+      {id:5,  name:'Vale Forever College Jorts',price:64.99,origPrice:95,  badges:'SOLD',    sold:38,  img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/ab18f8c12_CBA80A5F-97CF-45C5-AA11-522922875DE3.png', video:null, category:'bottoms',  brand:'Vale Forever', condition:'Brand New / Deadstock', desc:'Vale Forever college jorts.', sizes:['S','M','L','XL']},
+      {id:6,  name:'Vale Forever Jorts',        price:64.99,origPrice:95,  badges:'',        sold:22,  img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/ab18f8c12_CBA80A5F-97CF-45C5-AA11-522922875DE3.png', video:null, category:'bottoms',  brand:'Vale Forever', condition:'Brand New / Deadstock', desc:'Vale Forever jorts.',         sizes:['S','M','L','XL']},
+      {id:9,  name:'Asics Gel Kayano 14',       price:110,  origPrice:175, badges:'NEW',     sold:31,  img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/607e2c691_CF43C058-BCF4-41FB-963A-95E3D9C3D886.png', video:null, category:'sneakers', brand:'Asics',      condition:'Brand New / Deadstock', desc:'Asics Gel Kayano 14.',           sizes:['7','8','9','10','11','12']},
+      {id:10, name:'Rick Owens',                price:145,  origPrice:220, badges:'HOT',     sold:19,  img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/6b287f63d_AA36F7DE-F3CD-47CF-BAFB-FEE327EF145A.png', video:null, category:'sneakers', brand:'Rick Owens',  condition:'Brand New / Deadstock', desc:'Rick Owens DRKSHDW sneakers.',   sizes:['7','8','9','10','11','12']},
+      {id:11, name:'Bottegas (Green)',           price:130,  origPrice:195, badges:'NEW',     sold:12,  img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/eac22a547_FF86E6B6-910B-416D-8894-171D71295C5C.png', video:null, category:'sneakers', brand:'Bottega',     condition:'Brand New / Deadstock', desc:'Bottega Veneta sneakers green.', sizes:['7','8','9','10','11','12']},
+      {id:12, name:'Bottegas (Blue)',            price:130,  origPrice:195, badges:'',        sold:8,   img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/effd672da_F748D361-0A5E-4D84-B7CE-21A80BF31A03.png', video:null, category:'sneakers', brand:'Bottega',     condition:'Brand New / Deadstock', desc:'Bottega Veneta sneakers blue.',  sizes:['7','8','9','10','11','12']},
+      {id:13, name:'Bottegas (Pink)',            price:130,  origPrice:195, badges:'NEW',     sold:15,  img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/e6282f07d_918D9A7E-D61E-4658-A7B6-5DF1F8B5AC78.png', video:null, category:'sneakers', brand:'Bottega',     condition:'Brand New / Deadstock', desc:'Bottega Veneta sneakers pink.',  sizes:['7','8','9','10','11','12']}
+    ];
+
+    // Merge any custom products from overrides (id >= 100 = custom)
+    allProductOverrides.forEach(function(ov) {
+      if (ov.product_id >= 100) {
+        var exists = staticProducts.find(function(p){ return p.id === ov.product_id; });
+        if (!exists) {
+          staticProducts.push({
+            id: ov.product_id, name: ov.product_name || 'Custom Product',
+            price: ov.price || 0, origPrice: ov.orig_price || 0,
+            badges: ov.badges || '', sold: ov.sold_count || 0,
+            img: ov.img || '', video: ov.video || null,
+            category: ov.category || 'sneakers', brand: ov.brand || '',
+            condition: ov.condition || 'Brand New / Deadstock',
+            desc: ov.desc || '', sizes: ov.sizes ? ov.sizes.split(',') : [],
+            isCustom: true
+          });
+        }
+      }
+    });
+
+    grid.innerHTML = staticProducts.map(function(p) {
+      var ov = allProductOverrides.find(function(o){ return o.product_id === p.id; }) || {};
+      var price    = ov.price       != null ? ov.price       : p.price;
+      var origPrice= ov.orig_price  != null ? ov.orig_price  : p.origPrice;
+      var sold     = ov.sold_count  != null ? ov.sold_count  : p.sold;
+      var badges   = ov.badges      != null ? ov.badges      : p.badges;
+      var soldOut  = ov.is_sold_out != null ? ov.is_sold_out : false;
+      var isNew    = ov.is_new_arrival  != null ? ov.is_new_arrival  : p.isNewArrival || false;
+      var isBest   = ov.is_best_seller  != null ? ov.is_best_seller  : p.isBestSeller || false;
+      var isHidden = ov.is_hidden   != null ? ov.is_hidden   : false;
+      var imgSrc   = ov.img    || p.img   || '';
+      var vidSrc   = ov.video  || p.video || '';
+      var stock    = stockMap[p.id] || { total: 0, sizes: [] };
+
+      var mediaThumb = '';
+      if (vidSrc) {
+        mediaThumb = '<video src="'+vidSrc+'" style="width:64px;height:64px;object-fit:cover;border-radius:8px;" muted playsinline></video>';
+      } else if (imgSrc) {
+        mediaThumb = '<img src="'+imgSrc+'" style="width:64px;height:64px;object-fit:cover;border-radius:8px;" />';
+      } else {
+        mediaThumb = '<div style="width:64px;height:64px;background:#1a1a1a;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;">📦</div>';
+      }
+
+      return '<div class="inv-block" id="prod-row-'+p.id+'" style="'+(isHidden?'opacity:.45;':'')+'">'
+        + '<div style="display:flex;gap:14px;align-items:flex-start;">'
+        + '<div style="flex-shrink:0;">'+mediaThumb+'</div>'
+        + '<div style="flex:1;min-width:0;">'
+        + '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">'
+        + '<div>'
+        + '<div class="inv-name" style="font-size:13px;">'+p.name+'</div>'
+        + '<div style="font-size:10px;color:#555;margin-top:3px;">'+(p.brand||'')+(p.category?' · '+p.category:'')+' &nbsp;·&nbsp; '+stock.total+' units in stock</div>'
+        + '</div>'
+        + '<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">'
+        + '<span class="badge '+(soldOut?'badge-cancelled':'badge-paid')+'" style="font-size:9px;">'+(soldOut?'SOLD OUT':'IN STOCK')+'</span>'
+        + (isHidden ? '<span class="badge" style="font-size:9px;background:rgba(100,100,100,.2);color:#777;border:1px solid #333;">HIDDEN</span>' : '')
+        + '<button onclick="openEditProduct('+p.id+')" style="background:#1a1a1a;border:1px solid #333;color:#ccc;padding:5px 12px;border-radius:7px;font-size:10px;cursor:pointer;letter-spacing:.05em;">✏️ Edit</button>'
+        + '<button onclick="confirmDeleteProduct('+p.id+',\''+p.name.replace(/'/g,"\\'")+'\')" style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);color:#ef4444;padding:5px 12px;border-radius:7px;font-size:10px;cursor:pointer;">🗑️ Remove</button>'
+        + '</div>'
+        + '</div>'
+        + '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-top:10px;">'
+        + '<div><label style="font-size:9px;color:#555;text-transform:uppercase;display:block;margin-bottom:3px;">Sale Price ($)</label>'
+        + '<input class="qty-in" style="width:100%;padding:6px 10px;" id="pp-price-'+p.id+'" value="'+price+'" /></div>'
+        + '<div><label style="font-size:9px;color:#555;text-transform:uppercase;display:block;margin-bottom:3px;">Orig Price ($)</label>'
+        + '<input class="qty-in" style="width:100%;padding:6px 10px;" id="pp-orig-'+p.id+'" value="'+origPrice+'" /></div>'
+        + '<div><label style="font-size:9px;color:#555;text-transform:uppercase;display:block;margin-bottom:3px;">Sold Count</label>'
+        + '<input class="qty-in" style="width:100%;padding:6px 10px;" id="pp-sold-'+p.id+'" value="'+sold+'" /></div>'
+        + '<div><label style="font-size:9px;color:#555;text-transform:uppercase;display:block;margin-bottom:3px;">Badges</label>'
+        + '<input class="qty-in" style="width:100%;padding:6px 10px;" id="pp-badges-'+p.id+'" placeholder="NEW,HOT" value="'+badges+'" /></div>'
+        + '</div>'
+        + '<div style="display:flex;align-items:center;gap:14px;margin-top:10px;flex-wrap:wrap;">'
+        + '<label style="display:flex;align-items:center;gap:5px;font-size:10px;cursor:pointer;"><input type="checkbox" id="pp-soldout-'+p.id+'" '+(soldOut?'checked':'')+' /> Sold Out</label>'
+        + '<label style="display:flex;align-items:center;gap:5px;font-size:10px;cursor:pointer;"><input type="checkbox" id="pp-new-'+p.id+'" '+(isNew?'checked':'')+' /> New Arrival</label>'
+        + '<label style="display:flex;align-items:center;gap:5px;font-size:10px;cursor:pointer;"><input type="checkbox" id="pp-best-'+p.id+'" '+(isBest?'checked':'')+' /> Best Seller</label>'
+        + '<label style="display:flex;align-items:center;gap:5px;font-size:10px;cursor:pointer;"><input type="checkbox" id="pp-hidden-'+p.id+'" '+(isHidden?'checked':'')+' /> Hidden</label>'
+        + '<button class="btn btn-white btn-sm" data-pid="'+p.id+'" data-pname="'+p.name.replace(/'/g,"\\'")+'" style="margin-left:auto;font-size:10px;padding:6px 14px;" onclick="saveProduct(this)">Save</button>'
+        + '</div>'
+        + '</div>'
+        + '</div>'
+        + '</div>';
+    }).join('');
+
+  }).catch(function() {
+    grid.innerHTML = '<div style="color:#ef4444;padding:20px;font-size:12px;">Failed to load products. Check API.</div>';
+  });
+}
+
+function saveProduct(el) {
   var id = parseInt(el.dataset.pid);
   var name = el.dataset.pname;
-    var price    = parseFloat(document.getElementById('pp-price-'+id).value) || 0;
-    var origPrice= parseFloat(document.getElementById('pp-orig-'+id).value) || 0;
-    var sold     = parseInt(document.getElementById('pp-sold-'+id).value) || 0;
-    var badges   = document.getElementById('pp-badges-'+id).value.trim();
-    var soldOut  = document.getElementById('pp-soldout-'+id).checked;
-    var isNew    = document.getElementById('pp-new-'+id).checked;
-    var isBest   = document.getElementById('pp-best-'+id).checked;
+  var price     = parseFloat(document.getElementById('pp-price-'+id).value) || 0;
+  var origPrice = parseFloat(document.getElementById('pp-orig-'+id).value) || 0;
+  var sold      = parseInt(document.getElementById('pp-sold-'+id).value) || 0;
+  var badges    = document.getElementById('pp-badges-'+id).value.trim();
+  var soldOut   = document.getElementById('pp-soldout-'+id).checked;
+  var isNew     = document.getElementById('pp-new-'+id).checked;
+  var isBest    = document.getElementById('pp-best-'+id).checked;
+  var isHidden  = document.getElementById('pp-hidden-'+id).checked;
+  fetch(API+'?action=upsertProductOverride', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ product_id:id, product_name:name, price:price, orig_price:origPrice,
+      sold_count:sold, badges:badges, is_sold_out:soldOut, is_new_arrival:isNew, is_best_seller:isBest, is_hidden:isHidden })
+  }).then(function(r){ return r.json(); }).then(function(d) {
+    if (d.success) { toast('✓ '+name+' saved'); loadProducts(); }
+    else toast('Error: '+(d.error||'unknown'));
+  }).catch(function(){ toast('Error saving product'); });
+}
 
+/* ── ADD / EDIT PRODUCT MODAL ── */
+var _editingProductId = null;
+var _deleteProductId  = null;
+
+function openAddProduct() {
+  _editingProductId = null;
+  document.getElementById('productModalTitle').textContent = 'ADD PRODUCT';
+  document.getElementById('pm-id').value       = '';
+  document.getElementById('pm-name').value     = '';
+  document.getElementById('pm-brand').value    = '';
+  document.getElementById('pm-price').value    = '';
+  document.getElementById('pm-orig').value     = '';
+  document.getElementById('pm-cat').value      = 'sneakers';
+  document.getElementById('pm-condition').value= 'Brand New / Deadstock';
+  document.getElementById('pm-desc').value     = '';
+  document.getElementById('pm-badges').value   = '';
+  document.getElementById('pm-sizes').value    = '';
+  document.getElementById('pm-sold').value     = '0';
+  document.getElementById('pm-img').value      = '';
+  document.getElementById('pm-imgs').value     = '';
+  document.getElementById('pm-video').value    = '';
+  document.getElementById('pm-soldout').checked    = false;
+  document.getElementById('pm-newarr').checked     = false;
+  document.getElementById('pm-bestseller').checked = false;
+  document.getElementById('pm-hidden').checked     = false;
+  document.getElementById('pm-img-preview').innerHTML   = '';
+  document.getElementById('pm-video-preview').innerHTML = '';
+  document.getElementById('pm-save-btn').textContent = 'Add Product';
+  document.getElementById('productModal').style.display = 'flex';
+}
+
+function openEditProduct(id) {
+  _editingProductId = id;
+  // Find from current DOM / overrides
+  var ov = (allProductOverrides||[]).find(function(o){ return o.product_id === id; }) || {};
+  document.getElementById('productModalTitle').textContent = 'EDIT PRODUCT';
+  document.getElementById('pm-id').value       = id;
+  document.getElementById('pm-name').value     = ov.product_name || '';
+  document.getElementById('pm-brand').value    = ov.brand        || '';
+  document.getElementById('pm-price').value    = ov.price        || '';
+  document.getElementById('pm-orig').value     = ov.orig_price   || '';
+  document.getElementById('pm-cat').value      = ov.category     || 'sneakers';
+  document.getElementById('pm-condition').value= ov.condition    || 'Brand New / Deadstock';
+  document.getElementById('pm-desc').value     = ov.desc         || '';
+  document.getElementById('pm-badges').value   = ov.badges       || '';
+  document.getElementById('pm-sizes').value    = ov.sizes        || '';
+  document.getElementById('pm-sold').value     = ov.sold_count   || 0;
+  document.getElementById('pm-img').value      = ov.img          || '';
+  document.getElementById('pm-imgs').value     = ov.imgs         || '';
+  document.getElementById('pm-video').value    = ov.video        || '';
+  document.getElementById('pm-soldout').checked    = !!ov.is_sold_out;
+  document.getElementById('pm-newarr').checked     = !!ov.is_new_arrival;
+  document.getElementById('pm-bestseller').checked = !!ov.is_best_seller;
+  document.getElementById('pm-hidden').checked     = !!ov.is_hidden;
+  // Show preview
+  var imgPrev = document.getElementById('pm-img-preview');
+  imgPrev.innerHTML = ov.img ? '<img src="'+ov.img+'" style="width:80px;height:80px;object-fit:cover;border-radius:8px;" />' : '';
+  var vidPrev = document.getElementById('pm-video-preview');
+  vidPrev.innerHTML = ov.video ? '<video src="'+ov.video+'" style="width:120px;height:80px;object-fit:cover;border-radius:8px;" muted playsinline controls></video>' : '';
+  document.getElementById('pm-save-btn').textContent = 'Save Changes';
+  document.getElementById('productModal').style.display = 'flex';
+}
+
+function closeProductModal() {
+  document.getElementById('productModal').style.display = 'none';
+}
+
+function saveProductModal() {
+  var btn = document.getElementById('pm-save-btn');
+  btn.textContent = 'Saving…';
+  btn.disabled = true;
+
+  var existingId = parseInt(document.getElementById('pm-id').value) || null;
+  // For new products, generate ID >= 100
+  var newId = existingId || (100 + Math.floor(Math.random() * 9000));
+
+  var payload = {
+    product_id:    newId,
+    product_name:  document.getElementById('pm-name').value.trim(),
+    brand:         document.getElementById('pm-brand').value.trim(),
+    price:         parseFloat(document.getElementById('pm-price').value) || 0,
+    orig_price:    parseFloat(document.getElementById('pm-orig').value) || 0,
+    category:      document.getElementById('pm-cat').value,
+    condition:     document.getElementById('pm-condition').value,
+    desc:          document.getElementById('pm-desc').value.trim(),
+    badges:        document.getElementById('pm-badges').value.trim(),
+    sizes:         document.getElementById('pm-sizes').value.trim(),
+    sold_count:    parseInt(document.getElementById('pm-sold').value) || 0,
+    img:           document.getElementById('pm-img').value.trim(),
+    imgs:          document.getElementById('pm-imgs').value.trim(),
+    video:         document.getElementById('pm-video').value.trim(),
+    is_sold_out:   document.getElementById('pm-soldout').checked,
+    is_new_arrival:document.getElementById('pm-newarr').checked,
+    is_best_seller:document.getElementById('pm-bestseller').checked,
+    is_hidden:     document.getElementById('pm-hidden').checked
+  };
+
+  if (!payload.product_name) { toast('Product name is required'); btn.textContent = 'Save Product'; btn.disabled = false; return; }
+  if (!payload.price) { toast('Price is required'); btn.textContent = 'Save Product'; btn.disabled = false; return; }
+
+  fetch(API+'?action=upsertProductOverride', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(payload)
+  }).then(function(r){ return r.json(); }).then(function(d) {
+    btn.textContent = 'Save Product'; btn.disabled = false;
+    if (d.success) {
+      toast('✓ Product saved — live on site');
+      closeProductModal();
+      loadProducts();
+    } else toast('Error: '+(d.error||'unknown'));
+  }).catch(function(){ btn.textContent = 'Save Product'; btn.disabled = false; toast('Error saving product'); });
+}
+
+/* ── MEDIA UPLOAD ── */
+function uploadProductMedia(input, targetId, previewId) {
+  var file = input.files[0];
+  if (!file) return;
+  var isVideo = file.type.startsWith('video');
+  toast('Uploading '+(isVideo?'video':'image')+'…');
+  var formData = new FormData();
+  formData.append('file', file);
+  fetch(API+'?action=uploadMedia', { method:'POST', body: formData })
+    .then(function(r){ return r.json(); })
+    .then(function(d) {
+      if (d.url) {
+        document.getElementById(targetId).value = d.url;
+        var prev = document.getElementById(previewId);
+        if (isVideo) {
+          prev.innerHTML = '<video src="'+d.url+'" style="width:120px;height:80px;object-fit:cover;border-radius:8px;" muted playsinline controls></video>';
+        } else {
+          prev.innerHTML = '<img src="'+d.url+'" style="width:80px;height:80px;object-fit:cover;border-radius:8px;" />';
+        }
+        toast('✓ Uploaded!');
+      } else toast('Upload failed: '+(d.error||'unknown'));
+    }).catch(function(){ toast('Upload error'); });
+}
+
+function uploadProductMediaMulti(input, targetId) {
+  var files = Array.from(input.files);
+  if (!files.length) return;
+  toast('Uploading '+files.length+' image(s)…');
+  var existing = document.getElementById(targetId).value.trim();
+  var urls = existing ? existing.split('\n').filter(Boolean) : [];
+  var pending = files.length;
+  files.forEach(function(file) {
+    var formData = new FormData();
+    formData.append('file', file);
+    fetch(API+'?action=uploadMedia', { method:'POST', body: formData })
+      .then(function(r){ return r.json(); })
+      .then(function(d) {
+        if (d.url) urls.push(d.url);
+        pending--;
+        if (pending === 0) {
+          document.getElementById(targetId).value = urls.join('\n');
+          toast('✓ '+files.length+' image(s) uploaded');
+        }
+      }).catch(function(){ pending--; toast('One upload failed'); });
+  });
+}
+
+/* ── DELETE PRODUCT ── */
+function confirmDeleteProduct(id, name) {
+  _deleteProductId = id;
+  document.getElementById('deleteProductName').textContent = name;
+  document.getElementById('deleteProductModal').style.display = 'flex';
+  document.getElementById('confirmDeleteBtn').onclick = function() {
     fetch(API+'?action=upsertProductOverride', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ product_id: id, product_name: name, price: price, orig_price: origPrice,
-        sold_count: sold, badges: badges, is_sold_out: soldOut, is_new_arrival: isNew, is_best_seller: isBest })
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ product_id: id, is_hidden: true })
     }).then(function(r){ return r.json(); }).then(function(d) {
-      if (d.success) toast('✓ '+name+' saved — site will reflect changes on next load');
+      if (d.success) { toast('Product hidden from store'); closeDeleteModal(); loadProducts(); }
       else toast('Error: '+(d.error||'unknown'));
-    }).catch(function() { toast('Error saving product'); });
-  }
+    }).catch(function(){ toast('Remove failed'); });
+  };
+}
+
+function closeDeleteModal() {
+  document.getElementById('deleteProductModal').style.display = 'none';
+  _deleteProductId = null;
+}
 
 </script>
 </body>
