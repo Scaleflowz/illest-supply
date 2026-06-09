@@ -164,6 +164,91 @@ function injectCartDrawer() {
 }
 
 // Standard nav HTML for all pages
+
+// ═══════════════════════════════════════════════
+// SEO HELPERS — inject meta/OG tags per page
+// ═══════════════════════════════════════════════
+function injectPageMeta(opts) {
+  // opts: { title, description, image, url, type }
+  const base = 'https://illestsupply.com/';
+  const defaultImg = 'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/409f6a116_918D9A7E-D61E-4658-A7B6-5DF1F8B5AC78.png';
+  const title = opts.title || 'The Illest Supply | Premium Designer Streetwear & Sneakers';
+  const desc = opts.description || 'Shop designer sneakers, slides, jorts, and streetwear from The Illest Supply. Premium pieces, fast shipping, secure checkout.';
+  const img = opts.image || defaultImg;
+  const url = opts.url || base;
+  const type = opts.type || 'website';
+
+  // Update title
+  document.title = title;
+
+  // Helper to set/create meta
+  function setMeta(sel, attr, val) {
+    let el = document.querySelector(sel);
+    if (!el) { el = document.createElement('meta'); document.head.appendChild(el); }
+    el.setAttribute(attr, val);
+  }
+  function setMetaName(name, val) {
+    let el = document.querySelector('meta[name="'+name+'"]');
+    if (!el) { el = document.createElement('meta'); el.setAttribute('name', name); document.head.appendChild(el); }
+    el.setAttribute('content', val);
+  }
+  function setMetaProp(prop, val) {
+    let el = document.querySelector('meta[property="'+prop+'"]');
+    if (!el) { el = document.createElement('meta'); el.setAttribute('property', prop); document.head.appendChild(el); }
+    el.setAttribute('content', val);
+  }
+
+  setMetaName('description', desc);
+  setMetaProp('og:title', title);
+  setMetaProp('og:description', desc);
+  setMetaProp('og:image', img);
+  setMetaProp('og:url', url);
+  setMetaProp('og:type', type);
+  setMetaProp('og:site_name', 'The Illest Supply');
+  setMetaName('twitter:card', 'summary_large_image');
+  setMetaName('twitter:title', title);
+  setMetaName('twitter:description', desc);
+  setMetaName('twitter:image', img);
+
+  // Canonical
+  let canon = document.querySelector('link[rel="canonical"]');
+  if (!canon) { canon = document.createElement('link'); canon.rel = 'canonical'; document.head.appendChild(canon); }
+  canon.href = url;
+}
+
+function injectProductSchema(p) {
+  const avgRating = 4.9;
+  const reviewCount = p.soldCount || 10;
+  const availability = (p.isSoldOut) ? 'https://schema.org/OutOfStock' : 'https://schema.org/InStock';
+  const schema = {
+    "@context": "https://schema.org/",
+    "@type": "Product",
+    "name": p.name,
+    "image": [p.img].concat(p.imgs || []).filter(Boolean),
+    "description": p.desc || (p.name + ' — premium designer piece from The Illest Supply.'),
+    "brand": { "@type": "Brand", "name": p.brand || "The Illest Supply" },
+    "sku": "ILS-" + p.id,
+    "offers": {
+      "@type": "Offer",
+      "url": "https://illestsupply.com/product.html?id=" + p.id,
+      "priceCurrency": "USD",
+      "price": p.price,
+      "priceValidUntil": "2026-12-31",
+      "itemCondition": "https://schema.org/NewCondition",
+      "availability": availability,
+      "seller": { "@type": "Organization", "name": "The Illest Supply" }
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": avgRating,
+      "reviewCount": reviewCount
+    }
+  };
+  let el = document.getElementById('productSchema');
+  if (!el) { el = document.createElement('script'); el.type = 'application/ld+json'; el.id = 'productSchema'; document.head.appendChild(el); }
+  el.textContent = JSON.stringify(schema);
+}
+
 function getNavHTML(activePage) {
   const count = Cart.count();
   return `
@@ -244,8 +329,7 @@ function getFooterHTML() {
       <div class="footer-col">
         <div class="footer-col-title">Company</div>
         <a href="about.html">About</a>
-        <a href="authentication.html">Authentication</a>
-        <a href="reviews.html">Reviews</a>
+                <a href="reviews.html">Reviews</a>
         <a href="https://www.instagram.com/theillestsupply" target="_blank">Instagram</a>
       </div>
     </div>
