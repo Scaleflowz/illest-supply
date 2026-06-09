@@ -109,62 +109,27 @@
   <div class="trust-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg> Secure Checkout</div>
 </div>
 
-<!-- CATEGORIES -->
-<section>
-  <div class="container">
-    <div class="section-title">Browse By Category</div>
-    <div class="section-heading">Shop The Collection</div>
-    <div class="cats-grid">
-      <a href="shop.html?cat=sneakers" class="cat-card"><div class="cat-icon">👟</div><div class="cat-name">Sneakers</div><div class="cat-count">6 styles</div></a>
-      <a href="shop.html?cat=slides" class="cat-card"><div class="cat-icon">🩴</div><div class="cat-name">Slides</div><div class="cat-count">2 styles</div></a>
-      <a href="shop.html?cat=bottoms" class="cat-card"><div class="cat-icon">👖</div><div class="cat-name">Bottoms</div><div class="cat-count">4 styles</div></a>
-      <a href="shop.html?cat=accessories" class="cat-card"><div class="cat-icon">💎</div><div class="cat-name">Accessories</div><div class="cat-count">Coming soon</div></a>
-      <a href="shop.html" class="cat-card"><div class="cat-icon">🛍️</div><div class="cat-name">All Items</div><div class="cat-count">13 total</div></a>
-    </div>
-  </div>
-</section>
 
-<!-- NEW ARRIVALS -->
+
+<!-- FEATURED PRODUCTS -->
 <section>
   <div class="container">
-    <div class="section-title">Just Dropped</div>
-    <div class="section-heading">New Arrivals</div>
+    <div class="section-heading" style="margin-bottom:8px;">Featured Drops</div>
+    <div style="color:#555;font-size:13px;margin-bottom:28px;">Premium pieces, real prices.</div>
     <div class="products-grid" id="newArrivalsGrid"></div>
     <div style="text-align:center;margin-top:32px;"><a href="shop.html" class="btn-outline">View All Products</a></div>
   </div>
 </section>
 
-<!-- BEST SELLERS -->
-<section>
-  <div class="container">
-    <div class="section-title">Most Popular</div>
-    <div class="section-heading">Best Sellers</div>
-    <div class="products-grid" id="bestSellersGrid"></div>
-  </div>
-</section>
 
-<!-- WHY US -->
-<section style="background:#050505;padding:60px 0;">
-  <div class="container">
-    <div style="text-align:center;margin-bottom:40px;">
-      <div class="section-title">Real Talk</div>
-      <div class="section-heading">What Customers Are Saying</div>
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;" id="reviewsPreview">
-      <div style="text-align:center;padding:40px;color:#444;grid-column:1/-1;">Loading reviews...</div>
-    </div>
-    <div style="text-align:center;margin-top:28px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
-      <a href="reviews.html" class="btn-outline">Read All Reviews</a>
-      <button class="btn-primary" onclick="window.location.href='reviews.html?write=1'">✍️ Write a Review</button>
-    </div>
-  </div>
-</section>
+
+
 <script>
 (async function loadHomeReviews(){
   try{
-    const r = await fetch('https://superagent-bc2ec54c.base44.app/functions/reviewsApi?action=list&limit=6');
+    const r = await fetch('https://superagent-bc2ec54c.base44.app/functions/reviewsApi?action=list&limit=3');
     const d = await r.json();
-    const reviews = (d.reviews||[]).filter(rv=>rv.rating===5).slice(0,6);
+    const reviews = (d.reviews||[]).filter(rv=>rv.rating===5).slice(0,3);
     if(!reviews.length){ document.getElementById('reviewsPreview').innerHTML=''; return; }
     document.getElementById('reviewsPreview').innerHTML = reviews.map(rv=>{
       const stars = '★'.repeat(rv.rating);
@@ -189,22 +154,7 @@
 })();
 </script>
 
-<!-- HOW IT WORKS -->
-<section>
-  <div class="container">
-    <div style="text-align:center;margin-bottom:40px;">
-      <div class="section-title">Simple Process</div>
-      <div class="section-heading">How It Works</div>
-    </div>
-    <div class="steps">
-      <div class="step"><div class="step-num">01</div><div class="step-title">Pick Your Item</div><div class="step-desc">Browse the collection and find your piece.</div></div>
-      <div class="step"><div class="step-num">02</div><div class="step-title">Select Your Size</div><div class="step-desc">Choose your size from available options.</div></div>
-      <div class="step"><div class="step-num">03</div><div class="step-title">Add to Cart</div><div class="step-desc">Add to cart or hit Buy Now to go straight to checkout.</div></div>
-      <div class="step"><div class="step-num">04</div><div class="step-title">Checkout Securely</div><div class="step-desc">Enter your info and complete your order.</div></div>
-      <div class="step"><div class="step-num">05</div><div class="step-title">Get Your Fit</div><div class="step-desc">Receive tracking info and get your order in 1–3 days.</div></div>
-    </div>
-  </div>
-</section>
+
 
 <!-- REVIEWS PREVIEW -->
 <section style="background:#050505;padding:60px 0;">
@@ -261,8 +211,8 @@ document.getElementById('footerContainer').innerHTML = getFooterHTML();
 
 // Render grids after overrides/inventory sync
 onProductsReady(function() {
-  document.getElementById('newArrivalsGrid').innerHTML = getNewArrivals().map(p => renderProductCard(p)).join('');
-  document.getElementById('bestSellersGrid').innerHTML = getFeatured().map(p => renderProductCard(p)).join('');
+  const featured = getFeatured().slice(0,4);
+  document.getElementById('newArrivalsGrid').innerHTML = featured.map(p => renderProductCard(p)).join('');
 });
 </script>
 
