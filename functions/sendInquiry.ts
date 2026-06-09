@@ -16,6 +16,24 @@ Deno.serve(async (req) => {
     const body = await req.json().catch(() => ({}));
     const { name, email, size, note, product, price } = body;
 
+    // Pre-built email types (confirmation, shipping, blast) — forward directly
+    if (body.type && ['confirmation','shipping','blast'].includes(body.type) && body.to && body.subject && body.body) {
+      const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
+      if (!RESEND_API_KEY) return new Response(JSON.stringify({ error: 'Email not configured' }), { status: 500, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+      const res = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${RESEND_API_KEY}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          from: 'The Illest Supply <onboarding@resend.dev>',
+          to: [body.to],
+          subject: body.subject,
+          html: body.body,
+        }),
+      });
+      if (!res.ok) { const err = await res.text(); return new Response(JSON.stringify({ error: 'Send failed', detail: err }), { status: 500, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } }); }
+      return new Response(JSON.stringify({ ok: true }), { headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' } });
+    }
+
     if (!name || !email || !product) {
       return new Response(JSON.stringify({ error: 'Missing required fields' }), {
         status: 400,
