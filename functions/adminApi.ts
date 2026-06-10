@@ -68,7 +68,7 @@ Deno.serve(async (req: Request): Promise<Response> => {
       return Response.json({ success: true }, { headers: cors });
     }
 
-    // ── PRODUCT OVERRIDES (price, badges, sold-out, sold count) ───────────
+    // ── PRODUCT OVERRIDES ─────────────────────────────────────────────────
     if (action === "getProductOverrides") {
       const overrides = await db.ProductOverride.list();
       return Response.json(overrides, { headers: cors });
@@ -79,42 +79,136 @@ Deno.serve(async (req: Request): Promise<Response> => {
       const existing = overrides.find((o: any) => o.product_id === data.product_id);
       if (existing) {
         await db.ProductOverride.update(existing.id, data);
+        return Response.json({ success: true, id: existing.id }, { headers: cors });
       } else {
-        await db.ProductOverride.create(data);
+        const created = await db.ProductOverride.create(data);
+        return Response.json({ success: true, id: created.id }, { headers: cors });
       }
+    }
+
+    // ── PRODUCT FULL CRUD ─────────────────────────────────────────────────
+    // Create a full product (custom, id >= 100)
+    if (action === "createProduct") {
+      const data = await req.json();
+      // Assign next available product_id >= 100
+      const overrides = await db.ProductOverride.list();
+      const customIds = overrides.filter((o: any) => o.product_id >= 100).map((o: any) => o.product_id);
+      const nextId = customIds.length > 0 ? Math.max(...customIds) + 1 : 100;
+      const productData = {
+        product_id: nextId,
+        product_name: data.product_name || '',
+        price: parseFloat(data.price) || 0,
+        orig_price: parseFloat(data.orig_price) || 0,
+        is_sold_out: data.status === 'soldout',
+        is_hidden: data.status === 'draft',
+        is_new_arrival: data.is_new_arrival || false,
+        is_best_seller: data.is_best_seller || false,
+        badges: data.badges || '',
+        sold_count: parseInt(data.sold_count) || 0,
+        brand: data.brand || '',
+        category: data.category || 'sneakers',
+        condition: data.condition || 'Brand New',
+        desc: data.desc || '',
+        sizes: data.sizes || '',
+        img: data.img || '',
+        imgs: data.imgs || '',
+        video: data.video || '',
+        // Extra fields stored in desc as JSON supplement
+      };
+      const created = await db.ProductOverride.create(productData);
+      return Response.json({ success: true, id: created.id, product_id: nextId }, { headers: cors });
+    }
+
+    // Update a product by DB record id
+    if (action === "updateProduct") {
+      const { id, ...data } = await req.json();
+      const updateData: any = {};
+      if (data.product_name !== undefined) updateData.product_name = data.product_name;
+      if (data.price !== undefined) updateData.price = parseFloat(data.price) || 0;
+      if (data.orig_price !== undefined) updateData.orig_price = parseFloat(data.orig_price) || 0;
+      if (data.status !== undefined) {
+        updateData.is_sold_out = data.status === 'soldout';
+        updateData.is_hidden = data.status === 'draft';
+      }
+      if (data.is_new_arrival !== undefined) updateData.is_new_arrival = data.is_new_arrival;
+      if (data.is_best_seller !== undefined) updateData.is_best_seller = data.is_best_seller;
+      if (data.badges !== undefined) updateData.badges = data.badges;
+      if (data.sold_count !== undefined) updateData.sold_count = parseInt(data.sold_count) || 0;
+      if (data.brand !== undefined) updateData.brand = data.brand;
+      if (data.category !== undefined) updateData.category = data.category;
+      if (data.condition !== undefined) updateData.condition = data.condition;
+      if (data.desc !== undefined) updateData.desc = data.desc;
+      if (data.sizes !== undefined) updateData.sizes = data.sizes;
+      if (data.img !== undefined) updateData.img = data.img;
+      if (data.imgs !== undefined) updateData.imgs = data.imgs;
+      if (data.video !== undefined) updateData.video = data.video;
+      await db.ProductOverride.update(id, updateData);
       return Response.json({ success: true }, { headers: cors });
     }
-    // ── MEDIA UPLOAD ──────────────────────────────────────────────────
+
+    // Delete a product (custom only, id >= 100)
+    if (action === "deleteProduct") {
+      const { id } = await req.json();
+      await db.ProductOverride.delete(id);
+      return Response.json({ success: true }, { headers: cors });
+    }
+
+    // Duplicate a product
+    if (action === "duplicateProduct") {
+      const { id } = await req.json();
+      const overrides = await db.ProductOverride.list();
+      const source = overrides.find((o: any) => o.id === id);
+      if (!source) return Response.json({ error: "Not found" }, { status: 404, headers: cors });
+      const customIds = overrides.filter((o: any) => o.product_id >= 100).map((o: any) => o.product_id);
+      const nextId = customIds.length > 0 ? Math.max(...customIds) + 1 : 100;
+      const { id: _id, created_date, updated_date, created_by, created_by_id, ...rest } = source;
+      const created = await db.ProductOverride.create({ ...rest, product_id: nextId, product_name: rest.product_name + ' (Copy)', is_hidden: true });
+      return Response.json({ success: true, id: created.id, product_id: nextId }, { headers: cors });
+    }
+
+    // ── MEDIA UPLOAD ──────────────────────────────────────────────────────
     if (action === "uploadMedia") {
       try {
         const formData = await req.formData();
         const file = formData.get("file") as File;
         if (!file) return new Response(JSON.stringify({ error: "No file" }), { status: 400, headers: cors });
+        
+        // Validate file type
+        const allowedTypes = ['image/jpeg','image/jpg','image/png','image/webp','video/mp4','video/quicktime'];
+        if (!allowedTypes.includes(file.type)) {
+          return new Response(JSON.stringify({ error: "Unsupported file type. Use JPG, PNG, WebP, or MP4." }), { status: 400, headers: cors });
+        }
+        // Size limit: 50MB for video, 10MB for images
+        const isVideo = file.type.startsWith('video/');
+        const maxSize = isVideo ? 50 * 1024 * 1024 : 10 * 1024 * 1024;
+        if (file.size > maxSize) {
+          return new Response(JSON.stringify({ error: `File too large. Max ${isVideo ? '50MB for videos' : '10MB for images'}.` }), { status: 400, headers: cors });
+        }
+
         const arrayBuffer = await file.arrayBuffer();
         const uint8 = new Uint8Array(arrayBuffer);
-        // Convert to base64
         let binary = "";
-        for (let i = 0; i < uint8.length; i++) binary += String.fromCharCode(uint8[i]);
+        const chunkSize = 8192;
+        for (let i = 0; i < uint8.length; i += chunkSize) {
+          binary += String.fromCharCode(...uint8.slice(i, i + chunkSize));
+        }
         const base64 = btoa(binary);
-        const ext = file.name.split(".").pop() || "jpg";
-        const fname = `product_${Date.now()}.${ext}`;
-        // Upload via base44 storage
-        const uploadRes = await fetch(`https://api.base44.com/api/apps/${Deno.env.get("APP_ID") || "6a21ea02495f72afbc2ec54c"}/storage/upload`, {
+        const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
+        const fname = `product_${Date.now()}_${Math.random().toString(36).slice(2,7)}.${ext}`;
+        const uploadRes = await fetch(`https://api.base44.com/api/apps/6a21ea02495f72afbc2ec54c/storage/upload`, {
           method: "POST",
           headers: { "Content-Type": "application/json", "x-api-key": Deno.env.get("BASE44_API_KEY") || "" },
           body: JSON.stringify({ filename: fname, content_base64: base64, content_type: file.type, public: true })
         });
         const uploadData = await uploadRes.json();
         if (uploadData.url) {
-          return new Response(JSON.stringify({ url: uploadData.url }), { headers: cors });
+          return new Response(JSON.stringify({ url: uploadData.url, type: isVideo ? 'video' : 'image' }), { headers: cors });
         }
-        return new Response(JSON.stringify({ error: "Upload failed", detail: uploadData }), { headers: cors });
+        return new Response(JSON.stringify({ error: "Upload failed", detail: uploadData }), { status: 500, headers: cors });
       } catch(e) {
-        return new Response(JSON.stringify({ error: String(e) }), { headers: cors });
+        return new Response(JSON.stringify({ error: String(e) }), { status: 500, headers: cors });
       }
     }
-
-
 
     // ── CUSTOMERS ─────────────────────────────────────────────────────────
     if (action === "getCustomers") {
@@ -230,146 +324,34 @@ Deno.serve(async (req: Request): Promise<Response> => {
       return Response.json({ success: true }, { headers: cors });
     }
 
-
-
-
     // ── ORDER CONFIRMATION EMAIL ───────────────────────────────────────────
     if (action === "sendOrderConfirmationEmail") {
       const { customer_name, customer_email, order_number, items, subtotal, shipping, tax, total, address } = await req.json();
       if (!customer_email) return Response.json({ error: "Missing email" }, { status: 400, headers: cors });
-
       const itemsHtml = (items || []).map((item: any) => `
         <div style="display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.05);">
           ${item.img ? `<img src="${item.img}" style="width:50px;height:50px;border-radius:8px;object-fit:cover;" alt="${item.name}">` : ''}
-          <div style="flex:1;">
-            <div style="color:#fff;font-size:14px;font-weight:700;">${item.name}</div>
-            ${item.size ? `<div style="color:#555;font-size:12px;margin-top:2px;">Size: ${item.size}</div>` : ''}
-            <div style="color:#555;font-size:12px;">Qty: ${item.qty || 1}</div>
-          </div>
+          <div style="flex:1;"><div style="color:#fff;font-size:14px;font-weight:700;">${item.name}</div>${item.size ? `<div style="color:#555;font-size:12px;margin-top:2px;">Size: ${item.size}</div>` : ''}<div style="color:#555;font-size:12px;">Qty: ${item.qty || 1}</div></div>
           <div style="color:#fff;font-size:14px;font-weight:800;">$${((item.price||0)*(item.qty||1)).toFixed(2)}</div>
         </div>`).join('');
-
       const addrHtml = address ? `${address.line1}${address.line2 ? ', ' + address.line2 : ''}, ${address.city}, ${address.state} ${address.zip}` : '—';
-
-      const emailHtml = `
-        <div style="background:#080808;padding:40px 20px;font-family:'Inter',sans-serif;">
-          <div style="max-width:520px;margin:0 auto;">
-            <div style="text-align:center;margin-bottom:28px;">
-              <img src="https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/409f6a116_918D9A7E-D61E-4658-A7B6-5DF1F8B5AC78.png" alt="The Illest Supply" style="height:56px;mix-blend-mode:screen;">
-            </div>
-            <div style="background:#0d0d0d;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:32px;">
-              <div style="text-align:center;margin-bottom:24px;">
-                <div style="font-size:32px;margin-bottom:8px;">✅</div>
-                <h2 style="color:#fff;font-size:22px;font-weight:800;letter-spacing:.04em;margin:0 0 6px;">Order Confirmed!</h2>
-                <p style="color:#666;font-size:13px;margin:0;">Thanks ${customer_name || 'for your order'} — we got it and we're on it.</p>
-              </div>
-              <div style="background:#111;border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:14px 18px;margin-bottom:20px;">
-                <div style="font-size:10px;color:#555;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px;">Order Number</div>
-                <div style="color:#fff;font-size:15px;font-weight:800;letter-spacing:.06em;">${order_number}</div>
-              </div>
-              <div style="background:#111;border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:14px 18px;margin-bottom:20px;">
-                <div style="font-size:10px;color:#555;letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px;">Items Ordered</div>
-                ${itemsHtml}
-              </div>
-              <div style="background:#111;border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:14px 18px;margin-bottom:20px;">
-                <div style="font-size:10px;color:#555;letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px;">Order Total</div>
-                <div style="display:flex;justify-content:space-between;font-size:12px;color:#666;margin-bottom:6px;"><span>Subtotal</span><span>$${(subtotal||0).toFixed(2)}</span></div>
-                <div style="display:flex;justify-content:space-between;font-size:12px;color:#666;margin-bottom:6px;"><span>Shipping</span><span>${shipping===0?'FREE':'$'+(shipping||0).toFixed(2)}</span></div>
-                <div style="display:flex;justify-content:space-between;font-size:12px;color:#666;margin-bottom:10px;"><span>Tax</span><span>$${(tax||0).toFixed(2)}</span></div>
-                <div style="display:flex;justify-content:space-between;font-size:16px;font-weight:800;color:#fff;border-top:1px solid rgba(255,255,255,.08);padding-top:10px;"><span>Total</span><span>$${(total||0).toFixed(2)}</span></div>
-              </div>
-              <div style="background:#111;border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:14px 18px;margin-bottom:24px;">
-                <div style="font-size:10px;color:#555;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;">Shipping To</div>
-                <div style="color:#aaa;font-size:13px;line-height:1.6;">${addrHtml}</div>
-              </div>
-              <div style="background:rgba(234,179,8,.06);border:1px solid rgba(234,179,8,.15);border-radius:10px;padding:14px 18px;margin-bottom:24px;text-align:center;">
-                <div style="color:#eab308;font-size:12px;font-weight:600;">⏳ Payment Pending</div>
-                <div style="color:#666;font-size:12px;margin-top:4px;">We'll contact you shortly to process payment and confirm your order.</div>
-              </div>
-              <a href="https://illestsupply.com/order-tracker.html" style="display:block;text-align:center;background:#fff;color:#000;font-size:13px;font-weight:700;letter-spacing:.07em;padding:14px;border-radius:10px;text-decoration:none;margin-bottom:16px;">TRACK YOUR ORDER →</a>
-              <p style="color:#444;font-size:12px;text-align:center;margin:0;line-height:1.6;">
-                Questions? DM us at <a href="https://www.instagram.com/theillestsupply" style="color:#666;">@theillestsupply</a><br>
-                or reply to this email
-              </p>
-            </div>
-            <p style="color:#333;font-size:11px;text-align:center;margin-top:20px;">© 2026 The Illest Supply · illestsupply.com</p>
-          </div>
-        </div>`;
-
-      await fetch("https://superagent-bc2ec54c.base44.app/functions/sendInquiry", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          to: customer_email,
-          subject: `Order Confirmed ✅ ${order_number} – The Illest Supply`,
-          body: emailHtml,
-          type: "confirmation"
-        })
-      });
-
+      const emailHtml = `<div style="background:#080808;padding:40px 20px;font-family:'Inter',sans-serif;"><div style="max-width:520px;margin:0 auto;"><div style="text-align:center;margin-bottom:28px;"><img src="https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/409f6a116_918D9A7E-D61E-4658-A7B6-5DF1F8B5AC78.png" alt="The Illest Supply" style="height:56px;mix-blend-mode:screen;"></div><div style="background:#0d0d0d;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:32px;"><div style="text-align:center;margin-bottom:24px;"><div style="font-size:32px;margin-bottom:8px;">✅</div><h2 style="color:#fff;font-size:22px;font-weight:800;letter-spacing:.04em;margin:0 0 6px;">Order Confirmed!</h2><p style="color:#666;font-size:13px;margin:0;">Thanks ${customer_name || 'for your order'} — we got it and we're on it.</p></div><div style="background:#111;border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:14px 18px;margin-bottom:20px;"><div style="font-size:10px;color:#555;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px;">Order Number</div><div style="color:#fff;font-size:15px;font-weight:800;letter-spacing:.06em;">${order_number}</div></div><div style="background:#111;border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:14px 18px;margin-bottom:20px;"><div style="font-size:10px;color:#555;letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px;">Items Ordered</div>${itemsHtml}</div><div style="background:#111;border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:14px 18px;margin-bottom:20px;"><div style="font-size:10px;color:#555;letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px;">Order Total</div><div style="display:flex;justify-content:space-between;font-size:12px;color:#666;margin-bottom:6px;"><span>Subtotal</span><span>$${(subtotal||0).toFixed(2)}</span></div><div style="display:flex;justify-content:space-between;font-size:12px;color:#666;margin-bottom:6px;"><span>Shipping</span><span>${shipping===0?'FREE':'$'+(shipping||0).toFixed(2)}</span></div><div style="display:flex;justify-content:space-between;font-size:12px;color:#666;margin-bottom:10px;"><span>Tax</span><span>$${(tax||0).toFixed(2)}</span></div><div style="display:flex;justify-content:space-between;font-size:16px;font-weight:800;color:#fff;border-top:1px solid rgba(255,255,255,.08);padding-top:10px;"><span>Total</span><span>$${(total||0).toFixed(2)}</span></div></div><div style="background:#111;border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:14px 18px;margin-bottom:24px;"><div style="font-size:10px;color:#555;letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;">Shipping To</div><div style="color:#aaa;font-size:13px;line-height:1.6;">${addrHtml}</div></div><a href="https://illestsupply.com/order-tracker.html" style="display:block;text-align:center;background:#fff;color:#000;font-size:13px;font-weight:700;letter-spacing:.07em;padding:14px;border-radius:10px;text-decoration:none;margin-bottom:16px;">TRACK YOUR ORDER →</a><p style="color:#444;font-size:12px;text-align:center;margin:0;line-height:1.6;">Questions? DM us at <a href="https://www.instagram.com/theillestsupply" style="color:#666;">@theillestsupply</a><br>or reply to this email</p></div><p style="color:#333;font-size:11px;text-align:center;margin-top:20px;">© 2026 The Illest Supply · illestsupply.com</p></div></div>`;
+      await fetch("https://superagent-bc2ec54c.base44.app/functions/sendInquiry", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ to: customer_email, subject: `Order Confirmed ✅ ${order_number} – The Illest Supply`, body: emailHtml, type: "confirmation" }) });
       return Response.json({ success: true }, { headers: cors });
     }
 
-    // ── SHIPPING CONFIRMATION EMAIL ────────────────────────────────────────
+    // ── SHIPPING EMAIL ────────────────────────────────────────────────────
     if (action === "sendShippingEmail") {
       const { id, customer_name, customer_email, product_name, size, price, tracking_number } = await req.json();
-      const trackingUrl = tracking_number
-        ? `https://track.aftership.com/usps/${tracking_number}`
-        : `https://illestsupply.com/order-tracker.html`;
-
-      const emailHtml = `
-        <div style="background:#080808;padding:40px 20px;font-family:'Inter',sans-serif;">
-          <div style="max-width:520px;margin:0 auto;">
-            <div style="text-align:center;margin-bottom:32px;">
-              <img src="https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/409f6a116_918D9A7E-D61E-4658-A7B6-5DF1F8B5AC78.png" alt="The Illest Supply" style="height:60px;mix-blend-mode:screen;">
-            </div>
-            <div style="background:#0d0d0d;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:32px;">
-              <h2 style="color:#fff;font-size:22px;font-weight:800;letter-spacing:.04em;margin:0 0 6px;">Your order is on its way 📦</h2>
-              <p style="color:#666;font-size:14px;margin:0 0 24px;">Hey ${customer_name || 'there'}, your order has shipped! Here's everything you need.</p>
-              <div style="background:#111;border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:18px;margin-bottom:24px;">
-                <div style="font-size:11px;color:#555;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;">Order Summary</div>
-                <div style="display:flex;justify-content:space-between;align-items:center;">
-                  <div>
-                    <div style="color:#fff;font-size:14px;font-weight:700;">${product_name || 'Your Item'}</div>
-                    <div style="color:#555;font-size:12px;margin-top:3px;">Size: ${size || '—'}</div>
-                  </div>
-                  <div style="color:#fff;font-size:16px;font-weight:800;">$${price || '—'}</div>
-                </div>
-              </div>
-              ${tracking_number ? `
-              <div style="background:#111;border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:18px;margin-bottom:24px;">
-                <div style="font-size:11px;color:#555;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;">USPS Tracking</div>
-                <div style="color:#fff;font-size:14px;font-weight:700;font-family:monospace;letter-spacing:.05em;">${tracking_number}</div>
-              </div>` : ''}
-              <a href="${trackingUrl}" style="display:block;text-align:center;background:#fff;color:#000;font-size:13px;font-weight:700;letter-spacing:.07em;padding:15px;border-radius:10px;text-decoration:none;margin-bottom:20px;">
-                ${tracking_number ? 'TRACK MY PACKAGE →' : 'TRACK YOUR ORDER →'}
-              </a>
-              <p style="color:#444;font-size:12px;text-align:center;margin:0;line-height:1.6;">
-                Questions? Reply to this email or DM us on Instagram<br>
-                <a href="https://www.instagram.com/theillestsupply" style="color:#666;">@theillestsupply</a>
-              </p>
-            </div>
-            <p style="color:#333;font-size:11px;text-align:center;margin-top:20px;">© 2026 The Illest Supply · illestsupply.com</p>
-          </div>
-        </div>`;
-
-      // Send via existing sendInquiry function
-      await fetch("https://superagent-bc2ec54c.base44.app/functions/sendInquiry", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          to: customer_email,
-          subject: `Your order has shipped! ${tracking_number ? '📦 ' + tracking_number : ''}`,
-          body: emailHtml,
-          type: "shipping"
-        })
-      });
-
+      const trackingUrl = tracking_number ? `https://track.aftership.com/usps/${tracking_number}` : `https://illestsupply.com/order-tracker.html`;
+      const emailHtml = `<div style="background:#080808;padding:40px 20px;font-family:'Inter',sans-serif;"><div style="max-width:520px;margin:0 auto;"><div style="text-align:center;margin-bottom:32px;"><img src="https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/409f6a116_918D9A7E-D61E-4658-A7B6-5DF1F8B5AC78.png" alt="The Illest Supply" style="height:60px;mix-blend-mode:screen;"></div><div style="background:#0d0d0d;border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:32px;"><h2 style="color:#fff;font-size:22px;font-weight:800;letter-spacing:.04em;margin:0 0 6px;">Your order is on its way 📦</h2><p style="color:#666;font-size:14px;margin:0 0 24px;">Hey ${customer_name || 'there'}, your order has shipped!</p><div style="background:#111;border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:18px;margin-bottom:24px;"><div style="font-size:11px;color:#555;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;">Order Summary</div><div style="display:flex;justify-content:space-between;align-items:center;"><div><div style="color:#fff;font-size:14px;font-weight:700;">${product_name || 'Your Item'}</div><div style="color:#555;font-size:12px;margin-top:3px;">Size: ${size || '—'}</div></div><div style="color:#fff;font-size:16px;font-weight:800;">$${price || '—'}</div></div></div>${tracking_number ? `<div style="background:#111;border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:18px;margin-bottom:24px;"><div style="font-size:11px;color:#555;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px;">USPS Tracking</div><div style="color:#fff;font-size:14px;font-weight:700;font-family:monospace;letter-spacing:.05em;">${tracking_number}</div></div>` : ''}<a href="${trackingUrl}" style="display:block;text-align:center;background:#fff;color:#000;font-size:13px;font-weight:700;letter-spacing:.07em;padding:15px;border-radius:10px;text-decoration:none;margin-bottom:20px;">${tracking_number ? 'TRACK MY PACKAGE →' : 'TRACK YOUR ORDER →'}</a><p style="color:#444;font-size:12px;text-align:center;margin:0;line-height:1.6;">Questions? DM us at <a href="https://www.instagram.com/theillestsupply" style="color:#666;">@theillestsupply</a></p></div><p style="color:#333;font-size:11px;text-align:center;margin-top:20px;">© 2026 The Illest Supply · illestsupply.com</p></div></div>`;
+      await fetch("https://superagent-bc2ec54c.base44.app/functions/sendInquiry", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ to: customer_email, subject: `Your order has shipped! ${tracking_number ? '📦 ' + tracking_number : ''}`, body: emailHtml, type: "shipping" }) });
       return Response.json({ success: true }, { headers: cors });
     }
 
     // ── CREATE ORDER ──────────────────────────────────────────────────────
     if (action === "createOrder") {
+      const body = await req.json();
       const orderData = body.order || {};
       const saved = await db.Inquiry.create({
         customer_name: orderData.name || '',
@@ -386,7 +368,7 @@ Deno.serve(async (req: Request): Promise<Response> => {
       return Response.json({ success: true, id: saved.id }, { headers: cors });
     }
 
-    // ── ORDER TRACKER ──────────────────────────────────────────────────────
+    // ── ORDER TRACKER ─────────────────────────────────────────────────────
     if (action === "trackOrder") {
       const { orderNumber, email } = await req.json();
       if (!orderNumber || !email) return Response.json({ error: "Missing fields" }, { status: 400, headers: cors });
