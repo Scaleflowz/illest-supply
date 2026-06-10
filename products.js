@@ -227,7 +227,7 @@ function renderProductCard(p, selectedSize = null) {
         ${mediaHTML}
         <div class="product-badge">${badgesHTML}</div>
         ${soldOut ? '<div class="sold-out-overlay"><div class="sold-out-tag">Sold Out</div></div>' : ''}
-        ${!soldOut ? `<div class="viewer-badge" id="vb${p.id}" data-base="${Math.floor(Math.random()*(75-8+1))+8}">👁 <span class="vb-num">${Math.floor(Math.random()*(75-8+1))+8}</span> viewing</div>` : ''}
+        ${!soldOut ? `<div class="viewer-badge" id="vb${p.id}" data-base="${Math.floor(Math.random()*(75-8+1))+8}" style="position:absolute;bottom:10px;left:10px;top:auto;display:flex;align-items:center;gap:5px;">👁 <span class="vb-num">${Math.floor(Math.random()*(75-8+1))+8}</span> viewing now</div>` : ''}
       </div>
       <div class="product-info">
         <div class="product-name">${p.name}</div>
