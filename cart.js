@@ -252,9 +252,9 @@ function injectProductSchema(p) {
 function getNavHTML(activePage) {
   const count = Cart.count();
   return `
-  <div id="announcement" style="background:#ffffff;border-bottom:1px solid rgba(0,0,0,0.08);overflow:hidden;position:relative;height:36px;">
+  <div id="announcement" style="background:#080808;border-bottom:1px solid rgba(255,255,255,0.05);overflow:hidden;position:relative;height:36px;">
     <div style="display:flex;width:max-content;animation:announceTicker 18s linear infinite;">
-      <span style="white-space:nowrap;padding:9px 40px;font-size:11px;font-weight:700;letter-spacing:0.25em;color:#000000;text-transform:uppercase;">DRESS DIFFERENT</span><span style="padding:9px 0;font-size:11px;color:#c00;">·</span><span style="white-space:nowrap;padding:9px 40px;font-size:11px;font-weight:700;letter-spacing:0.25em;color:#000000;text-transform:uppercase;">STAY ILLEST</span><span style="padding:9px 0;font-size:11px;color:#c00;">·</span><span style="white-space:nowrap;padding:9px 40px;font-size:11px;font-weight:700;letter-spacing:0.25em;color:#000000;text-transform:uppercase;">DRESS DIFFERENT</span><span style="padding:9px 0;font-size:11px;color:#c00;">·</span><span style="white-space:nowrap;padding:9px 40px;font-size:11px;font-weight:700;letter-spacing:0.25em;color:#000000;text-transform:uppercase;">STAY ILLEST</span><span style="padding:9px 0;font-size:11px;color:#c00;">·</span><span style="white-space:nowrap;padding:9px 40px;font-size:11px;font-weight:700;letter-spacing:0.25em;color:#000000;text-transform:uppercase;">DRESS DIFFERENT</span><span style="padding:9px 0;font-size:11px;color:#c00;">·</span><span style="white-space:nowrap;padding:9px 40px;font-size:11px;font-weight:700;letter-spacing:0.25em;color:#000000;text-transform:uppercase;">STAY ILLEST</span><span style="padding:9px 0;font-size:11px;color:#c00;">·</span>
+      <span style="white-space:nowrap;padding:9px 40px;font-size:11px;font-weight:700;letter-spacing:0.25em;color:#ffffff;text-transform:uppercase;">DRESS DIFFERENT</span><span style="padding:9px 0;font-size:11px;color:#ffffff;">·</span><span style="white-space:nowrap;padding:9px 40px;font-size:11px;font-weight:700;letter-spacing:0.25em;color:#ffffff;text-transform:uppercase;">STAY ILLEST</span><span style="padding:9px 0;font-size:11px;color:#ffffff;">·</span><span style="white-space:nowrap;padding:9px 40px;font-size:11px;font-weight:700;letter-spacing:0.25em;color:#ffffff;text-transform:uppercase;">DRESS DIFFERENT</span><span style="padding:9px 0;font-size:11px;color:#ffffff;">·</span><span style="white-space:nowrap;padding:9px 40px;font-size:11px;font-weight:700;letter-spacing:0.25em;color:#ffffff;text-transform:uppercase;">STAY ILLEST</span><span style="padding:9px 0;font-size:11px;color:#ffffff;">·</span><span style="white-space:nowrap;padding:9px 40px;font-size:11px;font-weight:700;letter-spacing:0.25em;color:#ffffff;text-transform:uppercase;">DRESS DIFFERENT</span><span style="padding:9px 0;font-size:11px;color:#ffffff;">·</span><span style="white-space:nowrap;padding:9px 40px;font-size:11px;font-weight:700;letter-spacing:0.25em;color:#ffffff;text-transform:uppercase;">STAY ILLEST</span><span style="padding:9px 0;font-size:11px;color:#ffffff;">·</span>
     </div>
   </div>
   <nav>
@@ -483,10 +483,6 @@ function getGlobalCSS() {
       .products-grid{grid-template-columns:repeat(2,1fr);gap:12px;}
       .trust-bar{gap:16px;padding:14px 16px;}
     }
-  
-    .view-count-badge{position:absolute;bottom:10px;left:10px;z-index:10;display:inline-flex;align-items:center;gap:5px;padding:6px 11px;border-radius:999px;background:rgba(0,0,0,0.72);color:#fff;font-size:12px;font-weight:500;line-height:1;box-shadow:0 4px 14px rgba(0,0,0,0.35);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);pointer-events:none;white-space:nowrap;}
-    .view-count-badge::before{content:"👁";font-size:12px;line-height:1;flex-shrink:0;}
-    @media(max-width:640px){.view-count-badge{font-size:11px;padding:5px 9px;}}
   `;
 }
 
