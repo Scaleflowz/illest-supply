@@ -146,10 +146,36 @@ Deno.serve(async (req: Request): Promise<Response> => {
       return Response.json({ success: true }, { headers: cors });
     }
 
-    // Delete a product (custom only, id >= 100)
+    // Delete a product
+    // Custom products (id >= 100): fully delete the record
+    // Static products (id < 100): mark is_hidden=true so storefront filters them out
+    // If no record id is provided but product_id is, find or create the override first
     if (action === "deleteProduct") {
-      const { id } = await req.json();
-      await db.ProductOverride.delete(id);
+      const body = await req.json();
+      let { id, product_id } = body;
+      let record: any = null;
+      if (id) {
+        record = await db.ProductOverride.get(id);
+      } else if (product_id != null) {
+        // Find override by product_id
+        const allOverrides = await db.ProductOverride.list();
+        record = allOverrides.find((o: any) => o.product_id === product_id) || null;
+        if (!record) {
+          // No override exists yet — create one that hides it
+          await db.ProductOverride.create({ product_id, is_hidden: true });
+          return Response.json({ success: true }, { headers: cors });
+        }
+        id = record.id;
+      }
+      if (!record) return Response.json({ error: "Not found" }, { status: 404, headers: cors });
+      const pid = record.product_id;
+      if (pid >= 100) {
+        // Custom product — fully remove
+        await db.ProductOverride.delete(id);
+      } else {
+        // Static product — hide it so it disappears from storefront
+        await db.ProductOverride.update(id, { is_hidden: true });
+      }
       return Response.json({ success: true }, { headers: cors });
     }
 
@@ -172,41 +198,48 @@ Deno.serve(async (req: Request): Promise<Response> => {
         const formData = await req.formData();
         const file = formData.get("file") as File;
         if (!file) return new Response(JSON.stringify({ error: "No file" }), { status: 400, headers: cors });
-        
-        // Validate file type
-        const allowedTypes = ['image/jpeg','image/jpg','image/png','image/webp','video/mp4','video/quicktime'];
-        if (!allowedTypes.includes(file.type)) {
-          return new Response(JSON.stringify({ error: "Unsupported file type. Use JPG, PNG, WebP, or MP4." }), { status: 400, headers: cors });
+
+        // Detect type by extension as fallback (some browsers send blank MIME for MP4)
+        const nm = file.name.toLowerCase();
+        const extMime: Record<string,string> = {
+          jpg:'image/jpeg', jpeg:'image/jpeg', png:'image/png', webp:'image/webp', mp4:'video/mp4'
+        };
+        const ext = nm.split('.').pop() || '';
+        const detectedType = (file.type && file.type !== 'application/octet-stream')
+          ? file.type : (extMime[ext] || file.type);
+
+        const allowedTypes = ['image/jpeg','image/jpg','image/png','image/webp','video/mp4'];
+        if (!allowedTypes.includes(detectedType)) {
+          return new Response(JSON.stringify({ error: "Please upload an MP4 video file." }), { status: 400, headers: cors });
         }
-        // Size limit: 50MB for video, 10MB for images
-        const isVideo = file.type.startsWith('video/');
+
+        const isVideo = detectedType.startsWith('video/');
         const maxSize = isVideo ? 50 * 1024 * 1024 : 10 * 1024 * 1024;
         if (file.size > maxSize) {
           return new Response(JSON.stringify({ error: `File too large. Max ${isVideo ? '50MB for videos' : '10MB for images'}.` }), { status: 400, headers: cors });
         }
 
+        // Convert to base64 — use a chunk approach safe for large files in Deno
         const arrayBuffer = await file.arrayBuffer();
         const uint8 = new Uint8Array(arrayBuffer);
-        let binary = "";
-        const chunkSize = 8192;
-        for (let i = 0; i < uint8.length; i += chunkSize) {
-          binary += String.fromCharCode(...uint8.slice(i, i + chunkSize));
-        }
-        const base64 = btoa(binary);
-        const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
-        const fname = `product_${Date.now()}_${Math.random().toString(36).slice(2,7)}.${ext}`;
+        // Deno-safe base64 via native encode
+        const base64 = btoa(
+          uint8.reduce((acc, byte) => acc + String.fromCharCode(byte), "")
+        );
+
+        const fname = `product_${Date.now()}_${Math.random().toString(36).slice(2,7)}.${ext || 'bin'}`;
         const uploadRes = await fetch(`https://api.base44.com/api/apps/6a21ea02495f72afbc2ec54c/storage/upload`, {
           method: "POST",
           headers: { "Content-Type": "application/json", "x-api-key": Deno.env.get("BASE44_API_KEY") || "" },
-          body: JSON.stringify({ filename: fname, content_base64: base64, content_type: file.type, public: true })
+          body: JSON.stringify({ filename: fname, content_base64: base64, content_type: detectedType, public: true })
         });
         const uploadData = await uploadRes.json();
         if (uploadData.url) {
           return new Response(JSON.stringify({ url: uploadData.url, type: isVideo ? 'video' : 'image' }), { headers: cors });
         }
-        return new Response(JSON.stringify({ error: "Upload failed", detail: uploadData }), { status: 500, headers: cors });
+        return new Response(JSON.stringify({ error: "Upload failed — storage error.", detail: uploadData }), { status: 500, headers: cors });
       } catch(e) {
-        return new Response(JSON.stringify({ error: String(e) }), { status: 500, headers: cors });
+        return new Response(JSON.stringify({ error: "Upload error: " + String(e) }), { status: 500, headers: cors });
       }
     }
 
