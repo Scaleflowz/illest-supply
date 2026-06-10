@@ -358,6 +358,10 @@ function onProductsReady(cb) {
     if (typeof renderFilteredProducts === 'function') {
       try { renderFilteredProducts(); } catch(e) {}
     }
+    // Re-apply viewer counts after any re-render
+    if (typeof applyViewerCounts === 'function') {
+      try { applyViewerCounts(); } catch(e) {}
+    }
   }).catch(function(err) {
     console.warn('Products sync failed, using static data:', err);
     PRODUCTS_LOADED = true;
@@ -367,42 +371,35 @@ function onProductsReady(cb) {
 })();
 
 // ── VIEWER COUNT (session-stable, shared across pages) ────
-(function() {
-  function getViewerCount(productId) {
-    var key = 'ils_vc_' + productId;
-    var stored = sessionStorage.getItem(key);
-    if (stored) return parseInt(stored);
-    // Generate once: 20–450 range
-    var count = Math.floor(Math.random() * (450 - 20 + 1)) + 20;
-    sessionStorage.setItem(key, count);
-    return count;
-  }
+function getViewerCount(productId) {
+  var key = 'ils_vc_' + productId;
+  var stored = sessionStorage.getItem(key);
+  if (stored) return parseInt(stored);
+  var count = Math.floor(Math.random() * (450 - 20 + 1)) + 20;
+  sessionStorage.setItem(key, count);
+  return count;
+}
 
-  function applyViewerCounts() {
-    document.querySelectorAll('.viewer-badge[data-product-id]').forEach(function(el) {
-      var pid = el.getAttribute('data-product-id');
-      if (!pid) return;
-      var count = getViewerCount(pid);
-      var span = el.querySelector('.vb-num');
-      if (span) span.textContent = count;
-    });
-  }
+function applyViewerCounts() {
+  document.querySelectorAll('.viewer-badge[data-product-id]').forEach(function(el) {
+    var pid = el.getAttribute('data-product-id');
+    if (!pid) return;
+    var count = getViewerCount(pid);
+    var span = el.querySelector('.vb-num');
+    if (span) span.textContent = count;
+  });
+}
 
-  // Apply immediately after render
-  applyViewerCounts();
-
-  // Subtle drift every 45s (±5, capped to original ±15%)
-  setInterval(function() {
-    document.querySelectorAll('.viewer-badge[data-product-id]').forEach(function(el) {
-      var pid = el.getAttribute('data-product-id');
-      if (!pid) return;
-      var key = 'ils_vc_' + pid;
-      var base = parseInt(sessionStorage.getItem(key)) || 100;
-      var drift = Math.floor(Math.random() * 11) - 5;
-      var next = Math.max(20, Math.min(450, base + drift));
-      sessionStorage.setItem(key, next);
-      var span = el.querySelector('.vb-num');
-      if (span) span.textContent = next;
-    });
-  }, 45000);
-})();
+// Subtle drift every 45s
+setInterval(function() {
+  document.querySelectorAll('.viewer-badge[data-product-id]').forEach(function(el) {
+    var pid = el.getAttribute('data-product-id');
+    if (!pid) return;
+    var key = 'ils_vc_' + pid;
+    var base = parseInt(sessionStorage.getItem(key)) || 100;
+    var next = Math.max(20, Math.min(450, base + Math.floor(Math.random()*11) - 5));
+    sessionStorage.setItem(key, next);
+    var span = el.querySelector('.vb-num');
+    if (span) span.textContent = next;
+  });
+}, 45000);
