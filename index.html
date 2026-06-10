@@ -239,38 +239,37 @@ onProductsReady(function() {
   const others = PRODUCTS.filter(p => !p.isBestSeller);
   const featured = bestSellers.concat(others).slice(0, 20);
   document.getElementById('newArrivalsGrid').innerHTML = featured.map(p => renderHomeCard(p, true)).join('');
-  setInterval(function(){
-  (function() {
-    function getVC(pid) {
+
+  // Apply session-stable viewer counts after cards are in the DOM
+  function getVC(pid) {
+    var key = 'ils_vc_' + pid;
+    var s = sessionStorage.getItem(key);
+    if (s) return parseInt(s);
+    var c = Math.floor(Math.random() * (450 - 20 + 1)) + 20;
+    sessionStorage.setItem(key, c);
+    return c;
+  }
+  function applyHomeVC() {
+    document.querySelectorAll('[data-product-id] .vb-num').forEach(function(span) {
+      var el = span.closest('[data-product-id]');
+      if (!el) return;
+      span.textContent = getVC(el.getAttribute('data-product-id'));
+    });
+  }
+  applyHomeVC();
+
+  // Subtle drift every 45s
+  setInterval(function() {
+    document.querySelectorAll('[data-product-id] .vb-num').forEach(function(span) {
+      var el = span.closest('[data-product-id]');
+      if (!el) return;
+      var pid = el.getAttribute('data-product-id');
       var key = 'ils_vc_' + pid;
-      var s = sessionStorage.getItem(key);
-      if (s) return parseInt(s);
-      var c = Math.floor(Math.random() * (450 - 20 + 1)) + 20;
-      sessionStorage.setItem(key, c);
-      return c;
-    }
-    function applyHomeVC() {
-      document.querySelectorAll('[data-product-id] .vb-num').forEach(function(span) {
-        var el = span.closest('[data-product-id]');
-        if (!el) return;
-        var pid = el.getAttribute('data-product-id');
-        span.textContent = getVC(pid);
-      });
-    }
-    applyHomeVC();
-    setInterval(function() {
-      document.querySelectorAll('[data-product-id] .vb-num').forEach(function(span) {
-        var el = span.closest('[data-product-id]');
-        if (!el) return;
-        var pid = el.getAttribute('data-product-id');
-        var key = 'ils_vc_' + pid;
-        var base = parseInt(sessionStorage.getItem(key)) || 100;
-        var next = Math.max(20, Math.min(450, base + Math.floor(Math.random()*11)-5));
-        sessionStorage.setItem(key, next);
-        span.textContent = next;
-      });
-    }, 45000);
-  })();
+      var base = parseInt(sessionStorage.getItem(key)) || 100;
+      var next = Math.max(20, Math.min(450, base + Math.floor(Math.random()*11) - 5));
+      sessionStorage.setItem(key, next);
+      span.textContent = next;
+    });
   }, 45000);
 });
 
