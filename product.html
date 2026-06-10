@@ -18,8 +18,7 @@
 .card-live-stats{display:flex;gap:10px;font-size:10px;color:#666;font-weight:600;margin-bottom:6px;}
 .low-stock-badge{background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.25);color:#ef4444;font-size:10px;font-weight:700;letter-spacing:0.06em;padding:4px 10px;border-radius:50px;margin-bottom:6px;display:inline-block;}
 .sold-count{font-size:12px;color:#c9a96e;font-weight:800;letter-spacing:0.04em;margin-bottom:4px;}
-.view-count-badge{position:absolute;bottom:10px;left:10px;z-index:10;display:inline-flex;align-items:center;gap:5px;padding:6px 11px;border-radius:999px;background:rgba(0,0,0,0.72);color:#fff;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;font-size:12px;font-weight:500;line-height:1;box-shadow:0 4px 14px rgba(0,0,0,0.35);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);pointer-events:none;white-space:nowrap;}.view-count-badge::before{content:"👁";font-size:12px;line-height:1;flex-shrink:0;}@media(max-width:640px){.view-count-badge{font-size:11px;padding:5px 9px;}}
-#pdViewBadge{position:absolute!important;top:12px!important;bottom:auto!important;left:12px!important;right:auto!important;width:auto!important;height:auto!important;min-width:unset!important;min-height:unset!important;max-width:max-content!important;display:inline-flex!important;align-items:center!important;gap:5px!important;padding:6px 10px!important;border-radius:999px!important;background:rgba(0,0,0,0.72)!important;color:#fff!important;font-size:11px!important;font-weight:500!important;line-height:1!important;white-space:nowrap!important;backdrop-filter:blur(6px)!important;-webkit-backdrop-filter:blur(6px)!important;box-shadow:0 4px 12px rgba(0,0,0,0.25)!important;pointer-events:none!important;z-index:5!important;}@media(max-width:640px){#pdViewBadge{font-size:10px!important;padding:5px 8px!important;top:10px!important;left:10px!important;}}</style>
+</style>
 <style>
 .breadcrumb{font-size:11px;color:#333;padding:16px 0;letter-spacing:0.04em;}
 .breadcrumb a{color:#333;transition:color .2s;}.breadcrumb a:hover{color:#fff;}
@@ -190,8 +189,8 @@
 </div>
 
 <div id="footerContainer"></div>
-<script src="cart.js?v=3"></script>
-<script src="products.js?v=12"></script>
+<script src="cart.js?v=2"></script>
+<script src="catalog.js?v=20"></script>
 <script>
 document.getElementById('globalStyles').textContent = getGlobalCSS();
 document.getElementById('navContainer').innerHTML = getNavHTML('shop');
@@ -238,40 +237,12 @@ else {
 
   // Gallery
   const mainMedia = document.getElementById('mainMedia');
-
-  // ── Viewer count (localStorage — same key as shop/home pages) ──────
-  var _vcKey = 'ils_vc_' + p.id;
-  var views;
-  try {
-    var _vcObj = JSON.parse(localStorage.getItem(_vcKey) || '{}');
-    if (_vcObj.v && Date.now() - _vcObj.ts < 7200000) {
-      views = _vcObj.v;
-    } else {
-      var _popularIds = [1,2,4,9,10];
-      var _isPopular = _popularIds.indexOf(parseInt(p.id)) !== -1;
-      views = _isPopular
-        ? Math.floor(Math.random()*(450-150+1))+150
-        : Math.floor(Math.random()*(150-20+1))+20;
-      localStorage.setItem(_vcKey, JSON.stringify({v:views, ts:Date.now()}));
-    }
-  } catch(e) {
-    views = Math.floor(Math.random()*130)+20;
-  }
-
-  // Helper: inject view-count badge into mainMedia after media is set
-  function injectViewBadge() {
-    if (document.getElementById('pdViewBadge')) return;
-    var vb = document.createElement('div');
-    vb.id = 'pdViewBadge';
-    vb.className = 'view-count-badge';
-    vb.setAttribute('data-product-id', p.id);
-    vb.style.cssText = 'position:absolute!important;top:12px!important;bottom:auto!important;left:12px!important;right:auto!important;width:auto!important;height:auto!important;min-width:unset!important;min-height:unset!important;max-width:max-content!important;display:inline-flex!important;align-items:center!important;gap:5px!important;padding:6px 10px!important;border-radius:999px!important;background:rgba(0,0,0,0.72)!important;color:#fff!important;font-size:11px!important;font-weight:500!important;line-height:1!important;white-space:nowrap!important;backdrop-filter:blur(6px)!important;-webkit-backdrop-filter:blur(6px)!important;box-shadow:0 4px 12px rgba(0,0,0,0.25)!important;pointer-events:none!important;z-index:5!important;';
-    vb.innerHTML = '<span id="pdVbNum">' + views + '</span> people viewing now';
-    mainMedia.appendChild(vb);
-  }
-
-  // pdStats removed — sold count shown via pdSold above
-
+  // Social proof stats
+  const views = Math.floor(p.sold * 3.2 + Math.floor(Math.random()*12) + 8);
+  const bought = Math.floor(p.sold * 0.6);
+  const statsEl = document.getElementById('pdStats');
+  if(statsEl) statsEl.innerHTML = `<span class="pd-stat viewing"><span class="dot"></span>${views} people viewing now</span><span class="pd-stat">✅ <span>${bought}+</span> sold</span>`;
+  
   // Low stock check
   const lowEl = document.getElementById('pdLowStock');
   if(lowEl && p.stock){
@@ -279,13 +250,10 @@ else {
     if(total <= 5 && total > 0) lowEl.innerHTML = `<div class="low-stock-alert">⚠️ Only ${total} pairs left — moving fast</div>`;
   }
 
-  // Set main media (video OR image) then inject badge on top
   if (p.video) {
     mainMedia.innerHTML = `<video src="${p.video}" autoplay muted loop playsinline></video>`;
-    injectViewBadge();
   } else {
     mainMedia.innerHTML = `<img src="${p.img}" alt="${p.name}" id="mainImg">`;
-    injectViewBadge();
   }
 
   const thumbs = p.imgs||[p.img];
