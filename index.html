@@ -240,11 +240,37 @@ onProductsReady(function() {
   const featured = bestSellers.concat(others).slice(0, 20);
   document.getElementById('newArrivalsGrid').innerHTML = featured.map(p => renderHomeCard(p, true)).join('');
   setInterval(function(){
-    document.querySelectorAll('.vb-num').forEach(function(span){
-      var base = parseInt(span.closest('[data-base]')?.getAttribute('data-base')) || 20;
-      var drift = Math.floor(Math.random()*11)-5;
-      span.textContent = Math.min(75, Math.max(8, base+drift));
-    });
+  (function() {
+    function getVC(pid) {
+      var key = 'ils_vc_' + pid;
+      var s = sessionStorage.getItem(key);
+      if (s) return parseInt(s);
+      var c = Math.floor(Math.random() * (450 - 20 + 1)) + 20;
+      sessionStorage.setItem(key, c);
+      return c;
+    }
+    function applyHomeVC() {
+      document.querySelectorAll('[data-product-id] .vb-num').forEach(function(span) {
+        var el = span.closest('[data-product-id]');
+        if (!el) return;
+        var pid = el.getAttribute('data-product-id');
+        span.textContent = getVC(pid);
+      });
+    }
+    applyHomeVC();
+    setInterval(function() {
+      document.querySelectorAll('[data-product-id] .vb-num').forEach(function(span) {
+        var el = span.closest('[data-product-id]');
+        if (!el) return;
+        var pid = el.getAttribute('data-product-id');
+        var key = 'ils_vc_' + pid;
+        var base = parseInt(sessionStorage.getItem(key)) || 100;
+        var next = Math.max(20, Math.min(450, base + Math.floor(Math.random()*11)-5));
+        sessionStorage.setItem(key, next);
+        span.textContent = next;
+      });
+    }, 45000);
+  })();
   }, 45000);
 });
 
@@ -265,7 +291,7 @@ function renderHomeCard(p, forceAvailable) {
       <div style="position:relative;aspect-ratio:1;overflow:hidden;">
         ${media}${badge}${soldOverlay}
 
-        ${!soldOut ? `<div id="vbh${p.id}" data-base="${Math.floor(Math.random()*(75-8+1))+8}" style="position:absolute;bottom:10px;left:10px;background:rgba(0,0,0,0.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.12);color:#fff;font-size:11px;font-weight:700;letter-spacing:0.04em;padding:5px 11px;border-radius:50px;pointer-events:none;white-space:nowrap;z-index:10;display:flex;align-items:center;gap:5px;">👁 <span class="vb-num">${Math.floor(Math.random()*(75-8+1))+8}</span> viewing now</div>` : ''}
+        ${!soldOut ? `<div id="vbh${p.id}" data-product-id="${p.id}" style="position:absolute;bottom:10px;left:10px;background:rgba(0,0,0,0.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.12);color:#fff;font-size:11px;font-weight:700;letter-spacing:0.04em;padding:5px 11px;border-radius:50px;pointer-events:none;white-space:nowrap;z-index:10;display:flex;align-items:center;gap:5px;">👁 <span class="vb-num">—</span> viewing now</div>` : ''}
       </div>
       <div style="padding:14px;">
         <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.name}</div>
