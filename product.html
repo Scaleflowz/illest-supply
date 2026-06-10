@@ -238,7 +238,16 @@ else {
   // Gallery
   const mainMedia = document.getElementById('mainMedia');
   // Social proof stats
-  const views = Math.floor(p.sold * 3.2 + Math.floor(Math.random()*12) + 8);
+  // Session-stable viewer count — same number as homepage card
+  var _vcKey = 'ils_vc_' + p.id;
+  var _vcStored = sessionStorage.getItem(_vcKey);
+  var views;
+  if (_vcStored) {
+    views = parseInt(_vcStored);
+  } else {
+    views = Math.floor(Math.random() * (450 - 20 + 1)) + 20;
+    sessionStorage.setItem(_vcKey, views);
+  }
   const bought = Math.floor(p.sold * 0.6);
   const statsEl = document.getElementById('pdStats');
   if(statsEl) statsEl.innerHTML = `<span class="pd-stat viewing"><span class="dot"></span>${views} people viewing now</span><span class="pd-stat">✅ <span>${bought}+</span> sold</span>`;
