@@ -300,8 +300,8 @@ function renderHomeCard(p, forceAvailable) {
 .popup-box{background:#0d0d0d;border:1px solid rgba(255,255,255,.1);border-radius:24px;max-width:440px;width:100%;overflow:hidden;position:relative;}
 .popup-close{position:absolute;top:14px;right:16px;background:rgba(255,255,255,.08);border:none;color:#fff;font-size:14px;cursor:pointer;z-index:10;line-height:1;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
 .popup-close:hover{background:rgba(255,255,255,.18);}
-.popup-logo-area{background:#000;display:flex;align-items:center;justify-content:center;padding:32px 20px 24px;border-bottom:1px solid rgba(255,255,255,.06);}
-.popup-logo-area img{height:72px;width:auto;display:block;}
+.popup-logo-area{display:none;}
+
 .popup-body{padding:28px 28px 32px;}
 .popup-eyebrow{font-size:11px;font-weight:700;letter-spacing:.18em;color:#f59e0b;margin-bottom:8px;text-transform:uppercase;}
 .popup-headline{font-family:'Bebas Neue',sans-serif;font-size:38px;line-height:1.05;margin-bottom:10px;color:#fff;}
@@ -324,9 +324,6 @@ function renderHomeCard(p, forceAvailable) {
 <div id="emailPopup" role="dialog" aria-modal="true">
   <div class="popup-box">
     <button class="popup-close" onclick="closePopup()" aria-label="Close">✕</button>
-    <div class="popup-logo-area">
-      <img src="https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/409f6a116_918D9A7E-D61E-4658-A7B6-5DF1F8B5AC78.png" alt="The Illest Supply Logo">
-    </div>
     <div class="popup-body" id="popupBody">
       <div class="popup-eyebrow">Exclusive Access</div>
       <div class="popup-headline">Get Early Drop<br>Notifications</div>
