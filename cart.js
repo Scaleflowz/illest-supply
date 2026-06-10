@@ -483,6 +483,10 @@ function getGlobalCSS() {
       .products-grid{grid-template-columns:repeat(2,1fr);gap:12px;}
       .trust-bar{gap:16px;padding:14px 16px;}
     }
+  
+    .view-count-badge{position:absolute;bottom:10px;left:10px;z-index:10;display:inline-flex;align-items:center;gap:5px;padding:6px 11px;border-radius:999px;background:rgba(0,0,0,0.72);color:#fff;font-size:12px;font-weight:500;line-height:1;box-shadow:0 4px 14px rgba(0,0,0,0.35);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);pointer-events:none;white-space:nowrap;}
+    .view-count-badge::before{content:"👁";font-size:12px;line-height:1;flex-shrink:0;}
+    @media(max-width:640px){.view-count-badge{font-size:11px;padding:5px 9px;}}
   `;
 }
 
