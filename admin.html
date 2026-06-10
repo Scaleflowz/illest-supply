@@ -4,6 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Admin — The Illest Supply</title>
+<!-- v2.2 -->
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -170,6 +171,18 @@ input:checked + .tslider:before{transform:translateX(16px);background:#22c55e;}
 
   /* Product modal labels */
   .pm-label { font-size: 10px; color: #666; letter-spacing: .08em; text-transform: uppercase; display: block; margin-bottom: 5px; }
+
+/* ── PRODUCT MANAGER ── */
+.pd-label{display:block;font-size:10px;color:#555;letter-spacing:.1em;text-transform:uppercase;font-weight:600;margin-bottom:5px;}
+.pd-input{width:100%;background:#0a0a0a;border:1px solid rgba(255,255,255,.08);border-radius:9px;color:#fff;font-size:13px;padding:9px 12px;font-family:'Inter',sans-serif;outline:none;}
+.pd-input:focus{border-color:rgba(255,255,255,.25);}
+.pd-err{font-size:10px;color:#ef4444;margin-top:3px;min-height:14px;}
+.pd-tab{transition:all .15s;}
+.pd-tab-content{transition:all .15s;}
+.pd-tag-btn{background:#0a0a0a;border:1px solid #222;color:#555;padding:6px 12px;border-radius:20px;font-size:10px;font-weight:600;cursor:pointer;letter-spacing:.04em;transition:all .15s;}
+.pd-tag-btn.active{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.3);color:#fff;}
+.pd-toggle-row{display:flex;align-items:center;gap:8px;background:#0a0a0a;border:1px solid #1a1a1a;border-radius:10px;padding:12px 14px;cursor:pointer;}
+
 </style>
 </head>
 <body><!-- build:20260609-1037 -->
@@ -289,43 +302,95 @@ input:checked + .tslider:before{transform:translateX(16px);background:#22c55e;}
       </div>
 
             <div class="page" id="page-products">
-  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px;">
+  <!-- HEADER -->
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:24px;">
     <div>
-      <div class="page-title" style="margin-bottom:4px;">Products</div>
-      <div class="page-sub">Add, remove, and edit products. Upload photos &amp; videos. Changes sync live instantly.</div>
+      <div class="page-title" style="margin-bottom:4px;">PRODUCTS</div>
+      <div class="page-sub" id="prodSyncStatus">Manage your catalog. Changes go live instantly.</div>
     </div>
-    <button class="btn btn-white" onclick="openAddProduct()">+ Add Product</button>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <button class="btn btn-outline btn-sm" onclick="refreshProducts()" id="syncBtn">⟳ Sync</button>
+      <button class="btn btn-white" onclick="openAddProduct()">+ Add Product</button>
+    </div>
   </div>
-  <div id="productsGrid" style="display:flex;flex-direction:column;gap:14px;"></div>
+
+  <!-- FILTERS + SEARCH -->
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;align-items:center;">
+    <input class="search" id="prodSearch" type="text" placeholder="Search products..." oninput="filterProducts()" style="width:200px;"/>
+    <select class="sel" id="prodFilterStatus" onchange="filterProducts()">
+      <option value="">All Status</option>
+      <option value="active">Active</option>
+      <option value="draft">Draft</option>
+      <option value="soldout">Sold Out</option>
+    </select>
+    <select class="sel" id="prodFilterCat" onchange="filterProducts()">
+      <option value="">All Categories</option>
+      <option value="sneakers">Sneakers</option>
+      <option value="slides">Slides</option>
+      <option value="bottoms">Bottoms</option>
+      <option value="accessories">Accessories</option>
+    </select>
+    <select class="sel" id="prodSort" onchange="filterProducts()">
+      <option value="newest">Newest First</option>
+      <option value="name">Name A–Z</option>
+      <option value="price_asc">Price Low–High</option>
+      <option value="price_desc">Price High–Low</option>
+    </select>
+    <span id="prodCount" style="font-size:11px;color:#444;margin-left:4px;"></span>
+  </div>
+
+  <!-- PRODUCT LIST -->
+  <div id="productsGrid"></div>
 </div>
 
-<!-- ADD / EDIT PRODUCT MODAL -->
-<div id="productModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:9000;align-items:center;justify-content:center;padding:16px;overflow-y:auto;">
-  <div style="background:#111;border:1px solid #222;border-radius:16px;width:100%;max-width:620px;padding:28px;position:relative;margin:auto;">
-    <button onclick="closeProductModal()" style="position:absolute;top:16px;right:16px;background:none;border:none;color:#666;font-size:20px;cursor:pointer;">✕</button>
-    <div id="productModalTitle" style="font-size:18px;font-weight:700;letter-spacing:.05em;margin-bottom:20px;">ADD PRODUCT</div>
-    <input type="hidden" id="pm-id" value="" />
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- PRODUCT FORM DRAWER -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<div id="productDrawer" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:9000;overflow-y:auto;padding:20px;">
+<div style="max-width:700px;margin:0 auto;background:#111;border:1px solid #1e1e1e;border-radius:20px;padding:0;overflow:hidden;">
 
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+  <!-- Drawer Header -->
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:20px 28px;border-bottom:1px solid #1a1a1a;position:sticky;top:0;background:#111;z-index:10;">
+    <div>
+      <div id="drawerTitle" style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:.06em;">ADD PRODUCT</div>
+      <div id="drawerSaveStatus" style="font-size:11px;color:#444;margin-top:2px;"></div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <button onclick="previewProduct()" style="background:#1a1a1a;border:1px solid #2a2a2a;color:#ccc;padding:7px 14px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;letter-spacing:.04em;">👁 Preview</button>
+      <button onclick="saveProductDraft()" style="background:#1a1a1a;border:1px solid #2a2a2a;color:#ccc;padding:7px 14px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;letter-spacing:.04em;" id="draftBtn">Save Draft</button>
+      <button onclick="publishProduct()" style="background:#fff;border:none;color:#000;padding:7px 16px;border-radius:8px;font-size:11px;font-weight:800;cursor:pointer;letter-spacing:.05em;" id="publishBtn">Publish →</button>
+      <button onclick="closeProductDrawer()" style="background:none;border:none;color:#555;font-size:22px;cursor:pointer;line-height:1;padding:0 4px;">✕</button>
+    </div>
+  </div>
+
+  <input type="hidden" id="pd-record-id" value=""/>
+  <input type="hidden" id="pd-product-id" value=""/>
+  <input type="hidden" id="pd-is-static" value=""/>
+
+  <!-- Step tabs -->
+  <div style="display:flex;border-bottom:1px solid #1a1a1a;background:#0d0d0d;">
+    <button class="pd-tab active" data-tab="1" onclick="pdGoTab(1)" style="flex:1;padding:12px;font-size:11px;font-weight:700;letter-spacing:.06em;background:none;border:none;color:#fff;cursor:pointer;border-bottom:2px solid #fff;">1 · INFO</button>
+    <button class="pd-tab" data-tab="2" onclick="pdGoTab(2)" style="flex:1;padding:12px;font-size:11px;font-weight:700;letter-spacing:.06em;background:none;border:none;color:#444;cursor:pointer;border-bottom:2px solid transparent;">2 · MEDIA</button>
+    <button class="pd-tab" data-tab="3" onclick="pdGoTab(3)" style="flex:1;padding:12px;font-size:11px;font-weight:700;letter-spacing:.06em;background:none;border:none;color:#444;cursor:pointer;border-bottom:2px solid transparent;">3 · INVENTORY</button>
+    <button class="pd-tab" data-tab="4" onclick="pdGoTab(4)" style="flex:1;padding:12px;font-size:11px;font-weight:700;letter-spacing:.06em;background:none;border:none;color:#444;cursor:pointer;border-bottom:2px solid transparent;">4 · OPTIONS</button>
+  </div>
+
+  <!-- ── TAB 1: INFO ── -->
+  <div id="pdTab1" class="pd-tab-content" style="padding:24px 28px;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
       <div style="grid-column:1/-1;">
-        <label class="pm-label">Product Name *</label>
-        <input class="qty-in" id="pm-name" style="width:100%;padding:9px 12px;" placeholder="e.g. Nike Air Max 97" />
-      </div>
-      <div style="grid-column:1/-1;">
-        <label class="pm-label">Brand *</label>
-        <input class="qty-in" id="pm-brand" style="width:100%;padding:9px 12px;" placeholder="e.g. Nike" />
+        <label class="pd-label">Product Name <span style="color:#ef4444;">*</span></label>
+        <input class="pd-input" id="pd-name" placeholder="e.g. Balenciaga Slides" oninput="pdAutoSave()"/>
+        <div class="pd-err" id="err-name"></div>
       </div>
       <div>
-        <label class="pm-label">Sale Price ($) *</label>
-        <input class="qty-in" id="pm-price" type="number" style="width:100%;padding:9px 12px;" placeholder="89" />
+        <label class="pd-label">Brand <span style="color:#ef4444;">*</span></label>
+        <input class="pd-input" id="pd-brand" placeholder="e.g. Balenciaga" oninput="pdAutoSave()"/>
+        <div class="pd-err" id="err-brand"></div>
       </div>
       <div>
-        <label class="pm-label">Original Price ($)</label>
-        <input class="qty-in" id="pm-orig" type="number" style="width:100%;padding:9px 12px;" placeholder="145" />
-      </div>
-      <div>
-        <label class="pm-label">Category</label>
-        <select class="qty-in" id="pm-cat" style="width:100%;padding:9px 12px;">
+        <label class="pd-label">Category <span style="color:#ef4444;">*</span></label>
+        <select class="pd-input" id="pd-category" onchange="pdAutoSave()">
           <option value="sneakers">Sneakers</option>
           <option value="slides">Slides</option>
           <option value="bottoms">Bottoms</option>
@@ -333,103 +398,165 @@ input:checked + .tslider:before{transform:translateX(16px);background:#22c55e;}
         </select>
       </div>
       <div>
-        <label class="pm-label">Condition</label>
-        <select class="qty-in" id="pm-condition" style="width:100%;padding:9px 12px;">
-          <option value="Brand New">Brand New</option>
-          <option value="Like New">Like New</option>
-          <option value="Excellent">Excellent</option>
-          <option value="Good">Good</option>
+        <label class="pd-label">Sale Price ($) <span style="color:#ef4444;">*</span></label>
+        <input class="pd-input" id="pd-price" type="number" min="0" step="0.01" placeholder="89" oninput="pdCalcSale();pdAutoSave()"/>
+        <div class="pd-err" id="err-price"></div>
+      </div>
+      <div>
+        <label class="pd-label">Original / Compare Price ($)</label>
+        <input class="pd-input" id="pd-orig" type="number" min="0" step="0.01" placeholder="145" oninput="pdCalcSale();pdAutoSave()"/>
+      </div>
+      <div>
+        <label class="pd-label">Sale % <span style="font-size:10px;color:#444;">(auto-calculated)</span></label>
+        <input class="pd-input" id="pd-sale-pct" readonly style="color:#22c55e;font-weight:700;" placeholder="—"/>
+      </div>
+      <div>
+        <label class="pd-label">Condition</label>
+        <select class="pd-input" id="pd-condition" onchange="pdAutoSave()">
+          <option>Brand New</option>
+          <option>Like New</option>
+          <option>Excellent</option>
         </select>
       </div>
       <div style="grid-column:1/-1;">
-        <label class="pm-label">Description</label>
-        <textarea class="qty-in" id="pm-desc" rows="3" style="width:100%;padding:9px 12px;resize:vertical;" placeholder="Describe the product..."></textarea>
+        <label class="pd-label">Description</label>
+        <textarea class="pd-input" id="pd-desc" rows="3" placeholder="Describe the product..." oninput="pdAutoSave()" style="resize:vertical;"></textarea>
       </div>
       <div style="grid-column:1/-1;">
-        <label class="pm-label">Badges (comma-separated: NEW, HOT, LOW, SOLD)</label>
-        <input class="qty-in" id="pm-badges" style="width:100%;padding:9px 12px;" placeholder="NEW,HOT" />
+        <label class="pd-label">Product Details <span style="font-size:10px;color:#444;">(shown in Details tab on product page)</span></label>
+        <textarea class="pd-input" id="pd-details" rows="2" placeholder="Material, fit, care instructions..." oninput="pdAutoSave()" style="resize:vertical;"></textarea>
+      </div>
+      <div style="grid-column:1/-1;">
+        <label class="pd-label">Shipping Note</label>
+        <input class="pd-input" id="pd-shipping-note" placeholder="e.g. Ships in 1–3 business days via USPS" oninput="pdAutoSave()"/>
       </div>
       <div>
-        <label class="pm-label">Available Sizes</label>
-        <input class="qty-in" id="pm-sizes" style="width:100%;padding:9px 12px;" placeholder="7,8,9,10,11 or S,M,L,XL" />
+        <label class="pd-label">SKU / Product ID</label>
+        <input class="pd-input" id="pd-sku" placeholder="e.g. ILS-001" oninput="pdAutoSave()"/>
       </div>
       <div>
-        <label class="pm-label">Sold Count</label>
-        <input class="qty-in" id="pm-sold" type="number" style="width:100%;padding:9px 12px;" placeholder="0" value="0" />
+        <label class="pd-label">Color</label>
+        <input class="pd-input" id="pd-color" placeholder="e.g. Black, White" oninput="pdAutoSave()"/>
       </div>
-      <div style="grid-column:1/-1;display:flex;gap:20px;flex-wrap:wrap;">
-        <label style="display:flex;align-items:center;gap:7px;font-size:12px;cursor:pointer;">
-          <input type="checkbox" id="pm-soldout" /> Sold Out
-        </label>
-        <label style="display:flex;align-items:center;gap:7px;font-size:12px;cursor:pointer;">
-          <input type="checkbox" id="pm-newarr" /> New Arrival
-        </label>
-        <label style="display:flex;align-items:center;gap:7px;font-size:12px;cursor:pointer;">
-          <input type="checkbox" id="pm-bestseller" /> Best Seller
-        </label>
-        <label style="display:flex;align-items:center;gap:7px;font-size:12px;cursor:pointer;">
-          <input type="checkbox" id="pm-hidden" /> Hidden (not on store)
-        </label>
+      <div>
+        <label class="pd-label">Sold Count <span style="font-size:10px;color:#444;">(shown as social proof)</span></label>
+        <input class="pd-input" id="pd-sold" type="number" min="0" placeholder="0" value="0" oninput="pdAutoSave()"/>
       </div>
-
-      <!-- MEDIA UPLOAD -->
-      <div style="grid-column:1/-1;">
-        <label class="pm-label">Main Image URL</label>
-        <div style="display:flex;gap:8px;align-items:center;">
-          <input class="qty-in" id="pm-img" style="flex:1;padding:9px 12px;" placeholder="https://..." />
-          <label style="background:#1a1a1a;border:1px solid #333;color:#ccc;padding:8px 14px;border-radius:8px;font-size:11px;cursor:pointer;white-space:nowrap;">
-            📷 Upload
-            <input type="file" accept="image/*" style="display:none;" onchange="uploadProductMedia(this,'pm-img','pm-img-preview')" />
-          </label>
-        </div>
-        <div id="pm-img-preview" style="margin-top:8px;"></div>
-      </div>
-
-      <div style="grid-column:1/-1;">
-        <label class="pm-label">Additional Images (one URL per line)</label>
-        <div style="display:flex;gap:8px;align-items:flex-start;">
-          <textarea class="qty-in" id="pm-imgs" rows="3" style="flex:1;padding:9px 12px;resize:vertical;" placeholder="https://image1.jpg&#10;https://image2.jpg"></textarea>
-          <label style="background:#1a1a1a;border:1px solid #333;color:#ccc;padding:8px 14px;border-radius:8px;font-size:11px;cursor:pointer;white-space:nowrap;margin-top:2px;">
-            📷 Upload
-            <input type="file" accept="image/*" multiple style="display:none;" onchange="uploadProductMediaMulti(this,'pm-imgs')" />
-          </label>
-        </div>
-      </div>
-
-      <div style="grid-column:1/-1;">
-        <label class="pm-label">Product Video URL</label>
-        <div style="display:flex;gap:8px;align-items:center;">
-          <input class="qty-in" id="pm-video" style="flex:1;padding:9px 12px;" placeholder="https://...mp4" />
-          <label style="background:#1a1a1a;border:1px solid #333;color:#ccc;padding:8px 14px;border-radius:8px;font-size:11px;cursor:pointer;white-space:nowrap;">
-            🎥 Upload
-            <input type="file" accept="video/mp4,video/mov,video/*" style="display:none;" onchange="uploadProductMedia(this,'pm-video','pm-video-preview')" />
-          </label>
-        </div>
-        <div id="pm-video-preview" style="margin-top:8px;"></div>
+      <div>
+        <label class="pd-label">Status <span style="color:#ef4444;">*</span></label>
+        <select class="pd-input" id="pd-status" onchange="pdAutoSave()">
+          <option value="active">✅ Active — Live on store</option>
+          <option value="draft">📝 Draft — Hidden from public</option>
+          <option value="soldout">❌ Sold Out</option>
+        </select>
       </div>
     </div>
+  </div>
 
-    <div style="display:flex;gap:10px;margin-top:24px;justify-content:flex-end;">
-      <button class="btn" onclick="closeProductModal()" style="background:transparent;border:1px solid #333;color:#888;">Cancel</button>
-      <button class="btn btn-white" onclick="saveProductModal()" id="pm-save-btn">Save Product</button>
+  <!-- ── TAB 2: MEDIA ── -->
+  <div id="pdTab2" class="pd-tab-content" style="display:none;padding:24px 28px;">
+    <div style="background:rgba(255,255,255,.03);border:2px dashed rgba(255,255,255,.1);border-radius:14px;padding:28px;text-align:center;cursor:pointer;margin-bottom:20px;" onclick="document.getElementById('pd-file-input').click()" id="pdDropZone" ondragover="event.preventDefault();this.style.borderColor='#fff'" ondragleave="this.style.borderColor='rgba(255,255,255,.1)'" ondrop="pdHandleDrop(event)">
+      <div style="font-size:32px;margin-bottom:10px;">📸</div>
+      <div style="font-size:14px;font-weight:700;color:#ccc;margin-bottom:6px;">Drop files here or click to upload</div>
+      <div style="font-size:11px;color:#444;">JPG, PNG, WebP · MP4 video · Max 10MB images / 50MB video</div>
+      <div style="font-size:10px;color:#ef4444;margin-top:4px;">⚠️ MOV files not supported — please convert to MP4</div>
+      <input type="file" id="pd-file-input" multiple accept="image/jpeg,image/png,image/webp,video/mp4" style="display:none;" onchange="pdHandleFiles(this.files)"/>
+    </div>
+    <div id="pdUploadProgress" style="display:none;margin-bottom:16px;">
+      <div style="font-size:11px;color:#f59e0b;margin-bottom:6px;" id="pdUploadMsg">Uploading…</div>
+      <div style="height:4px;background:#1a1a1a;border-radius:2px;overflow:hidden;"><div id="pdUploadBar" style="height:100%;background:#f59e0b;width:0%;transition:width .3s;border-radius:2px;"></div></div>
+    </div>
+    <div id="pdMediaGallery" style="display:flex;flex-wrap:wrap;gap:10px;min-height:60px;"></div>
+    <div style="font-size:10px;color:#444;margin-top:12px;">Click any thumbnail to set as main image. Drag to reorder. Click ✕ to remove.</div>
+  </div>
+
+  <!-- ── TAB 3: INVENTORY ── -->
+  <div id="pdTab3" class="pd-tab-content" style="display:none;padding:24px 28px;">
+    <div style="margin-bottom:16px;">
+      <label class="pd-label">Available Sizes <span style="color:#ef4444;">*</span></label>
+      <div style="font-size:11px;color:#444;margin-bottom:10px;">Type sizes separated by commas. e.g. <span style="color:#888;">7,8,9,10,11,12</span> or <span style="color:#888;">S,M,L,XL</span></div>
+      <input class="pd-input" id="pd-sizes" placeholder="7,8,9,10,11 or S,M,L,XL" oninput="pdRenderSizeQty();pdAutoSave()"/>
+      <div class="pd-err" id="err-sizes"></div>
+    </div>
+    <div id="pdSizeQtyGrid" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:14px;"></div>
+  </div>
+
+  <!-- ── TAB 4: OPTIONS ── -->
+  <div id="pdTab4" class="pd-tab-content" style="display:none;padding:24px 28px;">
+    <div style="display:grid;gap:14px;">
+      <div>
+        <label class="pd-label">Tags / Badges</label>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;" id="pdTagButtons">
+          <button class="pd-tag-btn" data-val="NEW" onclick="pdToggleTag(this)">New Arrival</button>
+          <button class="pd-tag-btn" data-val="HOT" onclick="pdToggleTag(this)">🔥 Hot</button>
+          <button class="pd-tag-btn" data-val="TRENDING" onclick="pdToggleTag(this)">📈 Trending</button>
+          <button class="pd-tag-btn" data-val="LOW" onclick="pdToggleTag(this)">⚡ Low Stock</button>
+          <button class="pd-tag-btn" data-val="BEST" onclick="pdToggleTag(this)">⭐ Best Seller</button>
+        </div>
+        <input type="hidden" id="pd-badges"/>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <label class="pd-toggle-row">
+          <span class="pd-label" style="margin:0;">⭐ Featured Product</span>
+          <label class="toggle" style="margin-left:auto;"><input type="checkbox" id="pd-featured" onchange="pdAutoSave()"><span class="tslider"></span></label>
+        </label>
+        <label class="pd-toggle-row">
+          <span class="pd-label" style="margin:0;">🏠 Show on Homepage</span>
+          <label class="toggle" style="margin-left:auto;"><input type="checkbox" id="pd-homepage" checked onchange="pdAutoSave()"><span class="tslider"></span></label>
+        </label>
+        <label class="pd-toggle-row">
+          <span class="pd-label" style="margin:0;">🔁 Show in Related</span>
+          <label class="toggle" style="margin-left:auto;"><input type="checkbox" id="pd-related" checked onchange="pdAutoSave()"><span class="tslider"></span></label>
+        </label>
+        <label class="pd-toggle-row">
+          <span class="pd-label" style="margin:0;">🏆 Best Seller</span>
+          <label class="toggle" style="margin-left:auto;"><input type="checkbox" id="pd-bestseller" onchange="pdAutoSave()"><span class="tslider"></span></label>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Drawer Footer -->
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 28px;border-top:1px solid #1a1a1a;background:#0d0d0d;">
+    <div style="display:flex;gap:8px;">
+      <button id="drawerDeleteBtn" onclick="confirmDeleteDrawer()" style="display:none;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);color:#ef4444;padding:8px 14px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;">🗑 Delete</button>
+      <button id="drawerDupBtn" onclick="duplicateCurrentProduct()" style="display:none;background:#1a1a1a;border:1px solid #2a2a2a;color:#ccc;padding:8px 14px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;">⧉ Duplicate</button>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button onclick="saveProductDraft()" style="background:#1a1a1a;border:1px solid #2a2a2a;color:#ccc;padding:9px 18px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:.05em;">Save Draft</button>
+      <button onclick="publishProduct()" style="background:#fff;border:none;color:#000;padding:9px 22px;border-radius:8px;font-size:12px;font-weight:800;cursor:pointer;letter-spacing:.05em;">Publish Product →</button>
+    </div>
+  </div>
+
+</div><!-- end drawer inner -->
+</div><!-- end productDrawer -->
+
+<!-- PREVIEW MODAL -->
+<div id="pdPreviewModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:9999;overflow-y:auto;padding:20px;">
+  <div style="max-width:480px;margin:0 auto;background:#111;border:1px solid #222;border-radius:20px;overflow:hidden;">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid #1a1a1a;">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:.06em;color:#888;">PREVIEW</div>
+      <button onclick="document.getElementById('pdPreviewModal').style.display='none'" style="background:none;border:none;color:#555;font-size:20px;cursor:pointer;">✕</button>
+    </div>
+    <div id="pdPreviewContent" style="padding:20px;"></div>
+  </div>
+</div>
+
+<!-- DELETE CONFIRM -->
+<div id="pdDeleteModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:99999;display:none;align-items:center;justify-content:center;">
+  <div style="background:#111;border:1px solid #222;border-radius:16px;padding:28px;max-width:360px;width:90%;text-align:center;">
+    <div style="font-size:32px;margin-bottom:12px;">⚠️</div>
+    <div style="font-weight:700;font-size:15px;margin-bottom:8px;">Delete this product?</div>
+    <div id="pdDeleteName" style="font-size:12px;color:#555;margin-bottom:20px;"></div>
+    <div style="display:flex;gap:8px;justify-content:center;">
+      <button onclick="closePdDeleteModal()" style="background:#1a1a1a;border:1px solid #2a2a2a;color:#ccc;padding:9px 20px;border-radius:8px;font-size:12px;cursor:pointer;">Cancel</button>
+      <button onclick="executePdDelete()" style="background:#ef4444;border:none;color:#fff;padding:9px 20px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;">Delete Forever</button>
     </div>
   </div>
 </div>
 
-<!-- CONFIRM DELETE MODAL -->
-<div id="deleteProductModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:9100;align-items:center;justify-content:center;padding:16px;">
-  <div style="background:#111;border:1px solid #333;border-radius:16px;padding:28px;max-width:400px;width:100%;text-align:center;">
-    <div style="font-size:32px;margin-bottom:12px;">🗑️</div>
-    <div style="font-weight:700;font-size:16px;margin-bottom:8px;">Remove Product?</div>
-    <div id="deleteProductName" style="color:#888;font-size:13px;margin-bottom:20px;"></div>
-    <div style="color:#ef4444;font-size:12px;margin-bottom:20px;">This will hide the product from the store. You can re-add it any time.</div>
-    <div style="display:flex;gap:10px;justify-content:center;">
-      <button class="btn" onclick="closeDeleteModal()" style="background:transparent;border:1px solid #333;color:#888;">Cancel</button>
-      <button class="btn" id="confirmDeleteBtn" style="background:#ef4444;border:none;color:#fff;">Remove Product</button>
-    </div>
-  </div>
-</div>
-      
+
+
 <div class="page" id="page-drops">
         <div class="page-title">DROP MANAGEMENT</div>
         <div class="page-sub">Schedule upcoming product drops</div>
@@ -881,11 +1008,14 @@ function toggleUser(id, active) {
 
 // UTILS
 function closeModal() { document.getElementById('modalBg').classList.remove('open'); }
-function toast(msg) {
+function toast(msg, type) {
   var t = document.getElementById('toast');
   t.textContent = msg;
+  if (type === 'error') { t.style.background='#2a0a0a'; t.style.borderColor='#ef4444'; }
+  else if (type === 'warn') { t.style.background='#1a1500'; t.style.borderColor='#f59e0b'; }
+  else { t.style.background=''; t.style.borderColor=''; }
   t.classList.add('show');
-  setTimeout(function(){t.classList.remove('show');}, 2500);
+  setTimeout(function(){t.classList.remove('show'); t.style.background=''; t.style.borderColor='';}, type?4000:2500);
 }
 
 // ── REVIEWS MODERATION ────────────────────────────────────
@@ -961,330 +1091,622 @@ function markVerified(el) {
 }
 
 
-  // ── PRODUCTS ──────────────────────────────────────────────────────────
-  var allProductOverrides = [];
+  // ── PRODUCTS ────────────────────────────────────────────────────────────────
+var allProductOverrides = [];
+var pdMediaItems = []; // [{url, type:'image'|'video', isMain:bool}]
+var pdAutoSaveTimer = null;
+var _pdDeleteRecordId = null;
 
-  function loadProducts() {
+// Static base products (always present)
+var STATIC_PRODUCTS = [
+  {id:1,  name:'Balenciaga Slides',        price:89,   origPrice:145, badges:'HOT',     sold:89,  img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/05a792aed_AdobeExpress-file.png', video:null, category:'slides',   brand:'Balenciaga', condition:'Brand New', desc:'Iconic Balenciaga pool slides.',  sizes:['6','7','8','9','10','11','12','13']},
+  {id:2,  name:'Prada Cup (Black)',         price:95,   origPrice:165, badges:'HOT',     sold:54,  img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/35ae1e2e5_AdobeExpress-file.png', video:null, category:'sneakers', brand:'Prada',      condition:'Brand New', desc:"Prada America's Cup sneakers.", sizes:['7','8','9','10','11','12']},
+  {id:3,  name:'Prada Cup (Blue)',          price:95,   origPrice:165, badges:'NEW',     sold:47,  img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/3dd13263d_AdobeExpress-file3.png', video:null, category:'sneakers', brand:'Prada',      condition:'Brand New', desc:'Prada Cup in blue colorway.',   sizes:['7','8','9','10','11','12']},
+  {id:4,  name:'Dior Slides',               price:120,  origPrice:195, badges:'NEW,HOT', sold:76,  img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/040af7300_AdobeExpress-file3.png', video:null, category:'slides',   brand:'Dior',       condition:'Brand New', desc:'Dior logo slides.',             sizes:['6','7','8','9','10','11','12']},
+  {id:5,  name:'Vale Forever College Jorts',price:64.99,origPrice:95,  badges:'',        sold:38,  img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/ab18f8c12_CBA80A5F-97CF-45C5-AA11-522922875DE3.png', video:null, category:'bottoms',  brand:'Vale Forever', condition:'Brand New', desc:'Vale Forever college jorts.', sizes:['S','M','L','XL']},
+  {id:6,  name:'Vale Forever Jorts',        price:64.99,origPrice:95,  badges:'',        sold:22,  img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/ab18f8c12_CBA80A5F-97CF-45C5-AA11-522922875DE3.png', video:null, category:'bottoms',  brand:'Vale Forever', condition:'Brand New', desc:'Vale Forever jorts.',          sizes:['S','M','L','XL']},
+  {id:9,  name:'Asics Gel Kayano 14',       price:110,  origPrice:175, badges:'NEW',     sold:31,  img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/607e2c691_CF43C058-BCF4-41FB-963A-95E3D9C3D886.png', video:null, category:'sneakers', brand:'Asics',      condition:'Brand New', desc:'Asics Gel Kayano 14.',          sizes:['7','8','9','10','11','12']},
+  {id:10, name:'Rick Owens',                price:145,  origPrice:220, badges:'HOT',     sold:19,  img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/6b287f63d_AA36F7DE-F3CD-47CF-BAFB-FEE327EF145A.png', video:null, category:'sneakers', brand:'Rick Owens',  condition:'Brand New', desc:'Rick Owens DRKSHDW sneakers.',  sizes:['7','8','9','10','11','12']},
+  {id:11, name:'Bottegas (Green)',           price:130,  origPrice:195, badges:'NEW',     sold:12,  img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/eac22a547_FF86E6B6-910B-416D-8894-171D71295C5C.png', video:null, category:'sneakers', brand:'Bottega',     condition:'Brand New', desc:'Bottega Veneta sneakers green.',sizes:['7','8','9','10','11','12']},
+  {id:12, name:'Bottegas (Blue)',            price:130,  origPrice:195, badges:'',        sold:8,   img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/effd672da_F748D361-0A5E-4D84-B7CE-21A80BF31A03.png', video:null, category:'sneakers', brand:'Bottega',     condition:'Brand New', desc:'Bottega Veneta sneakers blue.', sizes:['7','8','9','10','11','12']},
+  {id:13, name:'Bottegas (Pink)',            price:130,  origPrice:195, badges:'NEW',     sold:15,  img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/e6282f07d_918D9A7E-D61E-4658-A7B6-5DF1F8B5AC78.png', video:null, category:'sneakers', brand:'Bottega',     condition:'Brand New', desc:'Bottega Veneta sneakers pink.', sizes:['7','8','9','10','11','12']}
+];
+
+function refreshProducts() {
+  var btn = document.getElementById('syncBtn');
+  if (btn) { btn.textContent = '⟳ Syncing…'; btn.disabled = true; }
+  loadProducts(function() {
+    if (btn) { btn.textContent = '⟳ Sync'; btn.disabled = false; }
+    document.getElementById('prodSyncStatus').textContent = 'Synced at ' + new Date().toLocaleTimeString();
+  });
+}
+
+function loadProducts(cb) {
   var grid = document.getElementById('productsGrid');
   if (!grid) return;
-  grid.innerHTML = '<div style="color:#555;padding:20px;font-size:12px;">Loading products…</div>';
-
+  if (!allProductOverrides.length) grid.innerHTML = '<div style="color:#444;padding:20px;font-size:12px;">Loading…</div>';
   Promise.all([
     fetch(API + '?action=getProductOverrides').then(function(r){ return r.json(); }).catch(function(){ return []; }),
     fetch(API + '?action=getInventory').then(function(r){ return r.json(); }).catch(function(){ return []; })
   ]).then(function(results) {
     allProductOverrides = results[0] || [];
     var inventory = results[1] || [];
-
-    // Build stock summary per product_id
     var stockMap = {};
     inventory.forEach(function(item) {
-      var pid = item.product_id;
-      if (!stockMap[pid]) stockMap[pid] = { total: 0, sizes: [] };
-      if (item.in_stock) stockMap[pid].total += (item.quantity || 1);
-      stockMap[pid].sizes.push(item.size + (item.in_stock ? '' : '✕'));
+      if (!stockMap[item.product_id]) stockMap[item.product_id] = 0;
+      if (item.in_stock) stockMap[item.product_id] += (item.quantity || 1);
     });
-
-    var staticProducts = [
-      {id:1,  name:'Balenciaga Slides',        price:89,   origPrice:145, badges:'HOT',     sold:89,  img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/05a792aed_AdobeExpress-file.png', video:null, category:'slides',   brand:'Balenciaga', condition:'Brand New', desc:'Iconic Balenciaga pool slides.',  sizes:['6','7','8','9','10','11','12','13']},
-      {id:2,  name:'Prada Cup (Black)',         price:95,   origPrice:165, badges:'HOT',     sold:54,  img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/35ae1e2e5_AdobeExpress-file.png', video:null, category:'sneakers', brand:'Prada',      condition:'Brand New', desc:'Prada America\'s Cup sneakers.',  sizes:['7','8','9','10','11','12']},
-      {id:3,  name:'Prada Cup (Blue)',          price:95,   origPrice:165, badges:'NEW',     sold:47,  img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/3dd13263d_AdobeExpress-file3.png', video:null, category:'sneakers', brand:'Prada',      condition:'Brand New', desc:'Prada Cup in blue colorway.',    sizes:['7','8','9','10','11','12']},
-      {id:4,  name:'Dior Slides',               price:120,  origPrice:195, badges:'NEW,HOT', sold:76,  img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/040af7300_AdobeExpress-file3.png', video:null, category:'slides',   brand:'Dior',       condition:'Brand New', desc:'Dior logo slides.',              sizes:['6','7','8','9','10','11','12']},
-      {id:5,  name:'Vale Forever College Jorts',price:64.99,origPrice:95,  badges:'SOLD',    sold:38,  img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/ab18f8c12_CBA80A5F-97CF-45C5-AA11-522922875DE3.png', video:null, category:'bottoms',  brand:'Vale Forever', condition:'Brand New', desc:'Vale Forever college jorts.', sizes:['S','M','L','XL']},
-      {id:6,  name:'Vale Forever Jorts',        price:64.99,origPrice:95,  badges:'',        sold:22,  img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/ab18f8c12_CBA80A5F-97CF-45C5-AA11-522922875DE3.png', video:null, category:'bottoms',  brand:'Vale Forever', condition:'Brand New', desc:'Vale Forever jorts.',         sizes:['S','M','L','XL']},
-      {id:9,  name:'Asics Gel Kayano 14',       price:110,  origPrice:175, badges:'NEW',     sold:31,  img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/607e2c691_CF43C058-BCF4-41FB-963A-95E3D9C3D886.png', video:null, category:'sneakers', brand:'Asics',      condition:'Brand New', desc:'Asics Gel Kayano 14.',           sizes:['7','8','9','10','11','12']},
-      {id:10, name:'Rick Owens',                price:145,  origPrice:220, badges:'HOT',     sold:19,  img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/6b287f63d_AA36F7DE-F3CD-47CF-BAFB-FEE327EF145A.png', video:null, category:'sneakers', brand:'Rick Owens',  condition:'Brand New', desc:'Rick Owens DRKSHDW sneakers.',   sizes:['7','8','9','10','11','12']},
-      {id:11, name:'Bottegas (Green)',           price:130,  origPrice:195, badges:'NEW',     sold:12,  img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/eac22a547_FF86E6B6-910B-416D-8894-171D71295C5C.png', video:null, category:'sneakers', brand:'Bottega',     condition:'Brand New', desc:'Bottega Veneta sneakers green.', sizes:['7','8','9','10','11','12']},
-      {id:12, name:'Bottegas (Blue)',            price:130,  origPrice:195, badges:'',        sold:8,   img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/effd672da_F748D361-0A5E-4D84-B7CE-21A80BF31A03.png', video:null, category:'sneakers', brand:'Bottega',     condition:'Brand New', desc:'Bottega Veneta sneakers blue.',  sizes:['7','8','9','10','11','12']},
-      {id:13, name:'Bottegas (Pink)',            price:130,  origPrice:195, badges:'NEW',     sold:15,  img:'https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/e6282f07d_918D9A7E-D61E-4658-A7B6-5DF1F8B5AC78.png', video:null, category:'sneakers', brand:'Bottega',     condition:'Brand New', desc:'Bottega Veneta sneakers pink.',  sizes:['7','8','9','10','11','12']}
-    ];
-
-    // Merge any custom products from overrides (id >= 100 = custom)
+    // Merge custom products from overrides (id >= 100)
+    var allProds = STATIC_PRODUCTS.slice();
     allProductOverrides.forEach(function(ov) {
       if (ov.product_id >= 100) {
-        var exists = staticProducts.find(function(p){ return p.id === ov.product_id; });
-        if (!exists) {
-          staticProducts.push({
-            id: ov.product_id, name: ov.product_name || 'Custom Product',
-            price: ov.price || 0, origPrice: ov.orig_price || 0,
-            badges: ov.badges || '', sold: ov.sold_count || 0,
-            img: ov.img || '', video: ov.video || null,
-            category: ov.category || 'sneakers', brand: ov.brand || '',
-            condition: ov.condition || 'Brand New',
-            desc: ov.desc || '', sizes: ov.sizes ? ov.sizes.split(',') : [],
-            isCustom: true
-          });
+        if (!allProds.find(function(p){ return p.id === ov.product_id; })) {
+          allProds.push({ id: ov.product_id, name: ov.product_name||'Product', price: ov.price||0, origPrice: ov.orig_price||0, badges: ov.badges||'', sold: ov.sold_count||0, img: ov.img||'', video: ov.video||null, category: ov.category||'sneakers', brand: ov.brand||'', condition: ov.condition||'Brand New', desc: ov.desc||'', sizes: ov.sizes ? ov.sizes.split(',') : [], isCustom: true });
         }
       }
     });
+    window._adminAllProds = allProds;
+    window._adminStockMap = stockMap;
+    filterProducts();
+    if (cb) cb();
+  }).catch(function(){ if (cb) cb(); });
+}
 
-    grid.innerHTML = staticProducts.map(function(p) {
-      var ov = allProductOverrides.find(function(o){ return o.product_id === p.id; }) || {};
-      var price    = ov.price       != null ? ov.price       : p.price;
-      var origPrice= ov.orig_price  != null ? ov.orig_price  : p.origPrice;
-      var sold     = ov.sold_count  != null ? ov.sold_count  : p.sold;
-      var badges   = ov.badges      != null ? ov.badges      : p.badges;
-      var soldOut  = ov.is_sold_out != null ? ov.is_sold_out : false;
-      var isNew    = ov.is_new_arrival  != null ? ov.is_new_arrival  : p.isNewArrival || false;
-      var isBest   = ov.is_best_seller  != null ? ov.is_best_seller  : p.isBestSeller || false;
-      var isHidden = ov.is_hidden   != null ? ov.is_hidden   : false;
-      var imgSrc   = ov.img    || p.img   || '';
-      var vidSrc   = ov.video  || p.video || '';
-      var stock    = stockMap[p.id] || { total: 0, sizes: [] };
-
-      var mediaThumb = '';
-      if (vidSrc) {
-        mediaThumb = '<video src="'+vidSrc+'" style="width:64px;height:64px;object-fit:cover;border-radius:8px;" muted playsinline></video>';
-      } else if (imgSrc) {
-        mediaThumb = '<img src="'+imgSrc+'" style="width:64px;height:64px;object-fit:cover;border-radius:8px;" />';
-      } else {
-        mediaThumb = '<div style="width:64px;height:64px;background:#1a1a1a;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;">📦</div>';
-      }
-
-      return '<div class="inv-block" id="prod-row-'+p.id+'" style="'+(isHidden?'opacity:.45;':'')+'">'
-        + '<div style="display:flex;gap:14px;align-items:flex-start;">'
-        + '<div style="flex-shrink:0;">'+mediaThumb+'</div>'
-        + '<div style="flex:1;min-width:0;">'
-        + '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">'
-        + '<div>'
-        + '<div class="inv-name" style="font-size:13px;">'+p.name+'</div>'
-        + '<div style="font-size:10px;color:#555;margin-top:3px;">'+(p.brand||'')+(p.category?' · '+p.category:'')+' &nbsp;·&nbsp; '+stock.total+' units in stock</div>'
-        + '</div>'
-        + '<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">'
-        + '<span class="badge '+(soldOut?'badge-cancelled':'badge-paid')+'" style="font-size:9px;">'+(soldOut?'SOLD OUT':'IN STOCK')+'</span>'
-        + (isHidden ? '<span class="badge" style="font-size:9px;background:rgba(100,100,100,.2);color:#777;border:1px solid #333;">HIDDEN</span>' : '')
-        + '<button onclick="openEditProduct('+p.id+')" style="background:#1a1a1a;border:1px solid #333;color:#ccc;padding:5px 12px;border-radius:7px;font-size:10px;cursor:pointer;letter-spacing:.05em;">✏️ Edit</button>'
-        + '<button onclick="confirmDeleteProduct('+p.id+',\''+p.name.replace(/'/g,"\\'")+'\')" style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);color:#ef4444;padding:5px 12px;border-radius:7px;font-size:10px;cursor:pointer;">🗑️ Remove</button>'
-        + '</div>'
-        + '</div>'
-        + '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-top:10px;">'
-        + '<div><label style="font-size:9px;color:#555;text-transform:uppercase;display:block;margin-bottom:3px;">Sale Price ($)</label>'
-        + '<input class="qty-in" style="width:100%;padding:6px 10px;" id="pp-price-'+p.id+'" value="'+price+'" /></div>'
-        + '<div><label style="font-size:9px;color:#555;text-transform:uppercase;display:block;margin-bottom:3px;">Orig Price ($)</label>'
-        + '<input class="qty-in" style="width:100%;padding:6px 10px;" id="pp-orig-'+p.id+'" value="'+origPrice+'" /></div>'
-        + '<div><label style="font-size:9px;color:#555;text-transform:uppercase;display:block;margin-bottom:3px;">Sold Count</label>'
-        + '<input class="qty-in" style="width:100%;padding:6px 10px;" id="pp-sold-'+p.id+'" value="'+sold+'" /></div>'
-        + '<div><label style="font-size:9px;color:#555;text-transform:uppercase;display:block;margin-bottom:3px;">Badges</label>'
-        + '<input class="qty-in" style="width:100%;padding:6px 10px;" id="pp-badges-'+p.id+'" placeholder="NEW,HOT" value="'+badges+'" /></div>'
-        + '</div>'
-        + '<div style="display:flex;align-items:center;gap:14px;margin-top:10px;flex-wrap:wrap;">'
-        + '<label style="display:flex;align-items:center;gap:5px;font-size:10px;cursor:pointer;"><input type="checkbox" id="pp-soldout-'+p.id+'" '+(soldOut?'checked':'')+' /> Sold Out</label>'
-        + '<label style="display:flex;align-items:center;gap:5px;font-size:10px;cursor:pointer;"><input type="checkbox" id="pp-new-'+p.id+'" '+(isNew?'checked':'')+' /> New Arrival</label>'
-        + '<label style="display:flex;align-items:center;gap:5px;font-size:10px;cursor:pointer;"><input type="checkbox" id="pp-best-'+p.id+'" '+(isBest?'checked':'')+' /> Best Seller</label>'
-        + '<label style="display:flex;align-items:center;gap:5px;font-size:10px;cursor:pointer;"><input type="checkbox" id="pp-hidden-'+p.id+'" '+(isHidden?'checked':'')+' /> Hidden</label>'
-        + '<button class="btn btn-white btn-sm" data-pid="'+p.id+'" data-pname="'+p.name.replace(/'/g,"\\'")+'" style="margin-left:auto;font-size:10px;padding:6px 14px;" onclick="saveProduct(this)">Save</button>'
-        + '</div>'
-        + '</div>'
-        + '</div>'
-        + '</div>';
-    }).join('');
-
-  }).catch(function() {
-    grid.innerHTML = '<div style="color:#ef4444;padding:20px;font-size:12px;">Failed to load products. Check API.</div>';
+function filterProducts() {
+  var allProds = window._adminAllProds || [];
+  var stockMap = window._adminStockMap || {};
+  var q = (document.getElementById('prodSearch')||{}).value||'';
+  var status = (document.getElementById('prodFilterStatus')||{}).value||'';
+  var cat = (document.getElementById('prodFilterCat')||{}).value||'';
+  var sort = (document.getElementById('prodSort')||{}).value||'newest';
+  var filtered = allProds.filter(function(p) {
+    var ov = allProductOverrides.find(function(o){ return o.product_id === p.id; }) || {};
+    var name = ov.product_name || p.name || '';
+    var pcat = ov.category || p.category || '';
+    var isHidden = ov.is_hidden || false;
+    var isSoldOut = ov.is_sold_out || false;
+    var prodStatus = isHidden ? 'draft' : (isSoldOut ? 'soldout' : 'active');
+    if (q && name.toLowerCase().indexOf(q.toLowerCase()) === -1) return false;
+    if (status && prodStatus !== status) return false;
+    if (cat && pcat !== cat) return false;
+    return true;
   });
+  // Sort
+  if (sort === 'name') filtered.sort(function(a,b){ return (a.name||'').localeCompare(b.name||''); });
+  else if (sort === 'price_asc') filtered.sort(function(a,b){ var oa=allProductOverrides.find(function(o){return o.product_id===a.id;})||{}; var ob=allProductOverrides.find(function(o){return o.product_id===b.id;})||{}; return (oa.price||a.price) - (ob.price||b.price); });
+  else if (sort === 'price_desc') filtered.sort(function(a,b){ var oa=allProductOverrides.find(function(o){return o.product_id===a.id;})||{}; var ob=allProductOverrides.find(function(o){return o.product_id===b.id;})||{}; return (ob.price||b.price) - (oa.price||a.price); });
+  else filtered.sort(function(a,b){ return b.id - a.id; }); // newest = highest ID
+  var countEl = document.getElementById('prodCount');
+  if (countEl) countEl.textContent = filtered.length + ' product' + (filtered.length===1?'':'s');
+  renderProductList(filtered, stockMap);
 }
 
-function saveProduct(el) {
-  var id = parseInt(el.dataset.pid);
-  var name = el.dataset.pname;
-  var price     = parseFloat(document.getElementById('pp-price-'+id).value) || 0;
-  var origPrice = parseFloat(document.getElementById('pp-orig-'+id).value) || 0;
-  var sold      = parseInt(document.getElementById('pp-sold-'+id).value) || 0;
-  var badges    = document.getElementById('pp-badges-'+id).value.trim();
-  var soldOut   = document.getElementById('pp-soldout-'+id).checked;
-  var isNew     = document.getElementById('pp-new-'+id).checked;
-  var isBest    = document.getElementById('pp-best-'+id).checked;
-  var isHidden  = document.getElementById('pp-hidden-'+id).checked;
-  fetch(API+'?action=upsertProductOverride', {
-    method:'POST', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({ product_id:id, product_name:name, price:price, orig_price:origPrice,
-      sold_count:sold, badges:badges, is_sold_out:soldOut, is_new_arrival:isNew, is_best_seller:isBest, is_hidden:isHidden })
-  }).then(function(r){ return r.json(); }).then(function(d) {
-    if (d.success) { toast('✓ '+name+' saved'); loadProducts(); }
-    else toast('Error: '+(d.error||'unknown'));
-  }).catch(function(){ toast('Error saving product'); });
+function renderProductList(prods, stockMap) {
+  var grid = document.getElementById('productsGrid');
+  if (!grid) return;
+  if (!prods.length) { grid.innerHTML = '<div style="color:#444;padding:40px;text-align:center;font-size:13px;">No products found</div>'; return; }
+  grid.innerHTML = prods.map(function(p) {
+    var ov = allProductOverrides.find(function(o){ return o.product_id === p.id; }) || {};
+    var name    = ov.product_name || p.name;
+    var price   = ov.price != null ? ov.price : p.price;
+    var origPrice = ov.orig_price != null ? ov.orig_price : p.origPrice;
+    var isHidden = ov.is_hidden || false;
+    var isSoldOut = ov.is_sold_out || false;
+    var cat = ov.category || p.category || '';
+    var brand = ov.brand || p.brand || '';
+    var imgSrc = ov.img || p.img || '';
+    var vidSrc = ov.video || p.video || '';
+    var stock = stockMap[p.id] || 0;
+    var isCustom = p.isCustom || false;
+    var sale = (origPrice > price && origPrice > 0) ? Math.round((1 - price/origPrice)*100) : 0;
+    var statusLabel, statusClass;
+    if (isHidden) { statusLabel = 'DRAFT'; statusClass = 'badge'; }
+    else if (isSoldOut) { statusLabel = 'SOLD OUT'; statusClass = 'badge badge-cancelled'; }
+    else { statusLabel = 'ACTIVE'; statusClass = 'badge badge-paid'; }
+    var thumb = vidSrc
+      ? '<video src="'+vidSrc+'" style="width:68px;height:68px;object-fit:cover;border-radius:10px;" muted playsinline loading="lazy"></video>'
+      : (imgSrc ? '<img src="'+imgSrc+'" style="width:68px;height:68px;object-fit:cover;border-radius:10px;" loading="lazy"/>' : '<div style="width:68px;height:68px;background:#1a1a1a;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:24px;">📦</div>');
+    return '<div class="inv-block" style="'+(isHidden?'opacity:.5;':'')+'">'
+      +'<div style="display:flex;gap:14px;align-items:center;">'
+      +'<div style="flex-shrink:0;position:relative;">'
+      +thumb
+      +(vidSrc?'<div style="position:absolute;bottom:4px;right:4px;background:rgba(0,0,0,.7);border-radius:4px;padding:1px 4px;font-size:9px;">▶</div>':'')
+      +'</div>'
+      +'<div style="flex:1;min-width:0;">'
+      +'<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;flex-wrap:wrap;">'
+      +'<div>'
+      +'<div style="font-size:13px;font-weight:700;margin-bottom:3px;">'+name+'</div>'
+      +'<div style="font-size:10px;color:#444;">'+(brand?brand+' · ':'')+cat+(cat?' · ':'')+stock+' units in stock</div>'
+      +'</div>'
+      +'<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">'
+      +'<span class="'+statusClass+'" style="font-size:9px;">'+statusLabel+'</span>'
+      +(sale>0?'<span class="badge badge-contacted" style="font-size:9px;">-'+sale+'%</span>':'')
+      +'<button onclick="openEditProduct('+p.id+')" style="background:#1a1a1a;border:1px solid #2a2a2a;color:#ccc;padding:5px 12px;border-radius:7px;font-size:10px;cursor:pointer;">✏️ Edit</button>'
+      +(isCustom?'<button onclick="promptDeleteProduct(\''+ov.id+'\',\''+name.replace(/'/g,"\\'")+'\')" style="background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.15);color:#ef4444;padding:5px 12px;border-radius:7px;font-size:10px;cursor:pointer;">🗑 Delete</button>':'')
+      +'<button onclick="dupProductById('+p.id+')" style="background:#1a1a1a;border:1px solid #2a2a2a;color:#777;padding:5px 10px;border-radius:7px;font-size:10px;cursor:pointer;" title="Duplicate">⧉</button>'
+      +'</div>'
+      +'</div>'
+      +'<div style="display:flex;gap:16px;margin-top:8px;flex-wrap:wrap;">'
+      +'<div style="font-size:13px;font-weight:800;color:#fff;">$'+price+'<span style="font-size:10px;color:#444;font-weight:400;margin-left:6px;text-decoration:line-through;">'+(origPrice?'$'+origPrice:'')+'</span></div>'
+      +'</div>'
+      +'</div>'
+      +'</div>'
+      +'</div>';
+  }).join('');
 }
 
-/* ── ADD / EDIT PRODUCT MODAL ── */
-var _editingProductId = null;
-var _deleteProductId  = null;
-
+// ── DRAWER OPEN/CLOSE ─────────────────────────────────────────────────────
 function openAddProduct() {
-  _editingProductId = null;
-  document.getElementById('productModalTitle').textContent = 'ADD PRODUCT';
-  document.getElementById('pm-id').value       = '';
-  document.getElementById('pm-name').value     = '';
-  document.getElementById('pm-brand').value    = '';
-  document.getElementById('pm-price').value    = '';
-  document.getElementById('pm-orig').value     = '';
-  document.getElementById('pm-cat').value      = 'sneakers';
-  document.getElementById('pm-condition').value= 'Brand New';
-  document.getElementById('pm-desc').value     = '';
-  document.getElementById('pm-badges').value   = '';
-  document.getElementById('pm-sizes').value    = '';
-  document.getElementById('pm-sold').value     = '0';
-  document.getElementById('pm-img').value      = '';
-  document.getElementById('pm-imgs').value     = '';
-  document.getElementById('pm-video').value    = '';
-  document.getElementById('pm-soldout').checked    = false;
-  document.getElementById('pm-newarr').checked     = false;
-  document.getElementById('pm-bestseller').checked = false;
-  document.getElementById('pm-hidden').checked     = false;
-  document.getElementById('pm-img-preview').innerHTML   = '';
-  document.getElementById('pm-video-preview').innerHTML = '';
-  document.getElementById('pm-save-btn').textContent = 'Add Product';
-  document.getElementById('productModal').style.display = 'flex';
+  pdMediaItems = [];
+  document.getElementById('pd-record-id').value = '';
+  document.getElementById('pd-product-id').value = '';
+  document.getElementById('pd-is-static').value = '0';
+  document.getElementById('drawerTitle').textContent = 'ADD PRODUCT';
+  document.getElementById('drawerSaveStatus').textContent = '';
+  document.getElementById('drawerDeleteBtn').style.display = 'none';
+  document.getElementById('drawerDupBtn').style.display = 'none';
+  document.getElementById('publishBtn').textContent = 'Publish →';
+  // Clear all fields
+  ['pd-name','pd-brand','pd-price','pd-orig','pd-sale-pct','pd-desc','pd-details','pd-shipping-note','pd-sku','pd-color','pd-sold'].forEach(function(id){ document.getElementById(id).value = id==='pd-sold'?'0':''; });
+  document.getElementById('pd-category').value = 'sneakers';
+  document.getElementById('pd-condition').value = 'Brand New';
+  document.getElementById('pd-status').value = 'active';
+  document.getElementById('pd-sizes').value = '';
+  document.getElementById('pd-badges').value = '';
+  document.getElementById('pd-featured').checked = false;
+  document.getElementById('pd-homepage').checked = true;
+  document.getElementById('pd-related').checked = true;
+  document.getElementById('pd-bestseller').checked = false;
+  // Reset tag buttons
+  document.querySelectorAll('.pd-tag-btn').forEach(function(b){ b.classList.remove('active'); });
+  pdMediaItems = [];
+  pdRenderMediaGallery();
+  pdRenderSizeQty();
+  // Clear errors
+  ['err-name','err-brand','err-price','err-sizes'].forEach(function(id){ document.getElementById(id).textContent=''; });
+  pdGoTab(1);
+  document.getElementById('productDrawer').style.display = 'block';
 }
 
-function openEditProduct(id) {
-  _editingProductId = id;
-  // Find from current DOM / overrides
-  var ov = (allProductOverrides||[]).find(function(o){ return o.product_id === id; }) || {};
-  document.getElementById('productModalTitle').textContent = 'EDIT PRODUCT';
-  document.getElementById('pm-id').value       = id;
-  document.getElementById('pm-name').value     = ov.product_name || '';
-  document.getElementById('pm-brand').value    = ov.brand        || '';
-  document.getElementById('pm-price').value    = ov.price        || '';
-  document.getElementById('pm-orig').value     = ov.orig_price   || '';
-  document.getElementById('pm-cat').value      = ov.category     || 'sneakers';
-  document.getElementById('pm-condition').value= ov.condition    || 'Brand New';
-  document.getElementById('pm-desc').value     = ov.desc         || '';
-  document.getElementById('pm-badges').value   = ov.badges       || '';
-  document.getElementById('pm-sizes').value    = ov.sizes        || '';
-  document.getElementById('pm-sold').value     = ov.sold_count   || 0;
-  document.getElementById('pm-img').value      = ov.img          || '';
-  document.getElementById('pm-imgs').value     = ov.imgs         || '';
-  document.getElementById('pm-video').value    = ov.video        || '';
-  document.getElementById('pm-soldout').checked    = !!ov.is_sold_out;
-  document.getElementById('pm-newarr').checked     = !!ov.is_new_arrival;
-  document.getElementById('pm-bestseller').checked = !!ov.is_best_seller;
-  document.getElementById('pm-hidden').checked     = !!ov.is_hidden;
-  // Show preview
-  var imgPrev = document.getElementById('pm-img-preview');
-  imgPrev.innerHTML = ov.img ? '<img src="'+ov.img+'" style="width:80px;height:80px;object-fit:cover;border-radius:8px;" />' : '';
-  var vidPrev = document.getElementById('pm-video-preview');
-  vidPrev.innerHTML = ov.video ? '<video src="'+ov.video+'" style="width:120px;height:80px;object-fit:cover;border-radius:8px;" muted playsinline controls></video>' : '';
-  document.getElementById('pm-save-btn').textContent = 'Save Changes';
-  document.getElementById('productModal').style.display = 'flex';
+function openEditProduct(productId) {
+  var p = (window._adminAllProds||[]).find(function(x){ return x.id === productId; });
+  var ov = allProductOverrides.find(function(o){ return o.product_id === productId; }) || {};
+  if (!p) return;
+  var isCustom = p.isCustom || productId >= 100;
+  var isStatic = !isCustom;
+  pdMediaItems = [];
+  document.getElementById('pd-record-id').value = ov.id || '';
+  document.getElementById('pd-product-id').value = productId;
+  document.getElementById('pd-is-static').value = isStatic ? '1' : '0';
+  document.getElementById('drawerTitle').textContent = 'EDIT PRODUCT';
+  document.getElementById('drawerDeleteBtn').style.display = isCustom ? 'inline-block' : 'none';
+  document.getElementById('drawerDupBtn').style.display = 'inline-block';
+  document.getElementById('publishBtn').textContent = 'Update Product →';
+  // Fill fields
+  document.getElementById('pd-name').value = ov.product_name || p.name || '';
+  document.getElementById('pd-brand').value = ov.brand || p.brand || '';
+  document.getElementById('pd-price').value = ov.price != null ? ov.price : (p.price || '');
+  document.getElementById('pd-orig').value = ov.orig_price != null ? ov.orig_price : (p.origPrice || '');
+  document.getElementById('pd-category').value = ov.category || p.category || 'sneakers';
+  document.getElementById('pd-condition').value = ov.condition || p.condition || 'Brand New';
+  document.getElementById('pd-sold').value = ov.sold_count != null ? ov.sold_count : (p.sold || 0);
+  document.getElementById('pd-badges').value = ov.badges != null ? ov.badges : (p.badges || '');
+  document.getElementById('pd-sizes').value = ov.sizes || (p.sizes ? p.sizes.join(',') : '');
+  // Parse desc vs details vs shipping from stored desc JSON if present
+  var fullDesc = ov.desc || p.desc || '';
+  var descObj = {};
+  try { if (fullDesc.startsWith('{')) descObj = JSON.parse(fullDesc); } catch(e){}
+  document.getElementById('pd-desc').value = descObj.desc || (fullDesc.startsWith('{')?'':fullDesc);
+  document.getElementById('pd-details').value = descObj.details || '';
+  document.getElementById('pd-shipping-note').value = descObj.shipping || '';
+  document.getElementById('pd-sku').value = descObj.sku || '';
+  document.getElementById('pd-color').value = ov.color || descObj.color || '';
+  // Status
+  var st = ov.is_hidden ? 'draft' : (ov.is_sold_out ? 'soldout' : 'active');
+  document.getElementById('pd-status').value = st;
+  // Toggles
+  document.getElementById('pd-featured').checked = ov.is_best_seller || false;
+  document.getElementById('pd-bestseller').checked = ov.is_best_seller || false;
+  document.getElementById('pd-homepage').checked = !ov.is_hidden;
+  document.getElementById('pd-related').checked = !ov.is_hidden;
+  // Tags
+  var tags = (ov.badges || p.badges || '').split(',').map(function(t){return t.trim().toUpperCase();});
+  document.querySelectorAll('.pd-tag-btn').forEach(function(b){ b.classList.toggle('active', tags.indexOf(b.dataset.val)>-1); });
+  // Media: load existing
+  pdMediaItems = [];
+  var mainImg = ov.img || p.img || '';
+  var vid = ov.video || p.video || '';
+  var extraImgs = (ov.imgs || '').split('\n').filter(Boolean);
+  if (mainImg) pdMediaItems.push({url:mainImg, type:'image', isMain:true});
+  if (vid) pdMediaItems.push({url:vid, type:'video', isMain:!mainImg});
+  extraImgs.forEach(function(u){ if (u !== mainImg) pdMediaItems.push({url:u, type:'image', isMain:false}); });
+  pdRenderMediaGallery();
+  pdRenderSizeQty();
+  pdCalcSale();
+  // Clear errors
+  ['err-name','err-brand','err-price','err-sizes'].forEach(function(id){ document.getElementById(id).textContent=''; });
+  document.getElementById('drawerSaveStatus').textContent = '';
+  pdGoTab(1);
+  document.getElementById('productDrawer').style.display = 'block';
 }
 
-function closeProductModal() {
-  document.getElementById('productModal').style.display = 'none';
+function closeProductDrawer() {
+  document.getElementById('productDrawer').style.display = 'none';
+  if (pdAutoSaveTimer) clearTimeout(pdAutoSaveTimer);
 }
 
-function saveProductModal() {
-  var btn = document.getElementById('pm-save-btn');
-  btn.textContent = 'Saving…';
-  btn.disabled = true;
-
-  var existingId = parseInt(document.getElementById('pm-id').value) || null;
-  // For new products, generate ID >= 100
-  var newId = existingId || (100 + Math.floor(Math.random() * 9000));
-
-  var payload = {
-    product_id:    newId,
-    product_name:  document.getElementById('pm-name').value.trim(),
-    brand:         document.getElementById('pm-brand').value.trim(),
-    price:         parseFloat(document.getElementById('pm-price').value) || 0,
-    orig_price:    parseFloat(document.getElementById('pm-orig').value) || 0,
-    category:      document.getElementById('pm-cat').value,
-    condition:     document.getElementById('pm-condition').value,
-    desc:          document.getElementById('pm-desc').value.trim(),
-    badges:        document.getElementById('pm-badges').value.trim(),
-    sizes:         document.getElementById('pm-sizes').value.trim(),
-    sold_count:    parseInt(document.getElementById('pm-sold').value) || 0,
-    img:           document.getElementById('pm-img').value.trim(),
-    imgs:          document.getElementById('pm-imgs').value.trim(),
-    video:         document.getElementById('pm-video').value.trim(),
-    is_sold_out:   document.getElementById('pm-soldout').checked,
-    is_new_arrival:document.getElementById('pm-newarr').checked,
-    is_best_seller:document.getElementById('pm-bestseller').checked,
-    is_hidden:     document.getElementById('pm-hidden').checked
-  };
-
-  if (!payload.product_name) { toast('Product name is required'); btn.textContent = 'Save Product'; btn.disabled = false; return; }
-  if (!payload.price) { toast('Price is required'); btn.textContent = 'Save Product'; btn.disabled = false; return; }
-
-  fetch(API+'?action=upsertProductOverride', {
-    method:'POST', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify(payload)
-  }).then(function(r){ return r.json(); }).then(function(d) {
-    btn.textContent = 'Save Product'; btn.disabled = false;
-    if (d.success) {
-      toast('✓ Product saved — live on site');
-      closeProductModal();
-      loadProducts();
-    } else toast('Error: '+(d.error||'unknown'));
-  }).catch(function(){ btn.textContent = 'Save Product'; btn.disabled = false; toast('Error saving product'); });
+// ── TABS ──────────────────────────────────────────────────────────────────
+function pdGoTab(n) {
+  for (var i=1;i<=4;i++) {
+    var tab = document.getElementById('pdTab'+i);
+    var btn = document.querySelector('.pd-tab[data-tab="'+i+'"]');
+    if (tab) tab.style.display = i===n ? 'block' : 'none';
+    if (btn) { btn.style.color = i===n?'#fff':'#444'; btn.style.borderBottomColor = i===n?'#fff':'transparent'; }
+  }
 }
 
-/* ── MEDIA UPLOAD ── */
-function uploadProductMedia(input, targetId, previewId) {
-  var file = input.files[0];
-  if (!file) return;
-  var isVideo = file.type.startsWith('video');
-  toast('Uploading '+(isVideo?'video':'image')+'…');
-  var formData = new FormData();
-  formData.append('file', file);
-  fetch(API+'?action=uploadMedia', { method:'POST', body: formData })
+// ── SALE % CALC ───────────────────────────────────────────────────────────
+function pdCalcSale() {
+  var price = parseFloat(document.getElementById('pd-price').value) || 0;
+  var orig  = parseFloat(document.getElementById('pd-orig').value) || 0;
+  var el = document.getElementById('pd-sale-pct');
+  if (price > 0 && orig > price) {
+    el.value = '-' + Math.round((1 - price/orig)*100) + '%';
+    el.style.color = '#22c55e';
+  } else {
+    el.value = '—';
+    el.style.color = '#444';
+  }
+}
+
+// ── MEDIA ─────────────────────────────────────────────────────────────────
+function pdHandleDrop(e) {
+  e.preventDefault();
+  document.getElementById('pdDropZone').style.borderColor = 'rgba(255,255,255,.1)';
+  pdHandleFiles(e.dataTransfer.files);
+}
+
+function pdHandleFiles(files) {
+  var arr = Array.from(files);
+  if (!arr.length) return;
+  // Check for MOV
+  var hasMov = arr.some(function(f){ return f.name.toLowerCase().endsWith('.mov'); });
+  if (hasMov) { toast('⚠️ MOV files not supported — please convert to MP4 first', 'warn'); arr = arr.filter(function(f){ return !f.name.toLowerCase().endsWith('.mov'); }); }
+  if (!arr.length) return;
+  pdUploadQueue(arr, 0);
+}
+
+function pdUploadQueue(files, idx) {
+  if (idx >= files.length) {
+    document.getElementById('pdUploadProgress').style.display = 'none';
+    toast('Media uploaded ✓');
+    return;
+  }
+  var file = files[idx];
+  var prog = document.getElementById('pdUploadProgress');
+  var msgEl = document.getElementById('pdUploadMsg');
+  var bar = document.getElementById('pdUploadBar');
+  prog.style.display = 'block';
+  msgEl.textContent = 'Uploading ' + (idx+1) + ' of ' + files.length + ': ' + file.name;
+  bar.style.width = Math.round((idx/files.length)*100) + '%';
+  // Size check client side
+  var isVideo = file.type.startsWith('video/');
+  var maxSize = isVideo ? 50*1024*1024 : 10*1024*1024;
+  if (file.size > maxSize) {
+    toast('⚠️ ' + file.name + ' too large (max ' + (isVideo?'50MB':'10MB') + ')', 'warn');
+    pdUploadQueue(files, idx+1);
+    return;
+  }
+  var fd = new FormData();
+  fd.append('file', file);
+  fetch(API + '?action=uploadMedia', { method:'POST', body: fd })
     .then(function(r){ return r.json(); })
     .then(function(d) {
       if (d.url) {
-        document.getElementById(targetId).value = d.url;
-        var prev = document.getElementById(previewId);
-        if (isVideo) {
-          prev.innerHTML = '<video src="'+d.url+'" style="width:120px;height:80px;object-fit:cover;border-radius:8px;" muted playsinline controls></video>';
-        } else {
-          prev.innerHTML = '<img src="'+d.url+'" style="width:80px;height:80px;object-fit:cover;border-radius:8px;" />';
-        }
-        toast('✓ Uploaded!');
-      } else toast('Upload failed: '+(d.error||'unknown'));
-    }).catch(function(){ toast('Upload error'); });
+        var isMain = pdMediaItems.length === 0;
+        pdMediaItems.push({ url: d.url, type: d.type || (isVideo?'video':'image'), isMain: isMain });
+        pdRenderMediaGallery();
+      } else {
+        toast('Upload failed: ' + (d.error||'unknown'), 'error');
+      }
+      pdUploadQueue(files, idx+1);
+    })
+    .catch(function(e){ toast('Upload error: ' + e, 'error'); pdUploadQueue(files, idx+1); });
 }
 
-function uploadProductMediaMulti(input, targetId) {
-  var files = Array.from(input.files);
-  if (!files.length) return;
-  toast('Uploading '+files.length+' image(s)…');
-  var existing = document.getElementById(targetId).value.trim();
-  var urls = existing ? existing.split('\n').filter(Boolean) : [];
-  var pending = files.length;
-  files.forEach(function(file) {
-    var formData = new FormData();
-    formData.append('file', file);
-    fetch(API+'?action=uploadMedia', { method:'POST', body: formData })
-      .then(function(r){ return r.json(); })
-      .then(function(d) {
-        if (d.url) urls.push(d.url);
-        pending--;
-        if (pending === 0) {
-          document.getElementById(targetId).value = urls.join('\n');
-          toast('✓ '+files.length+' image(s) uploaded');
-        }
-      }).catch(function(){ pending--; toast('One upload failed'); });
-  });
+function pdRenderMediaGallery() {
+  var el = document.getElementById('pdMediaGallery');
+  if (!el) return;
+  if (!pdMediaItems.length) { el.innerHTML = '<div style="color:#333;font-size:12px;padding:20px;">No media uploaded yet</div>'; return; }
+  el.innerHTML = pdMediaItems.map(function(item, i) {
+    var isMain = item.isMain;
+    var thumb = item.type === 'video'
+      ? '<video src="'+item.url+'" style="width:100%;height:100%;object-fit:cover;" muted playsinline></video>'
+      : '<img src="'+item.url+'" style="width:100%;height:100%;object-fit:cover;" loading="lazy"/>';
+    return '<div style="position:relative;width:100px;height:100px;border-radius:10px;overflow:hidden;cursor:pointer;border:2px solid '+(isMain?'#fff':'#2a2a2a')+';flex-shrink:0;" onclick="pdSetMain('+i+')" title="Click to set as main">'
+      +thumb
+      +(isMain?'<div style="position:absolute;bottom:4px;left:4px;background:#fff;color:#000;font-size:8px;font-weight:800;padding:2px 5px;border-radius:4px;">MAIN</div>':'')
+      +(item.type==='video'?'<div style="position:absolute;top:4px;left:4px;background:rgba(0,0,0,.7);color:#fff;font-size:9px;padding:2px 5px;border-radius:4px;">▶ VIDEO</div>':'')
+      +'<button onclick="event.stopPropagation();pdRemoveMedia('+i+')" style="position:absolute;top:4px;right:4px;background:rgba(0,0,0,.7);border:none;color:#fff;width:20px;height:20px;border-radius:50%;font-size:12px;cursor:pointer;line-height:1;display:flex;align-items:center;justify-content:center;">✕</button>'
+      +'</div>';
+  }).join('');
 }
 
-/* ── DELETE PRODUCT ── */
-function confirmDeleteProduct(id, name) {
-  _deleteProductId = id;
-  document.getElementById('deleteProductName').textContent = name;
-  document.getElementById('deleteProductModal').style.display = 'flex';
-  document.getElementById('confirmDeleteBtn').onclick = function() {
-    fetch(API+'?action=upsertProductOverride', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ product_id: id, is_hidden: true })
-    }).then(function(r){ return r.json(); }).then(function(d) {
-      if (d.success) { toast('Product hidden from store'); closeDeleteModal(); loadProducts(); }
-      else toast('Error: '+(d.error||'unknown'));
-    }).catch(function(){ toast('Remove failed'); });
+function pdSetMain(idx) {
+  pdMediaItems.forEach(function(item, i){ item.isMain = i === idx; });
+  pdRenderMediaGallery();
+}
+
+function pdRemoveMedia(idx) {
+  pdMediaItems.splice(idx, 1);
+  if (pdMediaItems.length && !pdMediaItems.some(function(i){ return i.isMain; })) pdMediaItems[0].isMain = true;
+  pdRenderMediaGallery();
+}
+
+// ── SIZE/QTY GRID ─────────────────────────────────────────────────────────
+function pdRenderSizeQty() {
+  var sizesRaw = (document.getElementById('pd-sizes')||{}).value||'';
+  var sizes = sizesRaw.split(',').map(function(s){return s.trim();}).filter(Boolean);
+  var el = document.getElementById('pdSizeQtyGrid');
+  if (!el) return;
+  if (!sizes.length) { el.innerHTML = '<div style="color:#333;font-size:12px;">Enter sizes above to manage stock per size</div>'; return; }
+  el.innerHTML = sizes.map(function(sz) {
+    return '<div style="background:#0a0a0a;border:1px solid #1a1a1a;border-radius:10px;padding:10px 14px;display:flex;align-items:center;gap:10px;">'
+      +'<div style="font-size:13px;font-weight:700;color:#ccc;min-width:28px;">'+sz+'</div>'
+      +'<input type="number" min="0" value="5" placeholder="Qty" style="width:54px;background:#080808;border:1px solid #222;border-radius:6px;color:#fff;font-size:12px;padding:4px 8px;font-family:inherit;outline:none;text-align:center;" id="pd-qty-'+sz+'"/>'
+      +'<label style="display:flex;align-items:center;gap:5px;font-size:11px;color:#555;cursor:pointer;"><input type="checkbox" checked id="pd-stk-'+sz+'"/> In Stock</label>'
+      +'</div>';
+  }).join('');
+}
+
+// ── TAGS ──────────────────────────────────────────────────────────────────
+function pdToggleTag(btn) {
+  btn.classList.toggle('active');
+  var active = Array.from(document.querySelectorAll('.pd-tag-btn.active')).map(function(b){ return b.dataset.val; });
+  document.getElementById('pd-badges').value = active.join(',');
+}
+
+// ── AUTO-SAVE DRAFT ───────────────────────────────────────────────────────
+function pdAutoSave() {
+  var statusEl = document.getElementById('drawerSaveStatus');
+  if (statusEl) statusEl.textContent = '• Unsaved changes';
+  if (pdAutoSaveTimer) clearTimeout(pdAutoSaveTimer);
+  pdAutoSaveTimer = setTimeout(function() {
+    var name = document.getElementById('pd-name').value.trim();
+    if (name.length > 1) {
+      if (statusEl) statusEl.textContent = '⟳ Auto-saving draft…';
+      saveProductDraft(true);
+    }
+  }, 3000);
+}
+
+// ── VALIDATION ────────────────────────────────────────────────────────────
+function pdValidate() {
+  var ok = true;
+  var name = document.getElementById('pd-name').value.trim();
+  var brand = document.getElementById('pd-brand').value.trim();
+  var price = parseFloat(document.getElementById('pd-price').value);
+  var sizes = document.getElementById('pd-sizes').value.trim();
+  document.getElementById('err-name').textContent = '';
+  document.getElementById('err-brand').textContent = '';
+  document.getElementById('err-price').textContent = '';
+  document.getElementById('err-sizes').textContent = '';
+  if (!name) { document.getElementById('err-name').textContent = 'Product name is required'; ok = false; pdGoTab(1); }
+  else if (!brand) { document.getElementById('err-brand').textContent = 'Brand is required'; ok = false; pdGoTab(1); }
+  else if (!price || price <= 0) { document.getElementById('err-price').textContent = 'Valid price is required'; ok = false; pdGoTab(1); }
+  else if (!sizes) { document.getElementById('err-sizes').textContent = 'At least one size is required'; ok = false; pdGoTab(3); }
+  return ok;
+}
+
+// ── BUILD PRODUCT DATA ────────────────────────────────────────────────────
+function pdBuildData(statusOverride) {
+  var name = document.getElementById('pd-name').value.trim();
+  var brand = document.getElementById('pd-brand').value.trim();
+  var price = parseFloat(document.getElementById('pd-price').value) || 0;
+  var orig  = parseFloat(document.getElementById('pd-orig').value) || 0;
+  var cat   = document.getElementById('pd-category').value;
+  var cond  = document.getElementById('pd-condition').value;
+  var sold  = parseInt(document.getElementById('pd-sold').value) || 0;
+  var status = statusOverride || document.getElementById('pd-status').value;
+  var sizes = document.getElementById('pd-sizes').value.trim();
+  var color = document.getElementById('pd-color').value.trim();
+  var sku   = document.getElementById('pd-sku').value.trim();
+  var badges = document.getElementById('pd-badges').value;
+  // Build desc JSON
+  var descObj = {
+    desc: document.getElementById('pd-desc').value.trim(),
+    details: document.getElementById('pd-details').value.trim(),
+    shipping: document.getElementById('pd-shipping-note').value.trim(),
+    sku: sku,
+    color: color
+  };
+  var descStr = JSON.stringify(descObj);
+  // Media
+  var mainItem = pdMediaItems.find(function(i){ return i.isMain; }) || pdMediaItems[0];
+  var img = (mainItem && mainItem.type === 'image') ? mainItem.url : '';
+  var vid = pdMediaItems.filter(function(i){ return i.type==='video'; }).map(function(i){ return i.url; })[0] || '';
+  var extraImgs = pdMediaItems.filter(function(i){ return i.type==='image' && !i.isMain; }).map(function(i){ return i.url; }).join('\n');
+  if (!img && mainItem && mainItem.type==='video') img = ''; // video-only product
+  return {
+    product_name: name, brand: brand, price: price, orig_price: orig,
+    category: cat, condition: cond, sold_count: sold, status: status,
+    sizes: sizes, badges: badges, desc: descStr,
+    img: img, imgs: extraImgs, video: vid,
+    is_new_arrival: document.getElementById('pd-featured').checked,
+    is_best_seller: document.getElementById('pd-bestseller').checked,
   };
 }
 
-function closeDeleteModal() {
-  document.getElementById('deleteProductModal').style.display = 'none';
-  _deleteProductId = null;
+// ── SAVE/PUBLISH ──────────────────────────────────────────────────────────
+function saveProductDraft(silent) {
+  var data = pdBuildData('draft');
+  var recordId = document.getElementById('pd-record-id').value;
+  var productId = parseInt(document.getElementById('pd-product-id').value) || 0;
+  var isStatic = document.getElementById('pd-is-static').value === '1';
+  var statusEl = document.getElementById('drawerSaveStatus');
+  if (isStatic && recordId) {
+    // Update existing override for static product
+    fetch(API + '?action=updateProduct', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ id: recordId, ...data }) })
+      .then(function(r){ return r.json(); })
+      .then(function(d) {
+        if (statusEl) statusEl.textContent = '📝 Saved as draft';
+        if (!silent) toast('Saved as draft ✓');
+        loadProducts();
+      }).catch(function(){ if (!silent) toast('Save failed', 'error'); });
+  } else if (recordId) {
+    fetch(API + '?action=updateProduct', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ id: recordId, ...data }) })
+      .then(function(r){ return r.json(); })
+      .then(function(d) {
+        if (statusEl) statusEl.textContent = '📝 Saved as draft';
+        if (!silent) toast('Saved as draft ✓');
+        loadProducts();
+      }).catch(function(){ if (!silent) toast('Save failed', 'error'); });
+  } else if (productId) {
+    // Static product — create or update override
+    data.product_id = productId;
+    fetch(API + '?action=upsertProductOverride', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data) })
+      .then(function(r){ return r.json(); })
+      .then(function(d) {
+        if (d.id) document.getElementById('pd-record-id').value = d.id;
+        if (statusEl) statusEl.textContent = '📝 Saved as draft';
+        if (!silent) toast('Saved as draft ✓');
+        loadProducts();
+      }).catch(function(){ if (!silent) toast('Save failed', 'error'); });
+  } else {
+    // New product
+    fetch(API + '?action=createProduct', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data) })
+      .then(function(r){ return r.json(); })
+      .then(function(d) {
+        if (d.id) { document.getElementById('pd-record-id').value = d.id; document.getElementById('pd-product-id').value = d.product_id; document.getElementById('pd-is-static').value = '0'; }
+        if (statusEl) statusEl.textContent = '📝 Saved as draft';
+        if (!silent) toast('Saved as draft ✓');
+        loadProducts();
+      }).catch(function(){ if (!silent) toast('Save failed', 'error'); });
+  }
 }
+
+function publishProduct() {
+  if (!pdValidate()) return;
+  var data = pdBuildData(document.getElementById('pd-status').value === 'draft' ? 'active' : document.getElementById('pd-status').value);
+  var recordId = document.getElementById('pd-record-id').value;
+  var productId = parseInt(document.getElementById('pd-product-id').value) || 0;
+  var isStatic = document.getElementById('pd-is-static').value === '1';
+  var publishBtn = document.getElementById('publishBtn');
+  if (publishBtn) { publishBtn.textContent = 'Saving…'; publishBtn.disabled = true; }
+  var statusEl = document.getElementById('drawerSaveStatus');
+  var done = function(success, msg) {
+    if (publishBtn) { publishBtn.textContent = 'Update Product →'; publishBtn.disabled = false; }
+    if (success) {
+      if (statusEl) statusEl.textContent = '✅ Published & live';
+      toast(msg || 'Product published ✓ — live on store!');
+      loadProducts();
+    } else {
+      toast(msg || 'Save failed', 'error');
+    }
+  };
+  if (recordId) {
+    fetch(API + '?action=updateProduct', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ id: recordId, ...data }) })
+      .then(function(r){ return r.json(); }).then(function(d){ done(true); }).catch(function(){ done(false); });
+  } else if (productId && isStatic) {
+    data.product_id = productId;
+    fetch(API + '?action=upsertProductOverride', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data) })
+      .then(function(r){ return r.json(); }).then(function(d){ if (d.id) document.getElementById('pd-record-id').value = d.id; done(true); }).catch(function(){ done(false); });
+  } else if (productId) {
+    data.product_id = productId;
+    fetch(API + '?action=upsertProductOverride', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data) })
+      .then(function(r){ return r.json(); }).then(function(d){ if (d.id) document.getElementById('pd-record-id').value = d.id; done(true); }).catch(function(){ done(false); });
+  } else {
+    fetch(API + '?action=createProduct', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(data) })
+      .then(function(r){ return r.json(); }).then(function(d){ if (d.id) { document.getElementById('pd-record-id').value = d.id; document.getElementById('pd-product-id').value = d.product_id; document.getElementById('pd-is-static').value = '0'; } done(true, 'Product published ✓ — live on store!'); }).catch(function(){ done(false); });
+  }
+}
+
+// ── PREVIEW ───────────────────────────────────────────────────────────────
+function previewProduct() {
+  var name  = document.getElementById('pd-name').value || 'Product Name';
+  var brand = document.getElementById('pd-brand').value || '';
+  var price = document.getElementById('pd-price').value || '0';
+  var orig  = document.getElementById('pd-orig').value;
+  var desc  = document.getElementById('pd-desc').value || '';
+  var sizes = document.getElementById('pd-sizes').value.split(',').map(function(s){return s.trim();}).filter(Boolean);
+  var mainItem = pdMediaItems.find(function(i){ return i.isMain; }) || pdMediaItems[0];
+  var mediaSrc = mainItem ? mainItem.url : '';
+  var isVideo  = mainItem && mainItem.type === 'video';
+  var sale = (orig && parseFloat(orig) > parseFloat(price)) ? '-'+Math.round((1-parseFloat(price)/parseFloat(orig))*100)+'%' : '';
+  var mediaHtml = '';
+  if (mediaSrc) {
+    mediaHtml = isVideo
+      ? '<video src="'+mediaSrc+'" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:14px;margin-bottom:16px;" muted autoplay loop playsinline></video>'
+      : '<img src="'+mediaSrc+'" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:14px;margin-bottom:16px;" />';
+  } else {
+    mediaHtml = '<div style="width:100%;aspect-ratio:1;background:#1a1a1a;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:48px;margin-bottom:16px;">📦</div>';
+  }
+  document.getElementById('pdPreviewContent').innerHTML = mediaHtml
+    +'<div style="font-size:10px;color:#555;text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px;">'+brand+'</div>'
+    +'<div style="font-size:22px;font-family:\'Bebas Neue\',sans-serif;letter-spacing:.06em;margin-bottom:10px;">'+name+'</div>'
+    +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">'
+    +'<div style="font-size:20px;font-weight:800;">$'+price+'</div>'
+    +(orig ? '<div style="font-size:13px;color:#444;text-decoration:line-through;">$'+orig+'</div>' : '')
+    +(sale ? '<div style="font-size:11px;color:#22c55e;font-weight:700;">'+sale+'</div>' : '')
+    +'</div>'
+    +(desc ? '<div style="font-size:12px;color:#666;line-height:1.6;margin-bottom:14px;">'+desc+'</div>' : '')
+    +(sizes.length ? '<div style="font-size:10px;color:#555;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;">Select Size</div><div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;">'+sizes.map(function(s){ return '<div style="padding:8px 14px;border:1px solid #2a2a2a;border-radius:8px;font-size:13px;font-weight:700;">'+s+'</div>'; }).join('')+'</div>' : '');
+  document.getElementById('pdPreviewModal').style.display = 'block';
+}
+
+// ── DELETE ────────────────────────────────────────────────────────────────
+function promptDeleteProduct(recordId, name) {
+  _pdDeleteRecordId = recordId;
+  document.getElementById('pdDeleteName').textContent = '"' + name + '"';
+  var el = document.getElementById('pdDeleteModal');
+  el.style.display = 'flex';
+}
+
+function confirmDeleteDrawer() {
+  var recordId = document.getElementById('pd-record-id').value;
+  var name = document.getElementById('pd-name').value || 'this product';
+  _pdDeleteRecordId = recordId;
+  document.getElementById('pdDeleteName').textContent = '"' + name + '"';
+  document.getElementById('pdDeleteModal').style.display = 'flex';
+}
+
+function closePdDeleteModal() {
+  document.getElementById('pdDeleteModal').style.display = 'none';
+  _pdDeleteRecordId = null;
+}
+
+function executePdDelete() {
+  if (!_pdDeleteRecordId) return;
+  fetch(API + '?action=deleteProduct', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ id: _pdDeleteRecordId }) })
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      closePdDeleteModal();
+      closeProductDrawer();
+      toast('Product deleted');
+      loadProducts();
+    }).catch(function(){ toast('Delete failed', 'error'); });
+}
+
+// ── DUPLICATE ─────────────────────────────────────────────────────────────
+function dupProductById(productId) {
+  var ov = allProductOverrides.find(function(o){ return o.product_id === productId; });
+  if (!ov) { toast('No overrides to duplicate — edit the product first to save it, then duplicate', 'warn'); return; }
+  fetch(API + '?action=duplicateProduct', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ id: ov.id }) })
+    .then(function(r){ return r.json(); })
+    .then(function(d){ toast('Duplicated ✓ — find it at the bottom as a draft'); loadProducts(); })
+    .catch(function(){ toast('Duplicate failed', 'error'); });
+}
+
+function duplicateCurrentProduct() {
+  var recordId = document.getElementById('pd-record-id').value;
+  if (!recordId) { toast('Save the product first before duplicating', 'warn'); return; }
+  fetch(API + '?action=duplicateProduct', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ id: recordId }) })
+    .then(function(r){ return r.json(); })
+    .then(function(d){ toast('Duplicated ✓ — saved as draft'); closeProductDrawer(); loadProducts(); })
+    .catch(function(){ toast('Duplicate failed', 'error'); });
+}
+
+
 
 </script>
 </body>
@@ -1297,3 +1719,4 @@ function closeDeleteModal() {
     </div>
 
 
+<!-- cache bust Wed Jun 10 05:23:53 UTC 2026 -->
