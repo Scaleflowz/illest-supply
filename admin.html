@@ -1222,7 +1222,7 @@ function renderProductList(prods, stockMap) {
       +'<span class="'+statusClass+'" style="font-size:9px;">'+statusLabel+'</span>'
       +(sale>0?'<span class="badge badge-contacted" style="font-size:9px;">-'+sale+'%</span>':'')
       +'<button onclick="openEditProduct('+p.id+')" style="background:#1a1a1a;border:1px solid #2a2a2a;color:#ccc;padding:5px 12px;border-radius:7px;font-size:10px;cursor:pointer;">✏️ Edit</button>'
-      +(isCustom?'<button onclick="promptDeleteProduct(\''+ov.id+'\',\''+name.replace(/'/g,"\\'")+'\')" style="background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.15);color:#ef4444;padding:5px 12px;border-radius:7px;font-size:10px;cursor:pointer;">🗑 Delete</button>':'')
+      +'<button onclick="promptDeleteProduct(\''+ov.id+'\',\''+name.replace(/'/g,"\\'")+'\','+p.id+')" style="background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.15);color:#ef4444;padding:5px 12px;border-radius:7px;font-size:10px;cursor:pointer;">🗑 Delete</button>'
       +'<button onclick="dupProductById('+p.id+')" style="background:#1a1a1a;border:1px solid #2a2a2a;color:#777;padding:5px 10px;border-radius:7px;font-size:10px;cursor:pointer;" title="Duplicate">⧉</button>'
       +'</div>'
       +'</div>'
@@ -1279,7 +1279,7 @@ function openEditProduct(productId) {
   document.getElementById('pd-product-id').value = productId;
   document.getElementById('pd-is-static').value = isStatic ? '1' : '0';
   document.getElementById('drawerTitle').textContent = 'EDIT PRODUCT';
-  document.getElementById('drawerDeleteBtn').style.display = isCustom ? 'inline-block' : 'none';
+  document.getElementById('drawerDeleteBtn').style.display = 'inline-block'; // show delete for all products
   document.getElementById('drawerDupBtn').style.display = 'inline-block';
   document.getElementById('publishBtn').textContent = 'Update Product →';
   // Fill fields
@@ -1655,8 +1655,11 @@ function previewProduct() {
 }
 
 // ── DELETE ────────────────────────────────────────────────────────────────
-function promptDeleteProduct(recordId, name) {
-  _pdDeleteRecordId = recordId;
+var _pdDeleteProductId = null; // fallback product_id for static products without an override record
+
+function promptDeleteProduct(recordId, name, productId) {
+  _pdDeleteRecordId = recordId || null;
+  _pdDeleteProductId = productId || null;
   document.getElementById('pdDeleteName').textContent = '"' + name + '"';
   var el = document.getElementById('pdDeleteModal');
   el.style.display = 'flex';
@@ -1664,8 +1667,10 @@ function promptDeleteProduct(recordId, name) {
 
 function confirmDeleteDrawer() {
   var recordId = document.getElementById('pd-record-id').value;
+  var productId = document.getElementById('pd-product-id').value;
   var name = document.getElementById('pd-name').value || 'this product';
-  _pdDeleteRecordId = recordId;
+  _pdDeleteRecordId = recordId || null;
+  _pdDeleteProductId = productId || null;
   document.getElementById('pdDeleteName').textContent = '"' + name + '"';
   document.getElementById('pdDeleteModal').style.display = 'flex';
 }
@@ -1673,16 +1678,20 @@ function confirmDeleteDrawer() {
 function closePdDeleteModal() {
   document.getElementById('pdDeleteModal').style.display = 'none';
   _pdDeleteRecordId = null;
+  _pdDeleteProductId = null;
 }
 
 function executePdDelete() {
-  if (!_pdDeleteRecordId) return;
-  fetch(API + '?action=deleteProduct', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ id: _pdDeleteRecordId }) })
+  if (!_pdDeleteRecordId && !_pdDeleteProductId) return;
+  var payload = {};
+  if (_pdDeleteRecordId) payload.id = _pdDeleteRecordId;
+  if (_pdDeleteProductId) payload.product_id = parseInt(_pdDeleteProductId);
+  fetch(API + '?action=deleteProduct', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) })
     .then(function(r){ return r.json(); })
     .then(function(d){
       closePdDeleteModal();
       closeProductDrawer();
-      toast('Product deleted');
+      toast('Product removed from site ✓');
       loadProducts();
     }).catch(function(){ toast('Delete failed', 'error'); });
 }
