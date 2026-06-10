@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Shop | The Illest Supply</title>
+<meta name="description" content="Browse all designer sneakers, slides, bottoms, and streetwear. Filter by size, brand, category, and price."/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style id="globalStyles">
+/* VIEWER BADGE ON CARD IMAGE */
+.viewer-badge{position:absolute;bottom:10px;left:10px;background:rgba(0,0,0,0.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.12);color:#fff;font-size:11px;font-weight:700;letter-spacing:0.05em;padding:5px 12px;border-radius:50px;pointer-events:none;white-space:nowrap;z-index:10;}
+.card-live-stats{display:none;}
+
+.badge-auth{display:none!important;}
+.view-count-badge{position:absolute;bottom:10px;left:10px;z-index:10;display:inline-flex;align-items:center;gap:5px;padding:6px 11px;border-radius:999px;background:rgba(0,0,0,0.72);color:#fff;font-size:12px;font-weight:500;line-height:1;box-shadow:0 4px 14px rgba(0,0,0,0.35);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);pointer-events:none;white-space:nowrap;}.view-count-badge::before{content:"👁";font-size:12px;line-height:1;flex-shrink:0;}@media(max-width:640px){.view-count-badge{font-size:11px;padding:5px 9px;}}</style>
+<style>
+.shop-hero{padding:50px 0 30px;text-align:center;}
+.shop-hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(48px,6vw,80px);margin-bottom:8px;}
+.shop-hero p{font-size:14px;color:#444;letter-spacing:0.04em;}
+
+.shop-layout{display:grid;grid-template-columns:220px 1fr;gap:32px;align-items:start;}
+.filters-panel{background:#0d0d0d;border:1px solid rgba(255,255,255,0.05);border-radius:16px;padding:24px;position:sticky;top:90px;}
+.filter-section{margin-bottom:24px;}
+.filter-title{font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:#444;font-weight:600;margin-bottom:12px;}
+.filter-options{display:flex;flex-direction:column;gap:8px;}
+.filter-opt{display:flex;align-items:center;gap:8px;font-size:12px;color:#666;cursor:pointer;transition:color .2s;}
+.filter-opt:hover,.filter-opt.active{color:#fff;}
+.filter-opt input[type=checkbox]{accent-color:#fff;width:14px;height:14px;}
+.filter-divider{border:none;border-top:1px solid rgba(255,255,255,0.05);margin:16px 0;}
+.price-range{display:flex;gap:8px;align-items:center;}
+.price-input{width:70px;padding:7px 10px;background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:8px;color:#fff;font-size:12px;outline:none;}
+.price-input:focus{border-color:rgba(255,255,255,0.2);}
+.clear-filters{width:100%;padding:9px;border:1px solid rgba(255,255,255,0.08);background:transparent;color:#555;border-radius:8px;font-size:11px;cursor:pointer;letter-spacing:0.06em;margin-top:8px;}
+.clear-filters:hover{color:#fff;border-color:rgba(255,255,255,0.2);}
+
+.shop-main-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;}
+.result-count{font-size:13px;color:#444;}
+.sort-select{background:#0d0d0d;border:1px solid rgba(255,255,255,0.08);color:#fff;padding:8px 14px;border-radius:8px;font-size:12px;cursor:pointer;outline:none;}
+.no-results{text-align:center;padding:80px 20px;color:#333;}
+.no-results h3{font-size:20px;font-weight:700;margin-bottom:8px;}
+
+.mobile-filter-btn{display:none;padding:10px 20px;border:1px solid rgba(255,255,255,0.15);background:transparent;color:#fff;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;}
+.mobile-filter-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:700;}
+.mobile-filter-panel{display:none;position:fixed;left:0;bottom:0;right:0;background:#0d0d0d;border-top:1px solid rgba(255,255,255,0.08);border-radius:20px 20px 0 0;padding:24px;z-index:701;max-height:80vh;overflow-y:auto;}
+.mobile-filter-panel.open,.mobile-filter-overlay.open{display:block;}
+
+@media(max-width:900px){
+  .shop-layout{grid-template-columns:1fr;}
+  .filters-panel{display:none;}
+  .mobile-filter-btn{display:block;}
+}
+</style>
+  <meta name="description" content="Shop the full collection — designer sneakers, slides, jorts and more. Premium pieces at real prices.">
+  <meta property="og:title" content="Shop All | The Illest Supply">
+  <meta property="og:description" content="Shop the full collection — designer sneakers, slides, jorts and more. Premium pieces at real prices.">
+  <meta property="og:image" content="https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/409f6a116_918D9A7E-D61E-4658-A7B6-5DF1F8B5AC78.png">
+  <meta property="og:url" content="https://illestsupply.com/shop.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="The Illest Supply">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Shop All | The Illest Supply">
+  <meta name="twitter:image" content="https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/409f6a116_918D9A7E-D61E-4658-A7B6-5DF1F8B5AC78.png">
+  <link rel="canonical" href="https://illestsupply.com/shop.html">
+</head>
+<body>
+<div id="navContainer"></div>
+<main>
+<section class="shop-hero">
+  <div class="container">
+    <div class="section-title">Full Collection</div>
+    <h1>Shop Everything</h1>
+    <p>Designer pieces. Real price. Real heat.</p>
+  </div>
+</section>
+
+<section style="padding-bottom:80px;">
+  <div class="container">
+    <div style="display:flex;gap:12px;align-items:center;margin-bottom:24px;">
+      <button class="mobile-filter-btn" onclick="openMobileFilters()">⚙ Filters</button>
+      <div style="flex:1;position:relative;">
+        <input type="text" id="shopSearch" placeholder="Search products..." oninput="applyFilters()" style="width:100%;padding:10px 16px 10px 40px;background:#0d0d0d;border:1px solid rgba(255,255,255,0.08);border-radius:8px;color:#fff;font-size:13px;outline:none;">
+        <svg style="position:absolute;left:12px;top:50%;transform:translateY(-50%);opacity:.3;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </div>
+    </div>
+    <div class="shop-layout">
+      <!-- FILTERS -->
+      <div class="filters-panel">
+        <div class="filter-section">
+          <div class="filter-title">Category</div>
+          <div class="filter-options">
+            <label class="filter-opt"><input type="checkbox" value="sneakers" onchange="applyFilters()"> Sneakers</label>
+            <label class="filter-opt"><input type="checkbox" value="slides" onchange="applyFilters()"> Slides</label>
+            <label class="filter-opt"><input type="checkbox" value="bottoms" onchange="applyFilters()"> Bottoms</label>
+          </div>
+        </div>
+        <hr class="filter-divider">
+        <div class="filter-section">
+          <div class="filter-title">Availability</div>
+          <div class="filter-options">
+            <label class="filter-opt"><input type="checkbox" value="instock" id="filterInStock" onchange="applyFilters()"> In Stock Only</label>
+          </div>
+        </div>
+        <hr class="filter-divider">
+        <div class="filter-section">
+          <div class="filter-title">Price Range</div>
+          <div class="price-range">
+            <input type="number" class="price-input" id="priceMin" placeholder="$0" oninput="applyFilters()">
+            <span style="color:#333;font-size:12px;">–</span>
+            <input type="number" class="price-input" id="priceMax" placeholder="$500" oninput="applyFilters()">
+          </div>
+        </div>
+        <hr class="filter-divider">
+        <div class="filter-section">
+          <div class="filter-title">Size</div>
+          <div class="filter-options" id="sizeFilterOptions">
+            <label class="filter-opt"><input type="checkbox" value="7" onchange="applyFilters()"> 7</label>
+            <label class="filter-opt"><input type="checkbox" value="8" onchange="applyFilters()"> 8</label>
+            <label class="filter-opt"><input type="checkbox" value="9" onchange="applyFilters()"> 9</label>
+            <label class="filter-opt"><input type="checkbox" value="10" onchange="applyFilters()"> 10</label>
+            <label class="filter-opt"><input type="checkbox" value="11" onchange="applyFilters()"> 11</label>
+            <label class="filter-opt"><input type="checkbox" value="12" onchange="applyFilters()"> 12</label>
+            <label class="filter-opt"><input type="checkbox" value="S" onchange="applyFilters()"> S</label>
+            <label class="filter-opt"><input type="checkbox" value="M" onchange="applyFilters()"> M</label>
+            <label class="filter-opt"><input type="checkbox" value="L" onchange="applyFilters()"> L</label>
+          </div>
+        </div>
+        <button class="clear-filters" onclick="clearFilters()">Clear All Filters</button>
+      </div>
+
+      <!-- PRODUCTS -->
+      <div>
+        <div class="shop-main-header">
+          <div class="result-count" id="resultCount">13 products</div>
+          <select class="sort-select" onchange="applyFilters()">
+            <option value="default">Sort: Default</option>
+            <option value="newest">Newest</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="popular">Most Popular</option>
+            <option value="bestsellers">Best Sellers</option>
+          </select>
+        </div>
+        <div class="products-grid" id="shopGrid"></div>
+        <div class="no-results" id="noResults" style="display:none;">
+          <h3>No products found</h3>
+          <p style="color:#333;font-size:13px;margin-bottom:20px;">Try adjusting your filters.</p>
+          <button onclick="clearFilters()" class="btn-outline" style="padding:10px 24px;font-size:13px;">Clear Filters</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- MOBILE FILTER OVERLAY -->
+<div class="mobile-filter-overlay" id="mobileFilterOverlay" onclick="closeMobileFilters()"></div>
+<div class="mobile-filter-panel" id="mobileFilterPanel">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+    <span style="font-size:15px;font-weight:700;">Filters</span>
+    <button onclick="closeMobileFilters()" style="background:none;border:none;color:#fff;font-size:18px;cursor:pointer;">✕</button>
+  </div>
+  <div id="mobileFilterContent"></div>
+  <button onclick="closeMobileFilters();applyFilters();" class="btn-primary" style="width:100%;margin-top:16px;border-radius:10px;">Apply Filters</button>
+</div>
+
+<div id="footerContainer"></div>
+<script src="cart.js?v=3"></script>
+<script src="products.js?v=12"></script>
+
+<script>
+document.getElementById('globalStyles').textContent = getGlobalCSS();
+document.getElementById('navContainer').innerHTML = getNavHTML('shop');
+document.getElementById('footerContainer').innerHTML = getFooterHTML();
+
+function getCheckedValues(name) {
+  return [...document.querySelectorAll(`input[type=checkbox][value]:checked`)].filter(el => {
+    return el.closest('.filter-section') && el.value === name || true;
+  }).map(el => el.value);
+}
+
+function applyFilters() {
+  let products = [...PRODUCTS];
+  const q = document.getElementById('shopSearch')?.value?.toLowerCase()||'';
+  const cats = [...document.querySelectorAll('input[value=sneakers],input[value=slides],input[value=bottoms]')].filter(e=>e.checked).map(e=>e.value);
+  const sizes = [...document.querySelectorAll('.filter-options input[type=checkbox]:checked')].filter(e=>['7','8','9','10','11','12','S','M','L','XL'].includes(e.value)).map(e=>e.value);
+  const inStockOnly = document.getElementById('filterInStock')?.checked;
+  const minP = parseFloat(document.getElementById('priceMin')?.value)||0;
+  const maxP = parseFloat(document.getElementById('priceMax')?.value)||9999;
+  const sort = document.querySelector('.sort-select')?.value||'default';
+
+  if (q) products = products.filter(p => p.name.toLowerCase().includes(q)||p.brand.toLowerCase().includes(q)||p.category.toLowerCase().includes(q));
+  if (cats.length) products = products.filter(p => cats.includes(p.category));
+  if (sizes.length) products = products.filter(p => p.sizes && sizes.some(s => p.sizes.includes(s) && (p.stock[s]||0)>0));
+  if (inStockOnly) products = products.filter(p => !p.isSoldOut);
+  products = products.filter(p => p.price >= minP && p.price <= maxP);
+
+  if (sort==='price-asc') products.sort((a,b)=>a.price-b.price);
+  else if (sort==='price-desc') products.sort((a,b)=>b.price-a.price);
+  else if (sort==='popular') products.sort((a,b)=>(b.sold||0)-(a.sold||0));
+  else if (sort==='bestsellers') products = products.filter(p=>p.isBestSeller).concat(products.filter(p=>!p.isBestSeller));
+  else if (sort==='newest') products = products.filter(p=>p.isNewArrival).concat(products.filter(p=>!p.isNewArrival));
+
+  // Handle URL params
+  const urlCat = new URLSearchParams(location.search).get('cat');
+  if (urlCat && !cats.length) products = products.filter(p=>p.category===urlCat);
+
+  const grid = document.getElementById('shopGrid');
+  const no = document.getElementById('noResults');
+  const rc = document.getElementById('resultCount');
+  if (products.length === 0) { grid.innerHTML=''; no.style.display='block'; }
+  else { no.style.display='none'; grid.innerHTML = products.map(p=>renderProductCard(p)).join(''); }
+  rc.textContent = `${products.length} product${products.length!==1?'s':''}`;
+}
+
+function clearFilters() {
+  document.querySelectorAll('.filters-panel input[type=checkbox]').forEach(c=>c.checked=false);
+  document.getElementById('priceMin').value='';
+  document.getElementById('priceMax').value='';
+  document.getElementById('shopSearch').value='';
+  document.querySelector('.sort-select').value='default';
+  applyFilters();
+}
+
+function openMobileFilters() {
+  document.getElementById('mobileFilterOverlay').classList.add('open');
+  document.getElementById('mobileFilterPanel').classList.add('open');
+}
+function closeMobileFilters() {
+  document.getElementById('mobileFilterOverlay').classList.remove('open');
+  document.getElementById('mobileFilterPanel').classList.remove('open');
+}
+
+// Check URL params
+const urlParams = new URLSearchParams(location.search);
+const urlQ = urlParams.get('q');
+if (urlQ) document.getElementById('shopSearch').value = urlQ;
+
+onProductsReady(function() { applyFilters(); });
+</script>
+</body>
+</html>

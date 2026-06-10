@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title id="pageTitle">Product | The Illest Supply</title>
+<meta name="description" id="pageDesc" content="Shop this piece from The Illest Supply. Limited stock, fast shipping."/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style id="globalStyles">
+.pd-social-stats{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;}
+.pd-stat{font-size:11px;color:#555;font-weight:600;letter-spacing:0.04em;}
+.pd-stat span{color:#aaa;}
+.pd-stat.viewing{background:rgba(201,169,110,0.08);border:1px solid rgba(201,169,110,0.2);color:#c9a96e;padding:6px 14px;border-radius:50px;font-size:12px;font-weight:700;letter-spacing:0.06em;display:flex;align-items:center;gap:6px;}
+.pd-stat.viewing .dot{width:6px;height:6px;border-radius:50%;background:#c9a96e;display:inline-block;animation:pulse-dot 1.5s ease-in-out infinite;}
+@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.4;transform:scale(0.7);}}
+.low-stock-alert{display:inline-block;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#ef4444;font-size:12px;font-weight:700;letter-spacing:0.08em;padding:6px 14px;border-radius:50px;margin-bottom:16px;}
+.card-live-stats{display:flex;gap:10px;font-size:10px;color:#666;font-weight:600;margin-bottom:6px;}
+.low-stock-badge{background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.25);color:#ef4444;font-size:10px;font-weight:700;letter-spacing:0.06em;padding:4px 10px;border-radius:50px;margin-bottom:6px;display:inline-block;}
+.sold-count{font-size:12px;color:#c9a96e;font-weight:800;letter-spacing:0.04em;margin-bottom:4px;}
+.view-count-badge{position:absolute;bottom:10px;left:10px;z-index:10;display:inline-flex;align-items:center;gap:5px;padding:6px 11px;border-radius:999px;background:rgba(0,0,0,0.72);color:#fff;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;font-size:12px;font-weight:500;line-height:1;box-shadow:0 4px 14px rgba(0,0,0,0.35);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);pointer-events:none;white-space:nowrap;}.view-count-badge::before{content:"👁";font-size:12px;line-height:1;flex-shrink:0;}@media(max-width:640px){.view-count-badge{font-size:11px;padding:5px 9px;}}
+#pdViewBadge{position:absolute!important;top:12px!important;bottom:auto!important;left:12px!important;right:auto!important;width:auto!important;height:auto!important;min-width:unset!important;min-height:unset!important;max-width:max-content!important;display:inline-flex!important;align-items:center!important;gap:5px!important;padding:6px 10px!important;border-radius:999px!important;background:rgba(0,0,0,0.72)!important;color:#fff!important;font-size:11px!important;font-weight:500!important;line-height:1!important;white-space:nowrap!important;backdrop-filter:blur(6px)!important;-webkit-backdrop-filter:blur(6px)!important;box-shadow:0 4px 12px rgba(0,0,0,0.25)!important;pointer-events:none!important;z-index:5!important;}@media(max-width:640px){#pdViewBadge{font-size:10px!important;padding:5px 8px!important;top:10px!important;left:10px!important;}}</style>
+<style>
+.breadcrumb{font-size:11px;color:#333;padding:16px 0;letter-spacing:0.04em;}
+.breadcrumb a{color:#333;transition:color .2s;}.breadcrumb a:hover{color:#fff;}
+.breadcrumb span{color:#555;}
+
+.product-layout{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;}
+.product-gallery{position:sticky;top:90px;}
+.main-img-wrap{aspect-ratio:1;border-radius:20px;overflow:hidden;background:#0a0a0a;margin-bottom:12px;position:relative;}
+.main-img-wrap img,.main-img-wrap video{width:100%;height:100%;object-fit:cover;}
+.thumb-row{display:flex;gap:8px;}
+.thumb{width:64px;height:64px;border-radius:10px;overflow:hidden;cursor:pointer;border:2px solid transparent;transition:border-color .2s;background:#0a0a0a;}
+.thumb.active{border-color:#fff;}
+.thumb img{width:100%;height:100%;object-fit:cover;}
+
+.product-detail{padding:8px 0;}
+.pd-category{font-size:10px;letter-spacing:0.2em;color:#444;text-transform:uppercase;font-weight:600;margin-bottom:8px;}
+.pd-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,5vw,60px);line-height:1;margin-bottom:12px;letter-spacing:0.02em;}
+.pd-price-row{display:flex;align-items:baseline;gap:12px;margin-bottom:6px;}
+.pd-price{font-size:44px;font-weight:900;letter-spacing:-0.01em;}
+.pd-orig{font-size:20px;color:#444;text-decoration:line-through;}
+.pd-save{font-size:16px;color:#22c55e;font-weight:800;}
+.pd-sold{font-size:14px;color:#888;margin-bottom:12px;font-weight:600;}
+
+.pd-badges{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;}
+.pd-badge{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:0.08em;padding:7px 14px;border-radius:50px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:#888;}
+.pd-badge.green{background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.2);color:#22c55e;}
+.pd-badge.yellow{background:rgba(234,179,8,.08);border-color:rgba(234,179,8,.2);color:#eab308;}
+
+.size-label{font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#444;font-weight:600;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;}
+.size-label a{color:#555;font-size:11px;}
+.size-label a:hover{color:#fff;}
+.size-grid{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;}
+.sz-btn{padding:10px 16px;border-radius:10px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:#666;font-size:13px;font-weight:600;cursor:pointer;transition:all .18s;min-width:52px;text-align:center;}
+.sz-btn:hover{border-color:rgba(255,255,255,0.3);color:#fff;}
+.sz-btn.selected{border-color:#fff;color:#fff;background:rgba(255,255,255,0.08);}
+.sz-btn.oos{opacity:.2;cursor:not-allowed;pointer-events:none;text-decoration:line-through;}
+.size-error{font-size:12px;color:#ef4444;margin-bottom:12px;display:none;}
+
+.qty-row{display:flex;align-items:center;gap:16px;margin-bottom:20px;}
+.qty-label{font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#444;font-weight:600;}
+.qty-control{display:flex;align-items:center;gap:10px;background:#111;border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:4px;}
+.qty-control button{width:32px;height:32px;border-radius:8px;border:none;background:transparent;color:#fff;font-size:16px;cursor:pointer;}
+.qty-control span{min-width:32px;text-align:center;font-size:15px;font-weight:700;}
+
+.pd-actions{display:flex;flex-direction:column;gap:10px;margin-bottom:24px;}
+.pd-atc{padding:16px;background:#fff;color:#000;border:none;border-radius:14px;font-size:14px;font-weight:700;letter-spacing:0.07em;cursor:pointer;transition:background .2s;}
+.pd-atc:hover{background:#e5e5e5;}
+.pd-bn{padding:15px;background:transparent;color:#fff;border:1px solid rgba(255,255,255,0.2);border-radius:14px;font-size:14px;font-weight:600;letter-spacing:0.06em;cursor:pointer;transition:all .2s;}
+.pd-bn:hover{border-color:#fff;background:rgba(255,255,255,0.05);}
+.pd-sold-out-btn{padding:16px;background:#111;color:#444;border:1px solid rgba(255,255,255,0.04);border-radius:14px;font-size:14px;font-weight:700;letter-spacing:0.07em;cursor:not-allowed;}
+
+.trust-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:28px;}
+.trust-pill{display:flex;align-items:center;gap:6px;font-size:11px;color:#444;padding:6px 12px;background:#0d0d0d;border:1px solid rgba(255,255,255,0.05);border-radius:50px;}
+
+.pd-tabs{border-bottom:1px solid rgba(255,255,255,0.06);display:flex;gap:0;margin-bottom:20px;}
+.pd-tab{padding:12px 20px;font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#333;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .2s;}
+.pd-tab.active,.pd-tab:hover{color:#fff;border-bottom-color:#fff;}
+.pd-tab-content{display:none;}
+.pd-tab-content.active{display:block;}
+.pd-desc{font-size:13px;color:#555;line-height:1.7;}
+.pd-specs table{width:100%;border-collapse:collapse;}
+.pd-specs tr{border-bottom:1px solid rgba(255,255,255,0.04);}
+.pd-specs td{padding:10px 0;font-size:13px;color:#555;}
+.pd-specs td:first-child{color:#888;width:40%;}
+
+.related-section{padding:60px 0 40px;}
+
+/* STICKY MOBILE BUY BAR */
+.sticky-buy-bar{display:none;position:fixed;bottom:0;left:0;right:0;padding:12px 16px;background:#080808;border-top:1px solid rgba(255,255,255,0.06);z-index:400;gap:10px;}
+@media(max-width:768px){
+  .product-layout{grid-template-columns:1fr;gap:24px;}
+  .product-gallery{position:static;}
+  .sticky-buy-bar{display:flex;}
+  .pd-actions{display:none;}
+}
+</style>
+  <meta property="og:type" content="product">
+  <meta property="og:site_name" content="The Illest Supply">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" id="canonicalTag" href="https://illestsupply.com/product.html">
+</head>
+<body>
+<div id="navContainer"></div>
+<main>
+<section style="padding-bottom:60px;">
+  <div class="container">
+    <div class="breadcrumb"><a href="index.html">Home</a> › <a href="shop.html">Shop</a> › <span id="breadProduct">Product</span></div>
+    <div class="product-layout">
+      <!-- GALLERY -->
+      <div class="product-gallery">
+        <div class="main-img-wrap" id="mainMedia"></div>
+        <div class="thumb-row" id="thumbRow"></div>
+      </div>
+      <!-- DETAILS -->
+      <div class="product-detail">
+        <div class="pd-category" id="pdCat"></div>
+        <div class="pd-name" id="pdName">Loading...</div>
+        <div class="pd-price-row">
+          <span class="pd-price" id="pdPrice"></span>
+          <span class="pd-orig" id="pdOrig"></span>
+          <span class="pd-save" id="pdSave"></span>
+        </div>
+        <div class="pd-sold" id="pdSold"></div>
+        <div class="pd-social-stats" id="pdStats"></div>
+        <div id="pdLowStock"></div>
+        <div class="pd-badges" id="pdBadges"></div>
+
+        <div class="size-label"><span>Select Size</span><a href="size-chart.html">Size Guide →</a></div>
+        <div class="size-grid" id="sizeGrid"></div>
+        <div class="size-error" id="sizeError">Please select a size before adding to cart.</div>
+
+        <div class="qty-row">
+          <span class="qty-label">Qty</span>
+          <div class="qty-control">
+            <button onclick="changeQty(-1)">−</button>
+            <span id="qtyVal">1</span>
+            <button onclick="changeQty(1)">+</button>
+          </div>
+        </div>
+
+        <div class="pd-actions" id="pdActions"></div>
+
+        <div class="trust-row">
+          <div class="trust-pill">📦 Ships in 1–3 days</div>
+          <div class="trust-pill">🎁 Free over $150</div>
+          <div class="trust-pill">✅ Secure Checkout</div>
+        </div>
+
+        <div class="pd-tabs">
+          <div class="pd-tab active" onclick="switchTab('desc',this)">Description</div>
+          <div class="pd-tab" onclick="switchTab('specs',this)">Details</div>
+          <div class="pd-tab" onclick="switchTab('ship',this)">Shipping</div>
+        </div>
+        <div class="pd-tab-content active" id="tab-desc">
+          <div class="pd-desc" id="pdDesc"></div>
+        </div>
+        <div class="pd-tab-content" id="tab-specs">
+          <div class="pd-specs" id="pdSpecs"></div>
+        </div>
+        <div class="pd-tab-content" id="tab-ship">
+          <div class="pd-desc">
+            <strong style="color:#fff;display:block;margin-bottom:8px;">Shipping Info</strong>
+            Standard Shipping: 1–3 business days · Free on orders over $150.<br><br>
+            Orders are processed within 24 hours. Tracking info will be sent to your email after purchase.<br><br>
+            <a href="shipping-policy.html" style="color:#555;font-size:12px;text-decoration:underline;">View Full Shipping Policy →</a>
+          </div>
+        </div>
+        <p style="font-size:11px;color:#222;margin-top:20px;line-height:1.6;">The Illest Supply is an independent resale shop. Brand names are used for descriptive purposes only.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RELATED -->
+<section class="related-section" style="background:#050505;">
+  <div class="container">
+    <div class="section-title">You Might Also Like</div>
+    <div class="section-heading">Related Products</div>
+    <div class="products-grid" id="relatedGrid"></div>
+  </div>
+</section>
+</main>
+
+<!-- STICKY MOBILE BUY BAR -->
+<div class="sticky-buy-bar">
+  <button onclick="pdAddToCart()" class="pd-atc" style="flex:1;padding:14px;border-radius:12px;font-size:13px;">Add to Cart</button>
+  <button onclick="pdBuyNow()" class="pd-bn" style="flex:1;padding:13px;border-radius:12px;font-size:13px;border:1px solid rgba(255,255,255,.2);">Buy Now</button>
+</div>
+
+<div id="footerContainer"></div>
+<script src="cart.js?v=3"></script>
+<script src="products.js?v=12"></script>
+<script>
+document.getElementById('globalStyles').textContent = getGlobalCSS();
+document.getElementById('navContainer').innerHTML = getNavHTML('shop');
+document.getElementById('footerContainer').innerHTML = getFooterHTML();
+
+// Wait for overrides then render product
+function renderProductPage() {
+let currentProduct = null;
+let selectedSize = null;
+let qty = 1;
+
+const params = new URLSearchParams(location.search);
+const pid = parseInt(params.get('id'));
+currentProduct = getProduct(pid);
+
+if (!currentProduct) { document.querySelector('main').innerHTML = '<div style="text-align:center;padding:100px 20px;"><h2>Product not found</h2><a href="shop.html" class="btn-outline" style="margin-top:16px;display:inline-block;">Back to Shop</a></div>'; }
+else {
+  const p = currentProduct;
+  const save = getSavePercent(p);
+  const soldOut = p.isSoldOut || Object.values(p.stock||{}).every(v=>v===0);
+
+  document.getElementById('pageTitle').textContent = `${p.name} | The Illest Supply`;
+  // Dynamic OG + structured data
+  if (typeof injectPageMeta === 'function') {
+    injectPageMeta({
+      title: p.name + ' | The Illest Supply',
+      description: p.desc || ('Shop ' + p.name + ' from The Illest Supply. Premium designer piece, fast shipping.'),
+      image: p.img,
+      url: 'https://illestsupply.com/product.html?id=' + p.id,
+      type: 'product'
+    });
+  }
+  if (typeof injectProductSchema === 'function') injectProductSchema(p);
+
+  document.getElementById('pageDesc').content = p.desc;
+  document.getElementById('breadProduct').textContent = p.name;
+  document.getElementById('pdCat').textContent = `${p.brand} · ${p.category}`;
+  document.getElementById('pdName').textContent = p.name;
+  document.getElementById('pdPrice').textContent = `$${p.price}`;
+  document.getElementById('pdOrig').textContent = `$${p.origPrice}`;
+  document.getElementById('pdSave').textContent = `-${save}%`;
+  document.getElementById('pdSold').textContent = soldOut ? 'All pairs gone' : `${p.sold}+ sold`;
+  document.getElementById('pdDesc').textContent = p.desc;
+
+  // Gallery
+  const mainMedia = document.getElementById('mainMedia');
+
+  // ── Viewer count (localStorage — same key as shop/home pages) ──────
+  var _vcKey = 'ils_vc_' + p.id;
+  var views;
+  try {
+    var _vcObj = JSON.parse(localStorage.getItem(_vcKey) || '{}');
+    if (_vcObj.v && Date.now() - _vcObj.ts < 7200000) {
+      views = _vcObj.v;
+    } else {
+      var _popularIds = [1,2,4,9,10];
+      var _isPopular = _popularIds.indexOf(parseInt(p.id)) !== -1;
+      views = _isPopular
+        ? Math.floor(Math.random()*(450-150+1))+150
+        : Math.floor(Math.random()*(150-20+1))+20;
+      localStorage.setItem(_vcKey, JSON.stringify({v:views, ts:Date.now()}));
+    }
+  } catch(e) {
+    views = Math.floor(Math.random()*130)+20;
+  }
+
+  // Helper: inject view-count badge into mainMedia after media is set
+  function injectViewBadge() {
+    if (document.getElementById('pdViewBadge')) return;
+    var vb = document.createElement('div');
+    vb.id = 'pdViewBadge';
+    vb.className = 'view-count-badge';
+    vb.setAttribute('data-product-id', p.id);
+    vb.style.cssText = 'position:absolute!important;top:12px!important;bottom:auto!important;left:12px!important;right:auto!important;width:auto!important;height:auto!important;min-width:unset!important;min-height:unset!important;max-width:max-content!important;display:inline-flex!important;align-items:center!important;gap:5px!important;padding:6px 10px!important;border-radius:999px!important;background:rgba(0,0,0,0.72)!important;color:#fff!important;font-size:11px!important;font-weight:500!important;line-height:1!important;white-space:nowrap!important;backdrop-filter:blur(6px)!important;-webkit-backdrop-filter:blur(6px)!important;box-shadow:0 4px 12px rgba(0,0,0,0.25)!important;pointer-events:none!important;z-index:5!important;';
+    vb.innerHTML = '<span id="pdVbNum">' + views + '</span> people viewing now';
+    mainMedia.appendChild(vb);
+  }
+
+  // pdStats removed — sold count shown via pdSold above
+
+  // Low stock check
+  const lowEl = document.getElementById('pdLowStock');
+  if(lowEl && p.stock){
+    const total = Object.values(p.stock).reduce((a,b)=>a+b,0);
+    if(total <= 5 && total > 0) lowEl.innerHTML = `<div class="low-stock-alert">⚠️ Only ${total} pairs left — moving fast</div>`;
+  }
+
+  // Set main media (video OR image) then inject badge on top
+  if (p.video) {
+    mainMedia.innerHTML = `<video src="${p.video}" autoplay muted loop playsinline></video>`;
+    injectViewBadge();
+  } else {
+    mainMedia.innerHTML = `<img src="${p.img}" alt="${p.name}" id="mainImg">`;
+    injectViewBadge();
+  }
+
+  const thumbs = p.imgs||[p.img];
+  const thumbRow = document.getElementById('thumbRow');
+  thumbs.forEach((src,i) => {
+    const d = document.createElement('div');
+    d.className = 'thumb' + (i===0?' active':'');
+    d.innerHTML = `<img src="${src}" alt="${p.name}">`;
+    d.onclick = () => {
+      document.querySelectorAll('.thumb').forEach(t=>t.classList.remove('active'));
+      d.classList.add('active');
+      if (!p.video) document.getElementById('mainImg').src = src;
+    };
+    thumbRow.appendChild(d);
+  });
+
+  // Badges
+  const badgeMap = {AUTH:'green',HOT:'',NEW:'',LOW:'yellow',SOLD:''};
+  const badgeLabels = {AUTH:'🔥 Heat',HOT:'🔥 Trending',NEW:'New Arrival',LOW:'⚠ Low Stock',SOLD:'Sold Out'};
+  document.getElementById('pdBadges').innerHTML = (p.badges||[]).map(b=>`<div class="pd-badge ${badgeMap[b]||''}">${badgeLabels[b]||b}</div>`).join('');
+
+  // Sizes
+  const sg = document.getElementById('sizeGrid');
+  (p.sizes||[]).forEach(s => {
+    const inStock = (p.stock[s]||0) > 0;
+    const btn = document.createElement('button');
+    btn.className = 'sz-btn' + (inStock?'':' oos');
+    btn.textContent = s;
+    btn.dataset.size = s;
+    if (inStock) btn.onclick = () => {
+      document.querySelectorAll('.sz-btn').forEach(b=>b.classList.remove('selected'));
+      btn.classList.add('selected');
+      selectedSize = s;
+      document.getElementById('sizeError').style.display='none';
+    };
+    sg.appendChild(btn);
+  });
+
+  // Specs
+  document.getElementById('pdSpecs').innerHTML = `
+    <table>
+      <tr><td>Brand</td><td>${p.brand}</td></tr>
+      <tr><td>Category</td><td>${p.category}</td></tr>
+      <tr><td>Condition</td><td>${p.condition}</td></tr>
+      <tr><td>Authentication</td><td>Verified before listing</td></tr>
+      <tr><td>Shipping</td><td>1–3 business days</td></tr>
+      <tr><td>Returns</td><td>Final sale — see returns policy</td></tr>
+    </table>`;
+
+  // Actions
+  const actDiv = document.getElementById('pdActions');
+  if (soldOut) {
+    actDiv.innerHTML = `<button class="pd-sold-out-btn">Sold Out</button>`;
+  } else {
+    actDiv.innerHTML = `
+      <button class="pd-atc" onclick="pdAddToCart()">Add to Cart</button>
+      <button class="pd-bn" onclick="pdBuyNow()">⚡ Buy Now</button>`;
+  }
+
+  // Related
+  const related = PRODUCTS.filter(pr => pr.id !== p.id && (pr.category===p.category||pr.brand===p.brand) && !pr.isSoldOut).slice(0,4);
+  document.getElementById('relatedGrid').innerHTML = related.length
+    ? related.map(pr=>renderProductCard(pr)).join('')
+    : PRODUCTS.filter(pr=>pr.id!==p.id&&!pr.isSoldOut).slice(0,4).map(pr=>renderProductCard(pr)).join('');
+}
+
+function changeQty(dir) {
+  qty = Math.max(1, Math.min(10, qty + dir));
+  document.getElementById('qtyVal').textContent = qty;
+}
+
+function pdAddToCart() {
+  if (!currentProduct) return;
+  const needsSize = currentProduct.sizes && currentProduct.sizes.length > 0;
+  if (needsSize && !selectedSize) {
+    document.getElementById('sizeError').style.display='block';
+    document.getElementById('sizeGrid').scrollIntoView({behavior:'smooth',block:'nearest'});
+    return;
+  }
+  for (let i=0;i<qty;i++) Cart.add(currentProduct, selectedSize);
+  Cart.openDrawer();
+}
+
+function pdBuyNow() {
+  if (!currentProduct) return;
+  const needsSize = currentProduct.sizes && currentProduct.sizes.length > 0;
+  if (needsSize && !selectedSize) {
+    document.getElementById('sizeError').style.display='block';
+    return;
+  }
+  for (let i=0;i<qty;i++) Cart.add(currentProduct, selectedSize);
+  window.location.href = 'checkout.html';
+}
+
+function switchTab(name, el) {
+  document.querySelectorAll('.pd-tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.pd-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(`tab-${name}`).classList.add('active');
+  el.classList.add('active');
+}
+
+}
+
+onProductsReady(renderProductPage);
+</script>
+</body>
+</html>

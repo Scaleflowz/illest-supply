@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Track Your Order – The Illest Supply</title>
+  <link rel="icon" href="https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/409f6a116_918D9A7E-D61E-4658-A7B6-5DF1F8B5AC78.png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Bebas+Neue&display=swap" rel="stylesheet">
+  <style id="globalStyles"></style>
+  <style>
+    .tracker-wrap {
+      min-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 60px 20px 80px;
+    }
+    .tracker-heading {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(36px, 6vw, 60px);
+      letter-spacing: .06em;
+      color: #fff;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+    .tracker-sub {
+      font-size: 13px;
+      color: #555;
+      margin-bottom: 40px;
+      text-align: center;
+      letter-spacing: .04em;
+      max-width: 380px;
+      line-height: 1.6;
+    }
+    .tracker-box {
+      width: 100%;
+      max-width: 520px;
+      background: #0d0d0d;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 16px;
+      padding: 32px;
+    }
+    .tracker-input-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .tracker-input-row input {
+      flex: 1;
+      padding: 14px 18px;
+      background: #080808;
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 10px;
+      color: #fff;
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: border-color .2s;
+      min-width: 0;
+    }
+    .tracker-input-row input::placeholder { color: #333; }
+    .tracker-input-row input:focus { border-color: rgba(255,255,255,.3); }
+    .tracker-input-row button {
+      padding: 14px 22px;
+      background: #fff;
+      color: #000;
+      border: none;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: opacity .2s;
+      flex-shrink: 0;
+    }
+    .tracker-input-row button:hover { opacity: .85; }
+
+    .carrier-pills {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .carrier-pill {
+      font-size: 11px;
+      color: #555;
+      border: 1px solid rgba(255,255,255,.06);
+      border-radius: 20px;
+      padding: 4px 12px;
+      letter-spacing: .04em;
+    }
+    .carrier-pill.active {
+      color: #fff;
+      border-color: rgba(255,255,255,.2);
+      background: rgba(255,255,255,.05);
+    }
+
+    .tracking-hint {
+      font-size: 12px;
+      color: #444;
+      margin-top: 4px;
+      letter-spacing: .03em;
+    }
+
+    /* AfterShip embed frame */
+    #aftershipFrame {
+      display: none;
+      width: 100%;
+      max-width: 520px;
+      margin-top: 24px;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.08);
+    }
+    #aftershipFrame iframe {
+      width: 100%;
+      height: 560px;
+      border: none;
+      display: block;
+      background: #0d0d0d;
+    }
+
+    /* Direct link fallback */
+    #trackLink {
+      display: none;
+      width: 100%;
+      max-width: 520px;
+      margin-top: 20px;
+    }
+    .track-result-card {
+      background: #0d0d0d;
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 14px;
+      padding: 24px;
+      text-align: center;
+    }
+    .track-result-card .track-icon { font-size: 32px; margin-bottom: 12px; }
+    .track-result-card h3 { color: #fff; font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+    .track-result-card p { color: #555; font-size: 13px; margin-bottom: 20px; line-height: 1.6; }
+    .track-result-card a.track-btn {
+      display: inline-block;
+      background: #fff;
+      color: #000;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: .07em;
+      padding: 13px 28px;
+      border-radius: 10px;
+      text-decoration: none;
+      transition: opacity .2s;
+    }
+    .track-result-card a.track-btn:hover { opacity: .85; }
+    .track-num-display {
+      font-size: 12px;
+      color: #444;
+      margin-top: 14px;
+      letter-spacing: .04em;
+    }
+
+    /* Error state */
+    .track-error {
+      text-align: center;
+      padding: 24px;
+      color: #555;
+      font-size: 13px;
+    }
+    .track-error strong { display: block; color: #888; font-size: 15px; margin-bottom: 6px; }
+
+    /* Where to find tracking */
+    .find-tracking {
+      margin-top: 28px;
+      border-top: 1px solid rgba(255,255,255,.06);
+      padding-top: 20px;
+    }
+    .find-tracking-label {
+      font-size: 11px;
+      color: #444;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .find-tracking-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .find-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .find-step-num {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.06);
+      color: #666;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .find-step-text { font-size: 12px; color: #555; line-height: 1.5; }
+    .find-step-text strong { color: #888; }
+
+    @media (max-width: 480px) {
+      .tracker-box { padding: 22px 16px; }
+      .tracker-input-row { flex-direction: column; }
+      .tracker-input-row button { width: 100%; }
+      #aftershipFrame iframe { height: 480px; }
+    }
+  </style>
+  <meta name="description" content="Track your order from The Illest Supply. Enter your tracking number for live USPS updates.">
+  <meta property="og:title" content="Track Your Order | The Illest Supply">
+  <meta property="og:description" content="Track your order from The Illest Supply. Enter your tracking number for live USPS updates.">
+  <meta property="og:image" content="https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/409f6a116_918D9A7E-D61E-4658-A7B6-5DF1F8B5AC78.png">
+  <meta property="og:url" content="https://illestsupply.com/order-tracker.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="The Illest Supply">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Track Your Order | The Illest Supply">
+  <meta name="twitter:image" content="https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/409f6a116_918D9A7E-D61E-4658-A7B6-5DF1F8B5AC78.png">
+  <link rel="canonical" href="https://illestsupply.com/order-tracker.html">
+</head>
+<body>
+  <div id="navContainer"></div>
+
+  <main class="tracker-wrap">
+    <h1 class="tracker-heading">Track Your Order</h1>
+    <p class="tracker-sub">Enter your USPS tracking number from your shipping confirmation email</p>
+
+    <div class="tracker-box">
+      <div class="carrier-pills">
+        <div class="carrier-pill active">📦 USPS</div>
+        <div class="carrier-pill">UPS</div>
+        <div class="carrier-pill">FedEx</div>
+        <div class="carrier-pill">DHL</div>
+      </div>
+      <div class="tracker-input-row">
+        <input type="text" id="trackingInput" placeholder="e.g. 9400111899223397622390" autocomplete="off" autocapitalize="off" spellcheck="false">
+        <button onclick="doTrack()">TRACK</button>
+      </div>
+      <div class="tracking-hint">Usually a 20–22 digit number found in your confirmation email</div>
+
+      <div class="find-tracking">
+        <div class="find-tracking-label">Where to find your tracking number</div>
+        <div class="find-tracking-steps">
+          <div class="find-step">
+            <div class="find-step-num">1</div>
+            <div class="find-step-text">Check your <strong>order confirmation email</strong> from The Illest Supply</div>
+          </div>
+          <div class="find-step">
+            <div class="find-step-num">2</div>
+            <div class="find-step-text">Look for a line that says <strong>"Tracking Number:"</strong> or <strong>"Shipped via USPS"</strong></div>
+          </div>
+          <div class="find-step">
+            <div class="find-step-num">3</div>
+            <div class="find-step-text">Paste the number above and hit <strong>Track</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AfterShip embed -->
+    <div id="aftershipFrame">
+      <iframe id="aftershipIframe" src="" title="Package Tracking" allowfullscreen></iframe>
+    </div>
+
+    <!-- Fallback direct link card -->
+    <div id="trackLink">
+      <div class="track-result-card">
+        <div class="track-icon">📦</div>
+        <h3>Your package is on its way!</h3>
+        <p>Tap below to see real-time updates — exact location, scan history, and estimated delivery.</p>
+        <a href="#" id="aftershipBtn" target="_blank" class="track-btn">VIEW LIVE TRACKING →</a>
+        <div class="track-num-display" id="trackNumDisplay"></div>
+      </div>
+    </div>
+  </main>
+
+  <div id="footerContainer"></div>
+
+  <script src="cart.js?v=3"></script>
+  <script src="products.js?v=11"></script>
+  <script>
+    document.getElementById('globalStyles').textContent = getGlobalCSS();
+    document.getElementById('navContainer').innerHTML = getNavHTML('track');
+    document.getElementById('footerContainer').innerHTML = getFooterHTML();
+
+    // Carrier pill selection (visual only for now, USPS is primary)
+    document.querySelectorAll('.carrier-pill').forEach(pill => {
+      pill.addEventListener('click', function() {
+        document.querySelectorAll('.carrier-pill').forEach(p => p.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+
+    function doTrack() {
+      const raw = document.getElementById('trackingInput').value.trim().replace(/\s+/g, '');
+      if (!raw) {
+        document.getElementById('trackingInput').style.borderColor = 'rgba(239,68,68,.5)';
+        setTimeout(() => document.getElementById('trackingInput').style.borderColor = '', 1500);
+        return;
+      }
+
+      const aftershipUrl = `https://track.aftership.com/usps/${raw}`;
+
+      // Try iframe first
+      const frameWrap = document.getElementById('aftershipFrame');
+      const iframe    = document.getElementById('aftershipIframe');
+      const linkCard  = document.getElementById('trackLink');
+      const btn       = document.getElementById('aftershipBtn');
+      const numDisplay = document.getElementById('trackNumDisplay');
+
+      // AfterShip blocks iframe embedding, so go straight to the link card
+      // which opens in a new tab — cleaner UX
+      linkCard.style.display = 'block';
+      frameWrap.style.display = 'none';
+      btn.href = aftershipUrl;
+      numDisplay.textContent = 'Tracking #: ' + raw;
+
+      // Scroll to result
+      linkCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    // Enter key support
+    document.getElementById('trackingInput').addEventListener('keydown', e => {
+      if (e.key === 'Enter') doTrack();
+    });
+
+    // Pre-fill from URL param ?tracking=XXXX
+    const urlParams = new URLSearchParams(window.location.search);
+    const preTrack = urlParams.get('tracking');
+    if (preTrack) {
+      document.getElementById('trackingInput').value = preTrack;
+      doTrack();
+    }
+  </script>
+</body>
+</html>

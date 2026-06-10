@@ -1,0 +1,399 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Reviews | The Illest Supply</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style id="globalStyles"></style>
+<style>
+/* ── HERO ─────────────────────────────── */
+.reviews-hero{text-align:center;padding:60px 20px 32px;}
+.reviews-hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(52px,7vw,88px);margin-bottom:8px;}
+.rating-summary{display:flex;align-items:center;justify-content:center;gap:32px;margin:20px 0 32px;flex-wrap:wrap;}
+.rating-big{font-family:'Bebas Neue',sans-serif;font-size:88px;line-height:1;}
+.rating-stars-lg{font-size:22px;color:#f59e0b;letter-spacing:3px;margin-bottom:4px;}
+.rating-count{font-size:13px;color:#444;}
+.bar-wrap{display:flex;align-items:center;gap:10px;margin-bottom:5px;}
+.bar-label{font-size:12px;color:#555;width:12px;text-align:right;}
+.bar-track{flex:1;height:5px;background:#111;border-radius:3px;overflow:hidden;min-width:120px;}
+.bar-fill{height:100%;background:#f59e0b;border-radius:3px;}
+.write-btn-wrap{display:flex;justify-content:center;gap:12px;margin-bottom:32px;flex-wrap:wrap;}
+
+/* ── FILTERS ──────────────────────────── */
+.filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px;align-items:center;justify-content:space-between;}
+.filter-pills{display:flex;gap:8px;flex-wrap:wrap;}
+.fpill{background:#111;border:1px solid rgba(255,255,255,.08);color:#666;font-size:12px;font-weight:600;padding:7px 16px;border-radius:50px;cursor:pointer;transition:.2s;}
+.fpill:hover,.fpill.active{background:#fff;color:#000;border-color:#fff;}
+.sort-select{background:#111;border:1px solid rgba(255,255,255,.08);color:#888;font-size:12px;padding:7px 14px;border-radius:50px;cursor:pointer;outline:none;}
+
+/* ── GRID ─────────────────────────────── */
+.reviews-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.review-card{background:#0d0d0d;border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:10px;transition:border-color .2s;}
+.review-card:hover{border-color:rgba(255,255,255,.12);}
+.review-media{border-radius:10px;overflow:hidden;margin-bottom:4px;}
+.review-media img{width:100%;max-height:240px;object-fit:cover;display:block;border-radius:10px;}
+.review-stars{font-size:15px;color:#f59e0b;letter-spacing:2px;}
+.review-title{font-size:14px;font-weight:700;color:#fff;line-height:1.3;}
+.review-text{font-size:13px;color:#666;line-height:1.75;flex:1;}
+.review-meta{display:flex;justify-content:space-between;align-items:flex-end;margin-top:4px;gap:8px;}
+.review-author{min-width:0;}
+.review-name{font-size:13px;font-weight:700;color:#fff;}
+.review-handle{color:#444;font-weight:400;font-size:11px;margin-left:4px;}
+.review-product{font-size:11px;color:#444;margin-top:2px;}
+.review-date{font-size:10px;color:#333;margin-top:3px;}
+.verified-badge{font-size:10px;font-weight:700;letter-spacing:.08em;color:#22c55e;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.15);padding:4px 10px;border-radius:50px;white-space:nowrap;flex-shrink:0;}
+.empty-state{text-align:center;padding:60px 20px;color:#444;grid-column:1/-1;}
+
+/* ── MODAL ────────────────────────────── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:1000;align-items:center;justify-content:center;padding:16px;}
+.modal-overlay.open{display:flex;}
+.modal-box{background:#0d0d0d;border:1px solid rgba(255,255,255,.1);border-radius:20px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;padding:32px;}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;}
+.modal-title{font-family:'Bebas Neue',sans-serif;font-size:28px;}
+.modal-close{background:none;border:none;color:#666;font-size:22px;cursor:pointer;padding:4px;line-height:1;}
+.modal-close:hover{color:#fff;}
+.form-row{margin-bottom:16px;}
+.form-label{font-size:12px;font-weight:600;letter-spacing:.06em;color:#888;margin-bottom:6px;display:block;}
+.form-input,.form-select,.form-textarea{width:100%;background:#111;border:1px solid rgba(255,255,255,.08);color:#fff;font-size:13px;padding:12px 16px;border-radius:10px;outline:none;font-family:inherit;box-sizing:border-box;transition:border-color .2s;}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:rgba(255,255,255,.25);}
+.form-textarea{resize:vertical;min-height:110px;}
+.form-select option{background:#111;}
+.char-count{font-size:11px;color:#444;text-align:right;margin-top:4px;}
+.star-picker{display:flex;gap:6px;margin-top:4px;}
+.star-picker span{font-size:26px;cursor:pointer;color:#333;transition:.15s;line-height:1;}
+.star-picker span.lit,.star-picker span:hover,.star-picker span.hov{color:#f59e0b;}
+.form-checkbox{display:flex;align-items:flex-start;gap:10px;font-size:12px;color:#666;line-height:1.5;cursor:pointer;}
+.form-checkbox input{margin-top:2px;accent-color:#f59e0b;flex-shrink:0;}
+.form-note{font-size:11px;color:#444;margin-top:20px;text-align:center;line-height:1.6;}
+.form-error{color:#ef4444;font-size:12px;margin-top:6px;}
+.submit-btn{width:100%;margin-top:20px;}
+.success-msg{text-align:center;padding:20px 0;}
+.success-msg .check{font-size:48px;margin-bottom:12px;}
+.success-msg h3{font-family:'Bebas Neue',sans-serif;font-size:28px;margin-bottom:8px;}
+.success-msg p{font-size:13px;color:#666;line-height:1.7;}
+
+/* ── PHOTO UPLOAD ─────────────────────── */
+.photo-upload-area{border:1px dashed rgba(255,255,255,.12);border-radius:10px;padding:20px;text-align:center;cursor:pointer;transition:.2s;}
+.photo-upload-area:hover{border-color:rgba(255,255,255,.3);}
+.photo-upload-area input{display:none;}
+.photo-preview{max-width:100%;border-radius:8px;margin-top:10px;display:none;}
+
+@media(max-width:768px){
+  .reviews-grid{grid-template-columns:1fr;}
+  .filter-bar{flex-direction:column;align-items:flex-start;}
+}
+</style>
+  <meta name="description" content="Real reviews from real customers. See what people are saying about The Illest Supply.">
+  <meta property="og:title" content="Customer Reviews | The Illest Supply">
+  <meta property="og:description" content="Real reviews from real customers. See what people are saying about The Illest Supply.">
+  <meta property="og:image" content="https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/409f6a116_918D9A7E-D61E-4658-A7B6-5DF1F8B5AC78.png">
+  <meta property="og:url" content="https://illestsupply.com/reviews.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="The Illest Supply">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Customer Reviews | The Illest Supply">
+  <meta name="twitter:image" content="https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/409f6a116_918D9A7E-D61E-4658-A7B6-5DF1F8B5AC78.png">
+  <link rel="canonical" href="https://illestsupply.com/reviews.html">
+</head><body>
+<div id="navContainer"></div>
+<main>
+
+<!-- HERO -->
+<div class="reviews-hero"><div class="container">
+  <div class="section-title">Real Talk</div>
+  <h1>Customer Reviews</h1>
+  <div class="rating-summary">
+    <div><div class="rating-big" id="avgRating">4.9</div></div>
+    <div>
+      <div class="rating-stars-lg">★★★★★</div>
+      <div class="rating-count" id="reviewCountLabel">Based on 30 verified purchases</div>
+      <div style="margin-top:12px;" id="barChart">
+        <div class="bar-wrap"><span class="bar-label">5</span><div class="bar-track"><div class="bar-fill" id="bar5" style="width:91%"></div></div><span style="font-size:11px;color:#444;" id="pct5">91%</span></div>
+        <div class="bar-wrap"><span class="bar-label">4</span><div class="bar-track"><div class="bar-fill" id="bar4" style="width:7%"></div></div><span style="font-size:11px;color:#444;" id="pct4">7%</span></div>
+        <div class="bar-wrap"><span class="bar-label">3</span><div class="bar-track"><div class="bar-fill" id="bar3" style="width:2%"></div></div><span style="font-size:11px;color:#444;" id="pct3">2%</span></div>
+        <div class="bar-wrap"><span class="bar-label">2</span><div class="bar-track"><div class="bar-fill" id="bar2" style="width:0%"></div></div><span style="font-size:11px;color:#444;" id="pct2">0%</span></div>
+        <div class="bar-wrap"><span class="bar-label">1</span><div class="bar-track"><div class="bar-fill" id="bar1" style="width:0%"></div></div><span style="font-size:11px;color:#444;" id="pct1">0%</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="write-btn-wrap">
+    <button class="btn-primary" onclick="openModal()">✍️ Write a Review</button>
+    <a href="shop.html" class="btn-outline">Shop Now</a>
+  </div>
+</div></div>
+
+<!-- MAIN GRID -->
+<section><div class="container">
+  <div class="filter-bar">
+    <div class="filter-pills" id="filterPills">
+      <span class="fpill active" data-filter="all">All</span>
+      <span class="fpill" data-filter="5">⭐ 5 Star</span>
+      <span class="fpill" data-filter="4">4 Star</span>
+      <span class="fpill" data-filter="sneakers">Sneakers</span>
+      <span class="fpill" data-filter="slides">Slides</span>
+      <span class="fpill" data-filter="bottoms">Bottoms</span>
+    </div>
+    <select class="sort-select" id="sortSelect" onchange="applySortFilter()">
+      <option value="newest">Newest</option>
+      <option value="highest">Highest Rated</option>
+      <option value="lowest">Lowest Rated</option>
+    </select>
+  </div>
+  <div class="reviews-grid" id="reviewsGrid"><div class="empty-state">Loading reviews...</div></div>
+  <div style="text-align:center;margin-top:48px;padding:32px;background:#0a0a0a;border:1px solid rgba(255,255,255,.05);border-radius:16px;">
+    <div style="font-size:15px;font-weight:700;margin-bottom:6px;">Loved your order? Let people know.</div>
+    <p style="font-size:13px;color:#333;margin-bottom:20px;">Every review helps the next person cop with confidence.</p>
+    <button class="btn-primary" onclick="openModal()">✍️ Write a Review</button>
+  </div>
+</div></section>
+</main>
+
+<!-- REVIEW FORM MODAL -->
+<div class="modal-overlay" id="reviewModal">
+  <div class="modal-box">
+    <div id="modalContent">
+      <div class="modal-header">
+        <div class="modal-title">Write a Review</div>
+        <button class="modal-close" onclick="closeModal()">✕</button>
+      </div>
+      <div class="form-row">
+        <label class="form-label">YOUR RATING *</label>
+        <div class="star-picker" id="starPicker">
+          <span data-v="1">★</span><span data-v="2">★</span><span data-v="3">★</span><span data-v="4">★</span><span data-v="5">★</span>
+        </div>
+        <input type="hidden" id="ratingVal" value="0">
+      </div>
+      <div class="form-row">
+        <label class="form-label">NAME OR USERNAME *</label>
+        <input class="form-input" id="fName" placeholder="e.g. Jordan M. or @jordanfits" maxlength="80">
+      </div>
+      <div class="form-row">
+        <label class="form-label">EMAIL * <span style="color:#333;font-weight:400;">(not shown publicly)</span></label>
+        <input class="form-input" id="fEmail" type="email" placeholder="your@email.com">
+      </div>
+      <div class="form-row">
+        <label class="form-label">INSTAGRAM HANDLE <span style="color:#333;font-weight:400;">(optional)</span></label>
+        <input class="form-input" id="fIG" placeholder="@yourhandle">
+      </div>
+      <div class="form-row">
+        <label class="form-label">PRODUCT PURCHASED *</label>
+        <select class="form-select" id="fProduct">
+          <option value="">Select a product...</option>
+          <option>Balenciaga Slides</option>
+          <option>Balenciaga Track Sneakers</option>
+          <option>Prada Cup (Black)</option>
+          <option>Prada Cup (Blue)</option>
+          <option>Dior Slides</option>
+          <option>Vale Forever Jorts (Black)</option>
+          <option>Vale Forever Jorts (Grey)</option>
+          <option>Vale Forever Jorts (Olive)</option>
+          <option>Vale Forever Jorts (Tan)</option>
+          <option>Asics Gel Kayano 14</option>
+          <option>Asics Gel Kayano 14 Pink Glow</option>
+          <option>Rick Owens</option>
+          <option>Bottega Veneta (Green)</option>
+          <option>Bottega Veneta (Blue)</option>
+          <option>Bottega Veneta (Pink)</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label class="form-label">REVIEW TITLE</label>
+        <input class="form-input" id="fTitle" placeholder="Sum it up in a sentence" maxlength="120">
+      </div>
+      <div class="form-row">
+        <label class="form-label">YOUR REVIEW *</label>
+        <textarea class="form-textarea" id="fMessage" placeholder="Tell us about your experience — the product, shipping, condition..." maxlength="1000" oninput="document.getElementById('charCount').textContent=this.value.length+'/1000'"></textarea>
+        <div class="char-count" id="charCount">0/1000</div>
+      </div>
+      <div class="form-row">
+        <label class="form-label">PHOTO <span style="color:#333;font-weight:400;">(optional)</span></label>
+        <div class="photo-upload-area" onclick="document.getElementById('fPhoto').click()">
+          <div style="font-size:24px;margin-bottom:6px;">📷</div>
+          <div style="font-size:12px;color:#555;">Tap to upload a photo of your purchase</div>
+          <input type="file" id="fPhoto" accept="image/*" onchange="previewPhoto(event)">
+          <img id="photoPreview" class="photo-preview">
+        </div>
+      </div>
+      <div class="form-row">
+        <label class="form-checkbox">
+          <input type="checkbox" id="fVerified">
+          <span>I confirm this review is based on a real purchase or experience with The Illest Supply.</span>
+        </label>
+      </div>
+      <div class="form-error" id="formError"></div>
+      <p class="form-note">We review all submissions before publishing to keep reviews helpful, real, and respectful.</p>
+      <button class="btn-primary submit-btn" id="submitBtn" onclick="submitReview()">Submit Review</button>
+    </div>
+  </div>
+</div>
+
+<div id="footerContainer"></div>
+<script src="cart.js?v=2"></script><script src="products.js?v=10"></script>
+<script>
+const API = 'https://superagent-bc2ec54c.base44.app/functions/reviewsApi';
+let allReviews = [];
+let activeFilter = 'all';
+
+document.getElementById('globalStyles').textContent = getGlobalCSS();
+document.getElementById('navContainer').innerHTML = getNavHTML('reviews');
+document.getElementById('footerContainer').innerHTML = getFooterHTML();
+
+// ── Load reviews from API ──────────────────────────────────
+async function loadReviews() {
+  try {
+    const r = await fetch(API + '?action=list');
+    const d = await r.json();
+    allReviews = d.reviews || [];
+    updateStats();
+    applySortFilter();
+  } catch(e) {
+    document.getElementById('reviewsGrid').innerHTML = '<div class="empty-state">Could not load reviews.</div>';
+  }
+}
+
+function updateStats() {
+  const total = allReviews.length;
+  if (!total) return;
+  const avg = (allReviews.reduce((s,r)=>s+r.rating,0)/total).toFixed(1);
+  document.getElementById('avgRating').textContent = avg;
+  document.getElementById('reviewCountLabel').textContent = `Based on ${total}+ verified purchases`;
+  for(let s=1;s<=5;s++){
+    const cnt = allReviews.filter(r=>r.rating===s).length;
+    const pct = Math.round(cnt/total*100);
+    const el = document.getElementById('bar'+s);
+    const pe = document.getElementById('pct'+s);
+    if(el) el.style.width = pct+'%';
+    if(pe) pe.textContent = pct+'%';
+  }
+}
+
+function applySortFilter() {
+  const sort = document.getElementById('sortSelect').value;
+  let list = [...allReviews];
+  // filter
+  if(activeFilter === '5') list = list.filter(r=>r.rating===5);
+  else if(activeFilter === '4') list = list.filter(r=>r.rating===4);
+  else if(activeFilter === 'sneakers') list = list.filter(r=>/asics|rick|balenciaga track|bottega/i.test(r.productPurchased));
+  else if(activeFilter === 'slides') list = list.filter(r=>/slide|dior|balenciaga slides|prada/i.test(r.productPurchased));
+  else if(activeFilter === 'bottoms') list = list.filter(r=>/jort|short|pant/i.test(r.productPurchased));
+  // sort
+  if(sort === 'highest') list.sort((a,b)=>b.rating-a.rating);
+  else if(sort === 'lowest') list.sort((a,b)=>a.rating-b.rating);
+  else list.sort((a,b)=>new Date(b.created_date).getTime()-new Date(a.created_date).getTime());
+  renderGrid(list);
+}
+
+function renderGrid(list) {
+  if(!list.length){
+    document.getElementById('reviewsGrid').innerHTML = '<div class="empty-state">No reviews match this filter yet.</div>';
+    return;
+  }
+  document.getElementById('reviewsGrid').innerHTML = list.map(r => {
+    const stars = '★'.repeat(r.rating)+'☆'.repeat(5-r.rating);
+    const date = r.created_date ? new Date(r.created_date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '';
+    const photo = r.photoUrl ? `<div class="review-media"><img src="${r.photoUrl}" alt="review photo" loading="lazy"></div>` : '';
+    const ig = r.instagramHandle ? `<span class="review-handle">${r.instagramHandle}</span>` : '';
+    const title = r.reviewTitle ? `<div class="review-title">${r.reviewTitle}</div>` : '';
+    return `<div class="review-card">
+      ${photo}
+      <div class="review-stars">${stars}</div>
+      ${title}
+      <div class="review-text">"${r.reviewMessage}"</div>
+      <div class="review-meta">
+        <div class="review-author">
+          <div class="review-name">${r.customerName}${ig}</div>
+          <div class="review-product">${r.productPurchased}</div>
+          <div class="review-date">${date}</div>
+        </div>
+        ${r.verifiedPurchase ? '<div class="verified-badge">VERIFIED</div>' : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// filter pills
+document.getElementById('filterPills').addEventListener('click', e => {
+  const pill = e.target.closest('.fpill');
+  if(!pill) return;
+  document.querySelectorAll('.fpill').forEach(p=>p.classList.remove('active'));
+  pill.classList.add('active');
+  activeFilter = pill.dataset.filter;
+  applySortFilter();
+});
+
+// ── Star picker ───────────────────────────────────────────
+const stars = document.querySelectorAll('#starPicker span');
+stars.forEach(s => {
+  s.addEventListener('click', () => {
+    const v = parseInt(s.dataset.v);
+    document.getElementById('ratingVal').value = v;
+    stars.forEach(x => x.classList.toggle('lit', parseInt(x.dataset.v) <= v));
+  });
+  s.addEventListener('mouseenter', () => stars.forEach(x => x.classList.toggle('hov', parseInt(x.dataset.v) <= parseInt(s.dataset.v))));
+  s.addEventListener('mouseleave', () => stars.forEach(x => x.classList.remove('hov')));
+});
+
+// ── Photo preview ─────────────────────────────────────────
+function previewPhoto(e) {
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const img = document.getElementById('photoPreview');
+    img.src = ev.target.result;
+    img.style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+}
+
+// ── Modal ────────────────────────────────────────────────
+function openModal(){ document.getElementById('reviewModal').classList.add('open'); document.body.style.overflow='hidden'; }
+function closeModal(){ document.getElementById('reviewModal').classList.remove('open'); document.body.style.overflow=''; }
+document.getElementById('reviewModal').addEventListener('click', e => { if(e.target===document.getElementById('reviewModal')) closeModal(); });
+
+// ── Submit review ─────────────────────────────────────────
+async function submitReview() {
+  const btn = document.getElementById('submitBtn');
+  const err = document.getElementById('formError');
+  err.textContent = '';
+  const name = document.getElementById('fName').value.trim();
+  const email = document.getElementById('fEmail').value.trim();
+  const ig = document.getElementById('fIG').value.trim();
+  const product = document.getElementById('fProduct').value;
+  const rating = parseInt(document.getElementById('ratingVal').value);
+  const title = document.getElementById('fTitle').value.trim();
+  const msg = document.getElementById('fMessage').value.trim();
+  const verified = document.getElementById('fVerified').checked;
+
+  if(!name){ err.textContent='Name is required.'; return; }
+  if(!email || !email.includes('@')){ err.textContent='Valid email is required.'; return; }
+  if(!product){ err.textContent='Please select a product.'; return; }
+  if(!rating || rating < 1){ err.textContent='Please select a star rating.'; return; }
+  if(msg.length < 10){ err.textContent='Review must be at least 10 characters.'; return; }
+
+  btn.textContent = 'Submitting...';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch(API + '?action=submit', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ customerName:name, email, instagramHandle:ig, productPurchased:product, rating, reviewTitle:title, reviewMessage:msg, photoUrl:'', verifiedPurchase:verified })
+    });
+    const d = await res.json();
+    if(!res.ok || d.error){ err.textContent = d.error || 'Submission failed.'; btn.textContent='Submit Review'; btn.disabled=false; return; }
+    document.getElementById('modalContent').innerHTML = `
+      <div class="success-msg">
+        <div class="check">✅</div>
+        <h3>Review Submitted!</h3>
+        <p>Thanks for your review, ${name}.<br>Your review has been submitted and will appear after it's approved.</p>
+        <button class="btn-outline" style="margin-top:20px;" onclick="closeModal()">Close</button>
+      </div>`;
+  } catch(e) {
+    err.textContent = 'Something went wrong. Please try again.';
+    btn.textContent = 'Submit Review';
+    btn.disabled = false;
+  }
+}
+
+loadReviews();
+</script>
+</body></html>
