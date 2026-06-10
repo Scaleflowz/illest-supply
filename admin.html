@@ -473,27 +473,27 @@ input:checked + .tslider:before{transform:translateX(16px);background:#22c55e;}
     <div style="font-size:10px;color:#444;margin-bottom:24px;">Click a photo to set it as the main image. Click ✕ to remove.</div>
 
     <!-- ── VIDEO ──────────────────────────────── -->
-    <div style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#888;margin-bottom:10px;">Product Video <span style="color:#444;font-size:10px;text-transform:none;letter-spacing:0;">(optional)</span></div>
+    <div style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#888;margin-bottom:10px;">Product Video <span style="color:#444;font-size:10px;text-transform:none;letter-spacing:0;font-weight:400;">(optional)</span></div>
 
-    <div style="background:rgba(255,255,255,.03);border:2px dashed rgba(255,255,255,.1);border-radius:14px;padding:20px;text-align:center;cursor:pointer;margin-bottom:12px;" onclick="document.getElementById('pd-vid-input').click()" id="pdVidDropZone">
-      <div style="font-size:24px;margin-bottom:6px;">🎬</div>
-      <div style="font-size:13px;font-weight:700;color:#ccc;margin-bottom:4px;">Click to upload video</div>
-      <div style="font-size:11px;color:#555;">MP4 only — up to 50MB</div>
+    <!-- Primary: file upload button -->
+    <div style="background:rgba(255,255,255,.03);border:2px dashed rgba(255,255,255,.1);border-radius:14px;padding:24px;text-align:center;cursor:pointer;margin-bottom:14px;" onclick="document.getElementById('pd-vid-input').click()" id="pdVidDropZone" onmouseover="this.style.borderColor='rgba(255,255,255,.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,.1)'">
+      <div style="font-size:28px;margin-bottom:8px;">🎬</div>
+      <div style="font-size:14px;font-weight:700;color:#ccc;margin-bottom:4px;">Upload Product Video</div>
+      <div style="font-size:11px;color:#555;">MP4 video only</div>
       <input type="file" id="pd-vid-input" accept="video/mp4" style="display:none;" onchange="pdHandleVideoFile(this.files)"/>
     </div>
-    <div id="pdVidPreview" style="display:none;margin-bottom:12px;"></div>
 
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
-      <div style="flex:1;height:1px;background:#1a1a1a;"></div>
-      <div style="font-size:10px;color:#444;">OR</div>
-      <div style="flex:1;height:1px;background:#1a1a1a;"></div>
-    </div>
+    <!-- Video preview (shown after upload) -->
+    <div id="pdVidPreview" style="display:none;margin-bottom:16px;"></div>
 
-    <div style="margin-bottom:6px;">
-      <label style="font-size:11px;color:#555;display:block;margin-bottom:6px;">Video URL <span style="color:#333;">(optional — paste an MP4 link)</span></label>
-      <input type="url" id="pd-video-url" placeholder="Paste MP4 video link here" style="width:100%;background:#0a0a0a;border:1px solid #222;border-radius:10px;color:#fff;font-size:13px;padding:10px 14px;font-family:inherit;outline:none;" oninput="pdPreviewVideoUrl(this.value)"/>
+    <!-- Secondary: URL fallback (collapsed by default) -->
+    <div style="margin-top:4px;">
+      <button type="button" onclick="document.getElementById('pdVidUrlRow').style.display=document.getElementById('pdVidUrlRow').style.display==='none'?'block':'none'" style="background:none;border:none;color:#444;font-size:11px;cursor:pointer;padding:0;text-decoration:underline;">Or paste a video URL instead ▾</button>
+      <div id="pdVidUrlRow" style="display:none;margin-top:8px;">
+        <input type="url" id="pd-video-url" placeholder="Paste MP4 video link here (optional)" style="width:100%;background:#0a0a0a;border:1px solid #222;border-radius:10px;color:#fff;font-size:13px;padding:10px 14px;font-family:inherit;outline:none;" oninput="pdPreviewVideoUrl(this.value)"/>
+      </div>
     </div>
-    <div style="font-size:10px;color:#444;">Product saves fine without a video.</div>
+    <div style="font-size:10px;color:#444;margin-top:10px;">Product saves fine without a video.</div>
 
   </div>
 
@@ -1421,7 +1421,7 @@ function pdHandleVideoFile(files) {
   if (!file) return;
   var nm = file.name.toLowerCase();
   if (!file.type.includes('mp4') && !nm.endsWith('.mp4')) {
-    toast('Video must be MP4 to play correctly on the website. Please upload an MP4 video or paste a video URL.');
+    toast('Please upload an MP4 video file.');
     document.getElementById('pd-vid-input').value = '';
     return;
   }
