@@ -1136,10 +1136,14 @@ function loadProducts(cb) {
       if (!stockMap[item.product_id]) stockMap[item.product_id] = 0;
       if (item.in_stock) stockMap[item.product_id] += (item.quantity || 1);
     });
-    // Merge custom products from overrides (id >= 100)
-    var allProds = STATIC_PRODUCTS.slice();
+    // Merge: static (not hidden) + custom products (id >= 100, not hidden)
+    var hiddenStaticIds = {};
     allProductOverrides.forEach(function(ov) {
-      if (ov.product_id >= 100) {
+      if (ov.product_id < 100 && ov.is_hidden) hiddenStaticIds[ov.product_id] = true;
+    });
+    var allProds = STATIC_PRODUCTS.filter(function(p){ return !hiddenStaticIds[p.id]; });
+    allProductOverrides.forEach(function(ov) {
+      if (ov.product_id >= 100 && !ov.is_hidden) {
         if (!allProds.find(function(p){ return p.id === ov.product_id; })) {
           allProds.push({ id: ov.product_id, name: ov.product_name||'Product', price: ov.price||0, origPrice: ov.orig_price||0, badges: ov.badges||'', sold: ov.sold_count||0, img: ov.img||'', video: ov.video||null, category: ov.category||'sneakers', brand: ov.brand||'', condition: ov.condition||'Brand New', desc: ov.desc||'', sizes: ov.sizes ? ov.sizes.split(',') : [], isCustom: true });
         }
@@ -1222,7 +1226,7 @@ function renderProductList(prods, stockMap) {
       +'<span class="'+statusClass+'" style="font-size:9px;">'+statusLabel+'</span>'
       +(sale>0?'<span class="badge badge-contacted" style="font-size:9px;">-'+sale+'%</span>':'')
       +'<button onclick="openEditProduct('+p.id+')" style="background:#1a1a1a;border:1px solid #2a2a2a;color:#ccc;padding:5px 12px;border-radius:7px;font-size:10px;cursor:pointer;">✏️ Edit</button>'
-      +'<button onclick="promptDeleteProduct(\''+ov.id+'\',\''+name.replace(/'/g,"\\'")+'\','+p.id+')" style="background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.15);color:#ef4444;padding:5px 12px;border-radius:7px;font-size:10px;cursor:pointer;">🗑 Delete</button>'
+      +'<button onclick="promptDeleteProduct(\''+( ov.id||'')+'\',\''+name.replace(/'/g,"\\'")+'\','+p.id+')" style="background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.15);color:#ef4444;padding:5px 12px;border-radius:7px;font-size:10px;cursor:pointer;">🗑 Delete</button>'
       +'<button onclick="dupProductById('+p.id+')" style="background:#1a1a1a;border:1px solid #2a2a2a;color:#777;padding:5px 10px;border-radius:7px;font-size:10px;cursor:pointer;" title="Duplicate">⧉</button>'
       +'</div>'
       +'</div>'
@@ -1370,8 +1374,11 @@ function pdHandleFiles(files) {
   var arr = Array.from(files);
   if (!arr.length) return;
   // Check for MOV
-  var hasMov = arr.some(function(f){ return f.name.toLowerCase().endsWith('.mov'); });
-  if (hasMov) { toast('⚠️ MOV files not supported — please convert to MP4 first', 'warn'); arr = arr.filter(function(f){ return !f.name.toLowerCase().endsWith('.mov'); }); }
+  var unsupportedVids = arr.filter(function(f){ var nm=f.name.toLowerCase(); return nm.endsWith('.mov')||nm.endsWith('.avi')||nm.endsWith('.wmv')||nm.endsWith('.mkv'); });
+  if (unsupportedVids.length) {
+    toast('Please upload videos as MP4 for best results.');
+    arr = arr.filter(function(f){ var nm=f.name.toLowerCase(); return !nm.endsWith('.mov')&&!nm.endsWith('.avi')&&!nm.endsWith('.wmv')&&!nm.endsWith('.mkv'); });
+  }
   if (!arr.length) return;
   pdUploadQueue(arr, 0);
 }
@@ -1407,7 +1414,9 @@ function pdUploadQueue(files, idx) {
         pdMediaItems.push({ url: d.url, type: d.type || (isVideo?'video':'image'), isMain: isMain });
         pdRenderMediaGallery();
       } else {
-        toast('Upload failed: ' + (d.error||'unknown'), 'error');
+        var errMsg = d.error || 'Upload failed';
+        if (errMsg.indexOf('Unsupported') !== -1) toast('Please upload videos as MP4 for best results.');
+        else toast(errMsg, 'error');
       }
       pdUploadQueue(files, idx+1);
     })
@@ -1682,18 +1691,23 @@ function closePdDeleteModal() {
 }
 
 function executePdDelete() {
-  if (!_pdDeleteRecordId && !_pdDeleteProductId) return;
+  if (!_pdDeleteRecordId && !_pdDeleteProductId) { toast('Nothing to delete', 'error'); return; }
   var payload = {};
   if (_pdDeleteRecordId) payload.id = _pdDeleteRecordId;
   if (_pdDeleteProductId) payload.product_id = parseInt(_pdDeleteProductId);
+  var btn = document.querySelector('#pdDeleteModal button[onclick="executePdDelete()"]');
+  if (btn) { btn.textContent = 'Deleting…'; btn.disabled = true; }
   fetch(API + '?action=deleteProduct', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) })
     .then(function(r){ return r.json(); })
     .then(function(d){
       closePdDeleteModal();
       closeProductDrawer();
-      toast('Product removed from site ✓');
+      toast('Product deleted ✓');
       loadProducts();
-    }).catch(function(){ toast('Delete failed', 'error'); });
+    }).catch(function(){
+      if (btn) { btn.textContent = 'Delete Forever'; btn.disabled = false; }
+      toast('Delete failed — check connection', 'error');
+    });
 }
 
 // ── DUPLICATE ─────────────────────────────────────────────────────────────
