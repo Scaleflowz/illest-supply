@@ -238,8 +238,8 @@ else {
 
   // Gallery
   const mainMedia = document.getElementById('mainMedia');
-  // Social proof stats
-  // Session-stable viewer count — same number as homepage card
+
+  // ── Viewer count (localStorage — same key as shop/home pages) ──────
   var _vcKey = 'ils_vc_' + p.id;
   var views;
   try {
@@ -257,15 +257,24 @@ else {
   } catch(e) {
     views = Math.floor(Math.random()*130)+20;
   }
-  // Update badge on image
-  setTimeout(function() {
-    var numEl = document.getElementById('pdVbNum');
-    if (numEl) numEl.textContent = views;
-  }, 50);
+
+  // Helper: inject view-count badge into mainMedia after media is set
+  function injectViewBadge() {
+    if (document.getElementById('pdViewBadge')) return;
+    var vb = document.createElement('div');
+    vb.id = 'pdViewBadge';
+    vb.className = 'view-count-badge';
+    vb.setAttribute('data-product-id', p.id);
+    vb.style.top = '14px';
+    vb.style.left = '14px';
+    vb.innerHTML = '<span id="pdVbNum">' + views + '</span> people viewing now';
+    mainMedia.appendChild(vb);
+  }
+
   const bought = Math.floor(p.sold * 0.6);
   const statsEl = document.getElementById('pdStats');
   if(statsEl) statsEl.innerHTML = `<span class="pd-stat">✅ <span>${bought}+</span> sold</span>`;
-  
+
   // Low stock check
   const lowEl = document.getElementById('pdLowStock');
   if(lowEl && p.stock){
@@ -273,24 +282,13 @@ else {
     if(total <= 5 && total > 0) lowEl.innerHTML = `<div class="low-stock-alert">⚠️ Only ${total} pairs left — moving fast</div>`;
   }
 
+  // Set main media (video OR image) then inject badge on top
   if (p.video) {
     mainMedia.innerHTML = `<video src="${p.video}" autoplay muted loop playsinline></video>`;
+    injectViewBadge();
   } else {
     mainMedia.innerHTML = `<img src="${p.img}" alt="${p.name}" id="mainImg">`;
-    // Inject viewer badge onto main image
-    (function() {
-      var vb = document.getElementById('pdViewBadge');
-      if (!vb) {
-        vb = document.createElement('div');
-        vb.id = 'pdViewBadge';
-        vb.className = 'view-count-badge';
-        vb.setAttribute('data-product-id', p.id);
-        vb.style.top = '14px';
-        vb.style.left = '14px';
-        vb.innerHTML = '<span id="pdVbNum">—</span> people viewing now';
-        mainMedia.appendChild(vb);
-      }
-    })();
+    injectViewBadge();
   }
 
   const thumbs = p.imgs||[p.img];
