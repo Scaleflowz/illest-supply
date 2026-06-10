@@ -190,8 +190,8 @@
 </div>
 
 <div id="footerContainer"></div>
-<script src="cart.js?v=2"></script>
-<script src="products.js?v=10"></script>
+<script src="cart.js?v=3"></script>
+<script src="products.js?v=11"></script>
 <script>
 document.getElementById('globalStyles').textContent = getGlobalCSS();
 document.getElementById('navContainer').innerHTML = getNavHTML('shop');
@@ -271,9 +271,7 @@ else {
     mainMedia.appendChild(vb);
   }
 
-  const bought = Math.floor(p.sold * 0.6);
-  const statsEl = document.getElementById('pdStats');
-  if(statsEl) statsEl.innerHTML = `<span class="pd-stat">✅ <span>${bought}+</span> sold</span>`;
+  // pdStats removed — sold count shown via pdSold above
 
   // Low stock check
   const lowEl = document.getElementById('pdLowStock');
