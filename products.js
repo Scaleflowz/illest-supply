@@ -227,7 +227,7 @@ function renderProductCard(p, selectedSize = null) {
         ${mediaHTML}
         <div class="product-badge">${badgesHTML}</div>
         ${soldOut ? '<div class="sold-out-overlay"><div class="sold-out-tag">Sold Out</div></div>' : ''}
-        ${!soldOut ? `<div class="viewer-badge" id="vb${p.id}" data-product-id="${p.id}" style="position:absolute;bottom:10px;left:10px;top:auto;display:flex;align-items:center;gap:5px;">👁 <span class="vb-num">—</span> viewing now</div>` : ''}
+        ${!soldOut ? `<div class="view-count-badge" id="vb${p.id}" data-product-id="${p.id}"><span class="vb-num">—</span> people viewing now</div>` : ''}
       </div>
       <div class="product-info">
         <div class="product-name">${p.name}</div>
@@ -370,36 +370,47 @@ function onProductsReady(cb) {
   });
 })();
 
-// ── VIEWER COUNT (session-stable, shared across pages) ────
+// ── VIEW COUNT BADGE — session-stable, shared key across all pages ────
 function getViewerCount(productId) {
   var key = 'ils_vc_' + productId;
-  var stored = sessionStorage.getItem(key);
-  if (stored) return parseInt(stored);
-  var count = Math.floor(Math.random() * (450 - 20 + 1)) + 20;
-  sessionStorage.setItem(key, count);
+  try {
+    var stored = localStorage.getItem(key);
+    if (stored) {
+      var obj = JSON.parse(stored);
+      if (Date.now() - obj.ts < 7200000) return obj.v;
+    }
+  } catch(e) {}
+  var popularIds = [1,2,4,9,10];
+  var isPopular = popularIds.indexOf(parseInt(productId)) !== -1;
+  var count = isPopular
+    ? Math.floor(Math.random() * (450 - 150 + 1)) + 150
+    : Math.floor(Math.random() * (150 - 20 + 1)) + 20;
+  try { localStorage.setItem(key, JSON.stringify({v: count, ts: Date.now()})); } catch(e) {}
   return count;
 }
 
 function applyViewerCounts() {
-  document.querySelectorAll('.viewer-badge[data-product-id]').forEach(function(el) {
+  document.querySelectorAll('.view-count-badge[data-product-id]').forEach(function(el) {
     var pid = el.getAttribute('data-product-id');
     if (!pid) return;
-    var count = getViewerCount(pid);
     var span = el.querySelector('.vb-num');
-    if (span) span.textContent = count;
+    if (span) span.textContent = getViewerCount(pid);
   });
 }
 
-// Subtle drift every 45s
+// Subtle drift every 60s (±3)
 setInterval(function() {
-  document.querySelectorAll('.viewer-badge[data-product-id]').forEach(function(el) {
+  document.querySelectorAll('.view-count-badge[data-product-id]').forEach(function(el) {
     var pid = el.getAttribute('data-product-id');
     if (!pid) return;
     var key = 'ils_vc_' + pid;
-    var base = parseInt(sessionStorage.getItem(key)) || 100;
-    var next = Math.max(20, Math.min(450, base + Math.floor(Math.random()*11) - 5));
-    sessionStorage.setItem(key, next);
-    var span = el.querySelector('.vb-num');
-    if (span) span.textContent = next;
+    try {
+      var obj = JSON.parse(localStorage.getItem(key) || '{}');
+      var base = obj.v || getViewerCount(pid);
+      var next = Math.max(20, Math.min(450, base + Math.floor(Math.random()*7) - 3));
+      localStorage.setItem(key, JSON.stringify({v: next, ts: obj.ts || Date.now()}));
+      var span = el.querySelector('.vb-num');
+      if (span) span.textContent = next;
+    } catch(e) {}
   });
-}, 45000);
+}, 60000);
