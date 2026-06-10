@@ -414,3 +414,6 @@ setInterval(function() {
     } catch(e) {}
   });
 }, 60000);
+
+// Alias for homepage compatibility
+function renderHomeCard(p, showViewers) { return renderProductCard(p); }
