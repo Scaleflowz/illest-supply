@@ -455,19 +455,46 @@ input:checked + .tslider:before{transform:translateX(16px);background:#22c55e;}
 
   <!-- ── TAB 2: MEDIA ── -->
   <div id="pdTab2" class="pd-tab-content" style="display:none;padding:24px 28px;">
-    <div style="background:rgba(255,255,255,.03);border:2px dashed rgba(255,255,255,.1);border-radius:14px;padding:28px;text-align:center;cursor:pointer;margin-bottom:20px;" onclick="document.getElementById('pd-file-input').click()" id="pdDropZone" ondragover="event.preventDefault();this.style.borderColor='#fff'" ondragleave="this.style.borderColor='rgba(255,255,255,.1)'" ondrop="pdHandleDrop(event)">
-      <div style="font-size:32px;margin-bottom:10px;">📸</div>
-      <div style="font-size:14px;font-weight:700;color:#ccc;margin-bottom:6px;">Drop files here or click to upload</div>
-      <div style="font-size:11px;color:#444;">JPG, PNG, WebP · MP4 video · Max 10MB images / 50MB video</div>
-      <div style="font-size:10px;color:#ef4444;margin-top:4px;">⚠️ MOV files not supported — please convert to MP4</div>
-      <input type="file" id="pd-file-input" multiple accept="image/jpeg,image/png,image/webp,video/mp4" style="display:none;" onchange="pdHandleFiles(this.files)"/>
+
+    <!-- ── IMAGES ─────────────────────────────── -->
+    <div style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#888;margin-bottom:10px;">Product Images</div>
+    <div style="background:rgba(255,255,255,.03);border:2px dashed rgba(255,255,255,.1);border-radius:14px;padding:24px;text-align:center;cursor:pointer;margin-bottom:16px;" onclick="document.getElementById('pd-img-input').click()" id="pdDropZone" ondragover="event.preventDefault();this.style.borderColor='#fff'" ondragleave="this.style.borderColor='rgba(255,255,255,.1)'" ondrop="pdHandleDrop(event)">
+      <div style="font-size:28px;margin-bottom:8px;">🖼️</div>
+      <div style="font-size:13px;font-weight:700;color:#ccc;margin-bottom:4px;">Click to upload images</div>
+      <div style="font-size:11px;color:#555;">JPG, PNG, WebP — up to 10MB each</div>
+      <input type="file" id="pd-img-input" multiple accept="image/jpeg,image/jpg,image/png,image/webp" style="display:none;" onchange="pdHandleImageFiles(this.files)"/>
     </div>
+
     <div id="pdUploadProgress" style="display:none;margin-bottom:16px;">
       <div style="font-size:11px;color:#f59e0b;margin-bottom:6px;" id="pdUploadMsg">Uploading…</div>
       <div style="height:4px;background:#1a1a1a;border-radius:2px;overflow:hidden;"><div id="pdUploadBar" style="height:100%;background:#f59e0b;width:0%;transition:width .3s;border-radius:2px;"></div></div>
     </div>
-    <div id="pdMediaGallery" style="display:flex;flex-wrap:wrap;gap:10px;min-height:60px;"></div>
-    <div style="font-size:10px;color:#444;margin-top:12px;">Click any thumbnail to set as main image. Drag to reorder. Click ✕ to remove.</div>
+    <div id="pdMediaGallery" style="display:flex;flex-wrap:wrap;gap:10px;min-height:40px;margin-bottom:8px;"></div>
+    <div style="font-size:10px;color:#444;margin-bottom:24px;">Click a photo to set it as the main image. Click ✕ to remove.</div>
+
+    <!-- ── VIDEO ──────────────────────────────── -->
+    <div style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#888;margin-bottom:10px;">Product Video <span style="color:#444;font-size:10px;text-transform:none;letter-spacing:0;">(optional)</span></div>
+
+    <div style="background:rgba(255,255,255,.03);border:2px dashed rgba(255,255,255,.1);border-radius:14px;padding:20px;text-align:center;cursor:pointer;margin-bottom:12px;" onclick="document.getElementById('pd-vid-input').click()" id="pdVidDropZone">
+      <div style="font-size:24px;margin-bottom:6px;">🎬</div>
+      <div style="font-size:13px;font-weight:700;color:#ccc;margin-bottom:4px;">Click to upload video</div>
+      <div style="font-size:11px;color:#555;">MP4 only — up to 50MB</div>
+      <input type="file" id="pd-vid-input" accept="video/mp4" style="display:none;" onchange="pdHandleVideoFile(this.files)"/>
+    </div>
+    <div id="pdVidPreview" style="display:none;margin-bottom:12px;"></div>
+
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+      <div style="flex:1;height:1px;background:#1a1a1a;"></div>
+      <div style="font-size:10px;color:#444;">OR</div>
+      <div style="flex:1;height:1px;background:#1a1a1a;"></div>
+    </div>
+
+    <div style="margin-bottom:6px;">
+      <label style="font-size:11px;color:#555;display:block;margin-bottom:6px;">Video URL <span style="color:#333;">(optional — paste an MP4 link)</span></label>
+      <input type="url" id="pd-video-url" placeholder="Paste MP4 video link here" style="width:100%;background:#0a0a0a;border:1px solid #222;border-radius:10px;color:#fff;font-size:13px;padding:10px 14px;font-family:inherit;outline:none;" oninput="pdPreviewVideoUrl(this.value)"/>
+    </div>
+    <div style="font-size:10px;color:#444;">Product saves fine without a video.</div>
+
   </div>
 
   <!-- ── TAB 3: INVENTORY ── -->
@@ -1242,6 +1269,9 @@ function renderProductList(prods, stockMap) {
 // ── DRAWER OPEN/CLOSE ─────────────────────────────────────────────────────
 function openAddProduct() {
   pdMediaItems = [];
+  pdShowVidPreview('');
+  var _vurlF = document.getElementById('pd-video-url'); if (_vurlF) _vurlF.value = '';
+  var _vInp = document.getElementById('pd-vid-input'); if (_vInp) _vInp.value = '';
   document.getElementById('pd-record-id').value = '';
   document.getElementById('pd-product-id').value = '';
   document.getElementById('pd-is-static').value = '0';
@@ -1322,9 +1352,12 @@ function openEditProduct(productId) {
   var vid = ov.video || p.video || '';
   var extraImgs = (ov.imgs || '').split('\n').filter(Boolean);
   if (mainImg) pdMediaItems.push({url:mainImg, type:'image', isMain:true});
-  if (vid) pdMediaItems.push({url:vid, type:'video', isMain:!mainImg});
   extraImgs.forEach(function(u){ if (u !== mainImg) pdMediaItems.push({url:u, type:'image', isMain:false}); });
   pdRenderMediaGallery();
+  // Video preview + URL field
+  var urlField = document.getElementById('pd-video-url');
+  if (urlField) urlField.value = '';
+  if (vid) { pdShowVidPreview(vid); } else { pdShowVidPreview(''); }
   pdRenderSizeQty();
   pdCalcSale();
   // Clear errors
@@ -1367,26 +1400,39 @@ function pdCalcSale() {
 function pdHandleDrop(e) {
   e.preventDefault();
   document.getElementById('pdDropZone').style.borderColor = 'rgba(255,255,255,.1)';
-  pdHandleFiles(e.dataTransfer.files);
+  // Drop zone is images only — filter and warn if video dropped here
+  var arr = Array.from(e.dataTransfer.files);
+  var vids = arr.filter(function(f){ return f.type.startsWith('video/'); });
+  if (vids.length) toast('Drop images here. Use the video section below for videos.');
+  var imgs = arr.filter(function(f){ return f.type.startsWith('image/'); });
+  if (imgs.length) pdHandleImageFiles(imgs);
 }
 
-function pdHandleFiles(files) {
-  var arr = Array.from(files);
-  if (!arr.length) return;
-  // Check for MOV
-  var unsupportedVids = arr.filter(function(f){ var nm=f.name.toLowerCase(); return nm.endsWith('.mov')||nm.endsWith('.avi')||nm.endsWith('.wmv')||nm.endsWith('.mkv'); });
-  if (unsupportedVids.length) {
-    toast('Please upload videos as MP4 for best results.');
-    arr = arr.filter(function(f){ var nm=f.name.toLowerCase(); return !nm.endsWith('.mov')&&!nm.endsWith('.avi')&&!nm.endsWith('.wmv')&&!nm.endsWith('.mkv'); });
+function pdHandleImageFiles(files) {
+  var arr = Array.from(files).filter(function(f){
+    return ['image/jpeg','image/jpg','image/png','image/webp'].indexOf(f.type) !== -1;
+  });
+  if (!arr.length) { toast('Please use JPG, PNG, or WebP for images.'); return; }
+  pdUploadQueue(arr, 0, 'image');
+}
+
+function pdHandleVideoFile(files) {
+  var file = Array.from(files)[0];
+  if (!file) return;
+  var nm = file.name.toLowerCase();
+  if (!file.type.includes('mp4') && !nm.endsWith('.mp4')) {
+    toast('Video must be MP4 to play correctly on the website. Please upload an MP4 video or paste a video URL.');
+    document.getElementById('pd-vid-input').value = '';
+    return;
   }
-  if (!arr.length) return;
-  pdUploadQueue(arr, 0);
+  if (file.size > 50*1024*1024) { toast('Video too large — max 50MB.', 'warn'); return; }
+  pdUploadQueue([file], 0, 'video');
 }
 
-function pdUploadQueue(files, idx) {
+function pdUploadQueue(files, idx, typeHint) {
   if (idx >= files.length) {
     document.getElementById('pdUploadProgress').style.display = 'none';
-    toast('Media uploaded ✓');
+    toast('Upload complete ✓');
     return;
   }
   var file = files[idx];
@@ -1395,13 +1441,12 @@ function pdUploadQueue(files, idx) {
   var bar = document.getElementById('pdUploadBar');
   prog.style.display = 'block';
   msgEl.textContent = 'Uploading ' + (idx+1) + ' of ' + files.length + ': ' + file.name;
-  bar.style.width = Math.round((idx/files.length)*100) + '%';
-  // Size check client side
-  var isVideo = file.type.startsWith('video/');
+  bar.style.width = Math.round(((idx+1)/files.length)*100) + '%';
+  var isVideo = typeHint === 'video' || file.type.startsWith('video/');
   var maxSize = isVideo ? 50*1024*1024 : 10*1024*1024;
   if (file.size > maxSize) {
-    toast('⚠️ ' + file.name + ' too large (max ' + (isVideo?'50MB':'10MB') + ')', 'warn');
-    pdUploadQueue(files, idx+1);
+    toast(file.name + ' is too large (max ' + (isVideo?'50MB':'10MB') + ')', 'warn');
+    pdUploadQueue(files, idx+1, typeHint);
     return;
   }
   var fd = new FormData();
@@ -1410,17 +1455,19 @@ function pdUploadQueue(files, idx) {
     .then(function(r){ return r.json(); })
     .then(function(d) {
       if (d.url) {
-        var isMain = pdMediaItems.length === 0;
-        pdMediaItems.push({ url: d.url, type: d.type || (isVideo?'video':'image'), isMain: isMain });
+        var mediaType = d.type || (isVideo ? 'video' : 'image');
+        var isMain = !isVideo && pdMediaItems.filter(function(i){ return i.type==='image'; }).length === 0;
+        pdMediaItems.push({ url: d.url, type: mediaType, isMain: isMain });
         pdRenderMediaGallery();
+        // Show video preview
+        if (mediaType === 'video') pdShowVidPreview(d.url);
       } else {
         var errMsg = d.error || 'Upload failed';
-        if (errMsg.indexOf('Unsupported') !== -1) toast('Please upload videos as MP4 for best results.');
-        else toast(errMsg, 'error');
+        toast(errMsg, 'error');
       }
-      pdUploadQueue(files, idx+1);
+      pdUploadQueue(files, idx+1, typeHint);
     })
-    .catch(function(e){ toast('Upload error: ' + e, 'error'); pdUploadQueue(files, idx+1); });
+    .catch(function(){ toast('Upload failed — check your connection.', 'error'); pdUploadQueue(files, idx+1, typeHint); });
 }
 
 function pdRenderMediaGallery() {
@@ -1450,6 +1497,43 @@ function pdRemoveMedia(idx) {
   pdMediaItems.splice(idx, 1);
   if (pdMediaItems.length && !pdMediaItems.some(function(i){ return i.isMain; })) pdMediaItems[0].isMain = true;
   pdRenderMediaGallery();
+  // If we removed the video, clear preview
+  if (!pdMediaItems.some(function(i){ return i.type==='video'; })) pdShowVidPreview('');
+}
+
+function pdShowVidPreview(url) {
+  var el = document.getElementById('pdVidPreview');
+  if (!el) return;
+  if (!url) { el.style.display = 'none'; el.innerHTML = ''; return; }
+  el.style.display = 'block';
+  el.innerHTML = '<div style="position:relative;display:inline-block;">'
+    +'<video src="'+url+'" style="width:180px;height:120px;object-fit:cover;border-radius:10px;border:2px solid #2a2a2a;" muted playsinline controls></video>'
+    +'<button onclick="pdRemoveVideo()" style="position:absolute;top:4px;right:4px;background:rgba(0,0,0,.8);border:none;color:#fff;width:22px;height:22px;border-radius:50%;font-size:13px;cursor:pointer;line-height:1;display:flex;align-items:center;justify-content:center;" title="Remove video">✕</button>'
+    +'<div style="font-size:9px;color:#555;margin-top:4px;">MP4 video ready</div>'
+    +'</div>';
+}
+
+function pdPreviewVideoUrl(url) {
+  var el = document.getElementById('pdVidPreview');
+  if (!el) return;
+  if (!url || url.trim() === '') { pdShowVidPreview(''); return; }
+  // Remove any uploaded video if URL is being used
+  pdMediaItems = pdMediaItems.filter(function(i){ return i.type !== 'video'; });
+  pdRenderMediaGallery();
+  pdShowVidPreview(url.trim());
+}
+
+function pdRemoveVideo() {
+  // Remove uploaded video from media items
+  pdMediaItems = pdMediaItems.filter(function(i){ return i.type !== 'video'; });
+  pdRenderMediaGallery();
+  pdShowVidPreview('');
+  // Also clear URL field
+  var urlField = document.getElementById('pd-video-url');
+  if (urlField) urlField.value = '';
+  // Reset file input
+  var vidInput = document.getElementById('pd-vid-input');
+  if (vidInput) vidInput.value = '';
 }
 
 // ── SIZE/QTY GRID ─────────────────────────────────────────────────────────
@@ -1533,7 +1617,9 @@ function pdBuildData(statusOverride) {
   // Media
   var mainItem = pdMediaItems.find(function(i){ return i.isMain; }) || pdMediaItems[0];
   var img = (mainItem && mainItem.type === 'image') ? mainItem.url : '';
-  var vid = pdMediaItems.filter(function(i){ return i.type==='video'; }).map(function(i){ return i.url; })[0] || '';
+  var vid = pdMediaItems.filter(function(i){ return i.type==='video'; }).map(function(i){ return i.url; })[0]
+    || ((document.getElementById('pd-video-url')||{}).value||'').trim()
+    || '';
   var extraImgs = pdMediaItems.filter(function(i){ return i.type==='image' && !i.isMain; }).map(function(i){ return i.url; }).join('\n');
   if (!img && mainItem && mainItem.type==='video') img = ''; // video-only product
   return {
