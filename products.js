@@ -227,7 +227,7 @@ function renderProductCard(p, selectedSize = null) {
         ${mediaHTML}
         <div class="product-badge">${badgesHTML}</div>
         ${soldOut ? '<div class="sold-out-overlay"><div class="sold-out-tag">Sold Out</div></div>' : ''}
-        ${!soldOut ? `<div class="viewer-badge" id="vb${p.id}" data-base="${Math.floor(Math.random()*(75-8+1))+8}" style="position:absolute;bottom:10px;left:10px;top:auto;display:flex;align-items:center;gap:5px;">👁 <span class="vb-num">${Math.floor(Math.random()*(75-8+1))+8}</span> viewing now</div>` : ''}
+        ${!soldOut ? `<div class="viewer-badge" id="vb${p.id}" data-product-id="${p.id}" style="position:absolute;bottom:10px;left:10px;top:auto;display:flex;align-items:center;gap:5px;">👁 <span class="vb-num">—</span> viewing now</div>` : ''}
       </div>
       <div class="product-info">
         <div class="product-name">${p.name}</div>
@@ -366,16 +366,43 @@ function onProductsReady(cb) {
   });
 })();
 
-// ── VIEWER COUNT AUTO-REFRESH ─────────────────────────────
+// ── VIEWER COUNT (session-stable, shared across pages) ────
 (function() {
-  function refreshViewers() {
-    document.querySelectorAll('.viewer-badge').forEach(function(el) {
-      var base = parseInt(el.getAttribute('data-base')) || 20;
-      var drift = Math.floor(Math.random() * 11) - 5;
-      var newVal = Math.min(75, Math.max(8, base + drift));
+  function getViewerCount(productId) {
+    var key = 'ils_vc_' + productId;
+    var stored = sessionStorage.getItem(key);
+    if (stored) return parseInt(stored);
+    // Generate once: 20–450 range
+    var count = Math.floor(Math.random() * (450 - 20 + 1)) + 20;
+    sessionStorage.setItem(key, count);
+    return count;
+  }
+
+  function applyViewerCounts() {
+    document.querySelectorAll('.viewer-badge[data-product-id]').forEach(function(el) {
+      var pid = el.getAttribute('data-product-id');
+      if (!pid) return;
+      var count = getViewerCount(pid);
       var span = el.querySelector('.vb-num');
-      if (span) span.textContent = newVal;
+      if (span) span.textContent = count;
     });
   }
-  setInterval(refreshViewers, 45000);
+
+  // Apply immediately after render
+  applyViewerCounts();
+
+  // Subtle drift every 45s (±5, capped to original ±15%)
+  setInterval(function() {
+    document.querySelectorAll('.viewer-badge[data-product-id]').forEach(function(el) {
+      var pid = el.getAttribute('data-product-id');
+      if (!pid) return;
+      var key = 'ils_vc_' + pid;
+      var base = parseInt(sessionStorage.getItem(key)) || 100;
+      var drift = Math.floor(Math.random() * 11) - 5;
+      var next = Math.max(20, Math.min(450, base + drift));
+      sessionStorage.setItem(key, next);
+      var span = el.querySelector('.vb-num');
+      if (span) span.textContent = next;
+    });
+  }, 45000);
 })();
