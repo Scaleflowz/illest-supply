@@ -479,8 +479,8 @@ input:checked + .tslider:before{transform:translateX(16px);background:#22c55e;}
     <div style="background:rgba(255,255,255,.03);border:2px dashed rgba(255,255,255,.1);border-radius:14px;padding:24px;text-align:center;cursor:pointer;margin-bottom:14px;" onclick="document.getElementById('pd-vid-input').click()" id="pdVidDropZone" onmouseover="this.style.borderColor='rgba(255,255,255,.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,.1)'">
       <div style="font-size:28px;margin-bottom:8px;">🎬</div>
       <div style="font-size:14px;font-weight:700;color:#ccc;margin-bottom:4px;">Upload Product Video</div>
-      <div style="font-size:11px;color:#555;">MP4 video only</div>
-      <input type="file" id="pd-vid-input" accept="video/mp4" style="display:none;" onchange="pdHandleVideoFile(this.files)"/>
+      <div style="font-size:11px;color:#555;">MP4, MOV, WebM — up to 100MB</div>
+      <input type="file" id="pd-vid-input" accept="video/mp4,video/quicktime,video/webm,.mp4,.mov,.webm" style="display:none;" onchange="pdHandleVideoFile(this.files)"/>
     </div>
 
     <!-- Video preview (shown after upload) -->
@@ -488,11 +488,7 @@ input:checked + .tslider:before{transform:translateX(16px);background:#22c55e;}
 
     <!-- Secondary: URL fallback (collapsed by default) -->
     <div style="margin-top:4px;">
-      <button type="button" onclick="document.getElementById('pdVidUrlRow').style.display=document.getElementById('pdVidUrlRow').style.display==='none'?'block':'none'" style="background:none;border:none;color:#444;font-size:11px;cursor:pointer;padding:0;text-decoration:underline;">Or paste a video URL instead ▾</button>
-      <div id="pdVidUrlRow" style="display:none;margin-top:8px;">
-        <input type="url" id="pd-video-url" placeholder="Paste MP4 video link here (optional)" style="width:100%;background:#0a0a0a;border:1px solid #222;border-radius:10px;color:#fff;font-size:13px;padding:10px 14px;font-family:inherit;outline:none;" oninput="pdPreviewVideoUrl(this.value)"/>
-      </div>
-    </div>
+      
     <div style="font-size:10px;color:#444;margin-top:10px;">Product saves fine without a video.</div>
 
   </div>
@@ -1283,7 +1279,6 @@ function renderProductList(prods, stockMap) {
 function openAddProduct() {
   pdMediaItems = [];
   pdShowVidPreview('');
-  var _vurlF = document.getElementById('pd-video-url'); if (_vurlF) _vurlF.value = '';
   var _vInp = document.getElementById('pd-vid-input'); if (_vInp) _vInp.value = '';
   document.getElementById('pd-record-id').value = '';
   document.getElementById('pd-product-id').value = '';
@@ -1363,12 +1358,11 @@ function openEditProduct(productId) {
   pdMediaItems = [];
   var mainImg = ov.img || p.img || '';
   var vid = ov.video || p.video || '';
-  var extraImgs = (ov.imgs || '').split('\n').filter(Boolean);
+  var extraImgs = (ov.imgs || '').split(/[,\n]/).map(function(s){return s.trim();}).filter(Boolean);
   if (mainImg) pdMediaItems.push({url:mainImg, type:'image', isMain:true});
   extraImgs.forEach(function(u){ if (u !== mainImg) pdMediaItems.push({url:u, type:'image', isMain:false}); });
   pdRenderMediaGallery();
   // Video preview + URL field
-  var urlField = document.getElementById('pd-video-url');
   if (urlField) urlField.value = '';
   if (vid) { pdShowVidPreview(vid); } else { pdShowVidPreview(''); }
   pdRenderSizeQty();
@@ -1433,12 +1427,14 @@ function pdHandleVideoFile(files) {
   var file = Array.from(files)[0];
   if (!file) return;
   var nm = file.name.toLowerCase();
-  if (!file.type.includes('mp4') && !nm.endsWith('.mp4')) {
-    toast('Please upload an MP4 video file.');
+  var validExt = nm.endsWith('.mp4') || nm.endsWith('.mov') || nm.endsWith('.webm');
+  var validType = file.type.includes('mp4') || file.type.includes('quicktime') || file.type.includes('webm') || file.type === '';
+  if (!validExt && !validType) {
+    toast('Please upload a video file (.mp4, .mov, or .webm).');
     document.getElementById('pd-vid-input').value = '';
     return;
   }
-  if (file.size > 50*1024*1024) { toast('Video too large — max 50MB.', 'warn'); return; }
+  if (file.size > 100*1024*1024) { toast('Video too large — max 100MB.', 'warn'); return; }
   pdUploadQueue([file], 0, 'video');
 }
 
@@ -1540,24 +1536,14 @@ function pdShowVidPreview(url) {
     +'</div>';
 }
 
-function pdPreviewVideoUrl(url) {
-  var el = document.getElementById('pdVidPreview');
-  if (!el) return;
-  if (!url || url.trim() === '') { pdShowVidPreview(''); return; }
-  // Remove any uploaded video if URL is being used
-  pdMediaItems = pdMediaItems.filter(function(i){ return i.type !== 'video'; });
-  pdRenderMediaGallery();
-  pdShowVidPreview(url.trim());
-}
+
 
 function pdRemoveVideo() {
   // Remove uploaded video from media items
   pdMediaItems = pdMediaItems.filter(function(i){ return i.type !== 'video'; });
   pdRenderMediaGallery();
   pdShowVidPreview('');
-  // Also clear URL field
-  var urlField = document.getElementById('pd-video-url');
-  if (urlField) urlField.value = '';
+
   // Reset file input
   var vidInput = document.getElementById('pd-vid-input');
   if (vidInput) vidInput.value = '';
@@ -1644,10 +1630,8 @@ function pdBuildData(statusOverride) {
   // Media
   var mainItem = pdMediaItems.find(function(i){ return i.isMain; }) || pdMediaItems[0];
   var img = (mainItem && mainItem.type === 'image') ? mainItem.url : '';
-  var vid = pdMediaItems.filter(function(i){ return i.type==='video'; }).map(function(i){ return i.url; })[0]
-    || ((document.getElementById('pd-video-url')||{}).value||'').trim()
-    || '';
-  var extraImgs = pdMediaItems.filter(function(i){ return i.type==='image' && !i.isMain; }).map(function(i){ return i.url; }).join('\n');
+  var vid = pdMediaItems.filter(function(i){ return i.type==='video'; }).map(function(i){ return i.url; })[0] || '';
+  var extraImgs = pdMediaItems.filter(function(i){ return i.type==='image' && !i.isMain; }).map(function(i){ return i.url; }).join(',');
   if (!img && mainItem && mainItem.type==='video') img = ''; // video-only product
   return {
     product_name: name, brand: brand, price: price, orig_price: orig,
