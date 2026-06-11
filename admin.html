@@ -1693,6 +1693,16 @@ function saveProductDraft(silent) {
 
 function publishProduct() {
   if (!pdValidate()) return;
+  // Block if any uploads are still in progress
+  var prog = document.getElementById('pdUploadProgress');
+  if (prog && prog.style.display !== 'none') {
+    toast('Please wait — upload still in progress…', 'warn'); return;
+  }
+  // Warn if no image at all
+  var hasImg = pdMediaItems.some(function(i){ return i.type === 'image'; });
+  if (!hasImg) {
+    if (!confirm('No image uploaded. Product will show a placeholder on the store. Continue?')) return;
+  }
   var data = pdBuildData(document.getElementById('pd-status').value === 'draft' ? 'active' : document.getElementById('pd-status').value);
   var recordId = document.getElementById('pd-record-id').value;
   var productId = parseInt(document.getElementById('pd-product-id').value) || 0;
