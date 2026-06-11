@@ -1575,12 +1575,15 @@ function pdAutoSave() {
   if (statusEl) statusEl.textContent = '• Unsaved changes';
   if (pdAutoSaveTimer) clearTimeout(pdAutoSaveTimer);
   pdAutoSaveTimer = setTimeout(function() {
-    var name = document.getElementById('pd-name').value.trim();
-    if (name.length > 1) {
+    var name  = (document.getElementById('pd-name')||{}).value||'';
+    var brand = (document.getElementById('pd-brand')||{}).value||'';
+    var price = parseFloat((document.getElementById('pd-price')||{}).value||'0');
+    // Only auto-save when the minimum required fields are filled
+    if (name.trim().length > 1 && brand.trim().length > 0 && price > 0) {
       if (statusEl) statusEl.textContent = '⟳ Auto-saving draft…';
       saveProductDraft(true);
     }
-  }, 3000);
+  }, 4000);
 }
 
 // ── VALIDATION ────────────────────────────────────────────────────────────
