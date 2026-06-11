@@ -99,6 +99,10 @@
   <meta property="og:site_name" content="The Illest Supply">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="canonical" id="canonicalTag" href="https://illestsupply.com/product.html">
+
+<script>
+function goToProduct(id) { window.location.href = 'product.html?id=' + id; }
+</script>
 </head>
 <body>
 <div id="navContainer"></div>
@@ -189,8 +193,8 @@
 </div>
 
 <div id="footerContainer"></div>
-<script src="cart.js?v=2"></script>
-<script src="catalog.js?v=21"></script>
+<script src="cart.js?v=3"></script>
+<script src="catalog.js?v=23"></script>
 <script>
 document.getElementById('globalStyles').textContent = getGlobalCSS();
 document.getElementById('navContainer').innerHTML = getNavHTML('shop');
