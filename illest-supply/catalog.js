@@ -3,6 +3,22 @@ function goToProduct(id) {
   window.location.href = 'product.html?id=' + id;
 }
 
+// ── PRODUCT LOOKUP ────────────────────────────────────────────────────────
+function getProduct(id) {
+  id = parseInt(id);
+  return PRODUCTS.find(function(p) { return p.id === id; }) || null;
+}
+
+function getProducts() {
+  return PRODUCTS;
+}
+
+function getSavePercent(p) {
+  if (!p.origPrice || p.origPrice <= p.price) return 0;
+  return Math.round((1 - p.price / p.origPrice) * 100);
+}
+
+
 // THE ILLEST SUPPLY — PRODUCT CATALOG v4
 // DB-driven only. No hardcoded products.
 // Last cleared: 2026-06-10
