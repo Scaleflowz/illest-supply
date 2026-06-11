@@ -640,6 +640,16 @@ var LOCAL_CODES = {
   'staff2025':  {name:'Employee', role:'employee', passcode:'STAFF2025'}
 };
 
+function fetchAndStoreGhToken(passcode) {
+  fetch(API + '?action=getGhToken', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({passcode: passcode})
+  }).then(function(r){ return r.json(); }).then(function(d) {
+    if (d.token) sessionStorage.setItem('ils_gh_token', d.token);
+  }).catch(function(){});
+}
+
 function doLogin() {
   var code = document.getElementById('pc').value.trim();
   if (!code) return;
@@ -654,6 +664,8 @@ function doLogin() {
     document.getElementById('sbName').textContent = me.name;
     document.getElementById('sbRole').textContent = me.role;
     if (me.role === 'owner') document.getElementById('teamNav').style.display = 'block';
+    // Fetch GitHub token for direct media uploads
+    fetchAndStoreGhToken(code);
     loadAll();
     return;
   }
@@ -679,6 +691,7 @@ function doLogin() {
     document.getElementById('sbName').textContent = me.name;
     document.getElementById('sbRole').textContent = me.role;
     if (me.role === 'owner') document.getElementById('teamNav').style.display = 'block';
+    fetchAndStoreGhToken(code);
     loadAll();
   }).catch(function() {
     btn.textContent = 'ENTER →';
@@ -1429,6 +1442,26 @@ function pdHandleVideoFile(files) {
   pdUploadQueue([file], 0, 'video');
 }
 
+// Upload media directly to GitHub from browser, then queue next file
+function pdUploadToGitHub(file, isVideo, onSuccess, onError) {
+  // Upload via backend — uses server-side GitHub token (no browser token needed)
+  var formData = new FormData();
+  formData.append('file', file);
+  fetch(API + '?action=uploadMedia', {
+    method: 'POST',
+    body: formData
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(d) {
+    if (d && d.url) {
+      onSuccess(d.url, isVideo ? 'video' : 'image');
+    } else {
+      onError(d.error || 'Upload failed — please try again.');
+    }
+  })
+  .catch(function(err){ onError('Upload error: ' + err); });
+}
+
 function pdUploadQueue(files, idx, typeHint) {
   if (idx >= files.length) {
     document.getElementById('pdUploadProgress').style.display = 'none';
@@ -1449,25 +1482,19 @@ function pdUploadQueue(files, idx, typeHint) {
     pdUploadQueue(files, idx+1, typeHint);
     return;
   }
-  var fd = new FormData();
-  fd.append('file', file);
-  fetch(API + '?action=uploadMedia', { method:'POST', body: fd })
-    .then(function(r){ return r.json(); })
-    .then(function(d) {
-      if (d.url) {
-        var mediaType = d.type || (isVideo ? 'video' : 'image');
-        var isMain = !isVideo && pdMediaItems.filter(function(i){ return i.type==='image'; }).length === 0;
-        pdMediaItems.push({ url: d.url, type: mediaType, isMain: isMain });
-        pdRenderMediaGallery();
-        // Show video preview
-        if (mediaType === 'video') pdShowVidPreview(d.url);
-      } else {
-        var errMsg = d.error || 'Upload failed';
-        toast(errMsg, 'error');
-      }
+  pdUploadToGitHub(file, isVideo,
+    function(url, mediaType) {
+      var isMain = !isVideo && pdMediaItems.filter(function(i){ return i.type==='image'; }).length === 0;
+      pdMediaItems.push({ url: url, type: mediaType, isMain: isMain });
+      pdRenderMediaGallery();
+      if (mediaType === 'video') pdShowVidPreview(url);
       pdUploadQueue(files, idx+1, typeHint);
-    })
-    .catch(function(){ toast('Upload failed — check your connection.', 'error'); pdUploadQueue(files, idx+1, typeHint); });
+    },
+    function(errMsg) {
+      toast(errMsg, 'error');
+      pdUploadQueue(files, idx+1, typeHint);
+    }
+  );
 }
 
 function pdRenderMediaGallery() {
@@ -1820,12 +1847,7 @@ function duplicateCurrentProduct() {
 </script>
 </body>
 </html>
-    <!-- PRODUCTS PAGE -->
-    <div id="products" class="page">
-      <div class="page-title">Products</div>
-      <div class="page-sub">Edit pricing, badges, sold count and sold-out status. Changes sync to the website instantly.</div>
-      <div id="productsGrid" style="display:flex;flex-direction:column;gap:12px;"></div>
-    </div>
+<!-- legacy products section removed -->
 
 
 <!-- cache bust Wed Jun 10 05:23:53 UTC 2026 -->
