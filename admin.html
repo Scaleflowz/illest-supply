@@ -1176,9 +1176,10 @@ function loadProducts(cb) {
     });
     var allProds = STATIC_PRODUCTS.filter(function(p){ return !hiddenStaticIds[p.id]; });
     allProductOverrides.forEach(function(ov) {
-      if (ov.product_id >= 100 && !ov.is_hidden) {
+      if (ov.product_id >= 100) {
+        // Include ALL custom products (active, draft, sold out) so admin can edit them
         if (!allProds.find(function(p){ return p.id === ov.product_id; })) {
-          allProds.push({ id: ov.product_id, name: ov.product_name||'Product', price: ov.price||0, origPrice: ov.orig_price||0, badges: ov.badges||'', sold: ov.sold_count||0, img: ov.img||'', video: ov.video||null, category: ov.category||'sneakers', brand: ov.brand||'', condition: ov.condition||'Brand New', desc: ov.desc||'', sizes: ov.sizes ? ov.sizes.split(',') : [], isCustom: true });
+          allProds.push({ id: ov.product_id, name: ov.product_name||'Product', price: ov.price||0, origPrice: ov.orig_price||0, badges: ov.badges||'', sold: ov.sold_count||0, img: ov.img||'', video: ov.video||null, category: ov.category||'sneakers', brand: ov.brand||'', condition: ov.condition||'Brand New', desc: ov.desc||'', sizes: ov.sizes ? ov.sizes.split(',') : [], isCustom: true, is_hidden: ov.is_hidden||false });
         }
       }
     });
