@@ -1309,74 +1309,109 @@ function openAddProduct() {
 }
 
 function openEditProduct(productId) {
-  var p = (window._adminAllProds||[]).find(function(x){ return x.id === productId; });
-  var ov = allProductOverrides.find(function(o){ return o.product_id === productId; }) || {};
-  // Fallback: if product not in cached list, build from override directly
-  if (!p && ov && ov.product_name) {
-    p = { id: productId, name: ov.product_name, price: ov.price||0, origPrice: ov.orig_price||0,
-          badges: ov.badges||'', sold: ov.sold_count||0, img: ov.img||'', video: ov.video||null,
-          category: ov.category||'sneakers', brand: ov.brand||'', condition: ov.condition||'Brand New',
-          desc: ov.desc||'', sizes: ov.sizes ? ov.sizes.split(',') : [], isCustom: true };
+  // Convert to number in case it comes in as string
+  productId = parseInt(productId, 10);
+  try {
+    var p = (window._adminAllProds||[]).find(function(x){ return parseInt(x.id,10) === productId; });
+    var ov = (allProductOverrides||[]).find(function(o){ return parseInt(o.product_id,10) === productId; }) || {};
+    // Fallback: build p from override if not in cache
+    if (!p && ov && ov.product_name) {
+      p = { id: productId, name: ov.product_name, price: ov.price||0, origPrice: ov.orig_price||0,
+            badges: ov.badges||'', sold: ov.sold_count||0, img: ov.img||'', video: ov.video||'',
+            category: ov.category||'sneakers', brand: ov.brand||'', condition: ov.condition||'Brand New',
+            desc: ov.desc||'', sizes: ov.sizes ? ov.sizes.split(',').map(function(s){return s.trim();}).filter(Boolean) : [], isCustom: true };
+    }
+    if (!p) { alert('Product not found (id=' + productId + '). Click Sync and try again.'); return; }
+
+    var isCustom = !!(p.isCustom || productId >= 100);
+    var isStatic = !isCustom;
+
+    pdMediaItems = [];
+    document.getElementById('pd-record-id').value = ov.id || '';
+    document.getElementById('pd-product-id').value = productId;
+    document.getElementById('pd-is-static').value = isStatic ? '1' : '0';
+    document.getElementById('drawerTitle').textContent = 'EDIT PRODUCT';
+    var delBtn = document.getElementById('drawerDeleteBtn');
+    var dupBtn = document.getElementById('drawerDupBtn');
+    if (delBtn) delBtn.style.display = 'inline-block';
+    if (dupBtn) dupBtn.style.display = 'inline-block';
+    document.getElementById('publishBtn').textContent = 'Update Product \u2192';
+
+    // Fill basic fields
+    document.getElementById('pd-name').value = ov.product_name || p.name || '';
+    document.getElementById('pd-brand').value = ov.brand || p.brand || '';
+    document.getElementById('pd-price').value = ov.price != null ? ov.price : (p.price || '');
+    document.getElementById('pd-orig').value = ov.orig_price != null ? ov.orig_price : (p.origPrice || '');
+    document.getElementById('pd-category').value = ov.category || p.category || 'sneakers';
+    document.getElementById('pd-condition').value = ov.condition || p.condition || 'Brand New';
+    document.getElementById('pd-sold').value = ov.sold_count != null ? ov.sold_count : (p.sold || 0);
+    document.getElementById('pd-badges').value = ov.badges != null ? ov.badges : (p.badges || '');
+    document.getElementById('pd-sizes').value = ov.sizes || (p.sizes ? (Array.isArray(p.sizes) ? p.sizes.join(',') : p.sizes) : '');
+
+    // Parse stored JSON desc if present
+    var fullDesc = ov.desc || p.desc || '';
+    var descObj = {};
+    try { if (typeof fullDesc === 'string' && fullDesc.trim().startsWith('{')) descObj = JSON.parse(fullDesc); } catch(e){}
+    document.getElementById('pd-desc').value = descObj.desc || (typeof fullDesc === 'string' && fullDesc.trim().startsWith('{') ? '' : fullDesc);
+    document.getElementById('pd-details').value = descObj.details || '';
+    document.getElementById('pd-shipping-note').value = descObj.shipping || '';
+    document.getElementById('pd-sku').value = descObj.sku || '';
+    document.getElementById('pd-color').value = ov.color || descObj.color || '';
+
+    // Status
+    var st = ov.is_hidden ? 'draft' : (ov.is_sold_out ? 'soldout' : 'active');
+    document.getElementById('pd-status').value = st;
+
+    // Toggles (guard in case element missing)
+    var featEl = document.getElementById('pd-featured');
+    var bestEl = document.getElementById('pd-bestseller');
+    var homeEl = document.getElementById('pd-homepage');
+    var relEl  = document.getElementById('pd-related');
+    if (featEl) featEl.checked = !!(ov.is_best_seller);
+    if (bestEl) bestEl.checked = !!(ov.is_best_seller);
+    if (homeEl) homeEl.checked = !ov.is_hidden;
+    if (relEl)  relEl.checked  = !ov.is_hidden;
+
+    // Tags
+    var tags = (ov.badges || (Array.isArray(p.badges) ? p.badges.join(',') : p.badges) || '').split(',').map(function(t){return t.trim().toUpperCase();}).filter(Boolean);
+    document.querySelectorAll('.pd-tag-btn').forEach(function(b){ b.classList.toggle('active', tags.indexOf(b.dataset.val)>-1); });
+
+    // Media: load existing images
+    pdMediaItems = [];
+    var mainImg = ov.img || p.img || '';
+    var vid = ov.video || p.video || '';
+    var extraImgs = (ov.imgs || '').split(/[,\n]/).map(function(s){return s.trim();}).filter(Boolean);
+    if (mainImg) pdMediaItems.push({url:mainImg, type:'image', isMain:true});
+    extraImgs.forEach(function(u){ if (u && u !== mainImg) pdMediaItems.push({url:u, type:'image', isMain:false}); });
+
+    // Also load videos array if present
+    var vidsArr = [];
+    if (ov.videos) {
+      try { vidsArr = typeof ov.videos === 'string' ? JSON.parse(ov.videos) : ov.videos; } catch(e){}
+    }
+    if (!vidsArr.length && vid) vidsArr = [vid];
+    vidsArr.forEach(function(vurl){ if (vurl) pdMediaItems.push({url:vurl, type:'video', isMain:false}); });
+
+    pdRenderMediaGallery();
+
+    // Video preview
+    pdShowVidPreview(vid);
+
+    pdRenderSizeQty();
+    pdCalcSale();
+
+    // Clear errors
+    ['err-name','err-brand','err-price','err-sizes'].forEach(function(id){
+      var el = document.getElementById(id);
+      if (el) el.textContent = '';
+    });
+    document.getElementById('drawerSaveStatus').textContent = '';
+    pdGoTab(1);
+    document.getElementById('productDrawer').style.display = 'block';
+  } catch(err) {
+    console.error('openEditProduct failed:', err);
+    alert('Could not open editor: ' + err.message);
   }
-  if (!p) { alert('Product not found. Please refresh and try again.'); return; }
-  var isCustom = p.isCustom || productId >= 100;
-  var isStatic = !isCustom;
-  pdMediaItems = [];
-  document.getElementById('pd-record-id').value = ov.id || '';
-  document.getElementById('pd-product-id').value = productId;
-  document.getElementById('pd-is-static').value = isStatic ? '1' : '0';
-  document.getElementById('drawerTitle').textContent = 'EDIT PRODUCT';
-  document.getElementById('drawerDeleteBtn').style.display = 'inline-block'; // show delete for all products
-  document.getElementById('drawerDupBtn').style.display = 'inline-block';
-  document.getElementById('publishBtn').textContent = 'Update Product →';
-  // Fill fields
-  document.getElementById('pd-name').value = ov.product_name || p.name || '';
-  document.getElementById('pd-brand').value = ov.brand || p.brand || '';
-  document.getElementById('pd-price').value = ov.price != null ? ov.price : (p.price || '');
-  document.getElementById('pd-orig').value = ov.orig_price != null ? ov.orig_price : (p.origPrice || '');
-  document.getElementById('pd-category').value = ov.category || p.category || 'sneakers';
-  document.getElementById('pd-condition').value = ov.condition || p.condition || 'Brand New';
-  document.getElementById('pd-sold').value = ov.sold_count != null ? ov.sold_count : (p.sold || 0);
-  document.getElementById('pd-badges').value = ov.badges != null ? ov.badges : (p.badges || '');
-  document.getElementById('pd-sizes').value = ov.sizes || (p.sizes ? p.sizes.join(',') : '');
-  // Parse desc vs details vs shipping from stored desc JSON if present
-  var fullDesc = ov.desc || p.desc || '';
-  var descObj = {};
-  try { if (fullDesc.startsWith('{')) descObj = JSON.parse(fullDesc); } catch(e){}
-  document.getElementById('pd-desc').value = descObj.desc || (fullDesc.startsWith('{')?'':fullDesc);
-  document.getElementById('pd-details').value = descObj.details || '';
-  document.getElementById('pd-shipping-note').value = descObj.shipping || '';
-  document.getElementById('pd-sku').value = descObj.sku || '';
-  document.getElementById('pd-color').value = ov.color || descObj.color || '';
-  // Status
-  var st = ov.is_hidden ? 'draft' : (ov.is_sold_out ? 'soldout' : 'active');
-  document.getElementById('pd-status').value = st;
-  // Toggles
-  document.getElementById('pd-featured').checked = ov.is_best_seller || false;
-  document.getElementById('pd-bestseller').checked = ov.is_best_seller || false;
-  document.getElementById('pd-homepage').checked = !ov.is_hidden;
-  document.getElementById('pd-related').checked = !ov.is_hidden;
-  // Tags
-  var tags = (ov.badges || p.badges || '').split(',').map(function(t){return t.trim().toUpperCase();});
-  document.querySelectorAll('.pd-tag-btn').forEach(function(b){ b.classList.toggle('active', tags.indexOf(b.dataset.val)>-1); });
-  // Media: load existing
-  pdMediaItems = [];
-  var mainImg = ov.img || p.img || '';
-  var vid = ov.video || p.video || '';
-  var extraImgs = (ov.imgs || '').split(/[,\n]/).map(function(s){return s.trim();}).filter(Boolean);
-  if (mainImg) pdMediaItems.push({url:mainImg, type:'image', isMain:true});
-  extraImgs.forEach(function(u){ if (u !== mainImg) pdMediaItems.push({url:u, type:'image', isMain:false}); });
-  pdRenderMediaGallery();
-  // Video preview + URL field
-  if (urlField) urlField.value = '';
-  if (vid) { pdShowVidPreview(vid); } else { pdShowVidPreview(''); }
-  pdRenderSizeQty();
-  pdCalcSale();
-  // Clear errors
-  ['err-name','err-brand','err-price','err-sizes'].forEach(function(id){ document.getElementById(id).textContent=''; });
-  document.getElementById('drawerSaveStatus').textContent = '';
-  pdGoTab(1);
-  document.getElementById('productDrawer').style.display = 'block';
 }
 
 function closeProductDrawer() {
