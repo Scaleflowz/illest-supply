@@ -1,3 +1,8 @@
+// ── NAVIGATION ───────────────────────────────────────────────────────────
+function goToProduct(id) {
+  window.location.href = 'product.html?id=' + id;
+}
+
 // THE ILLEST SUPPLY — PRODUCT CATALOG v4
 // DB-driven only. No hardcoded products.
 // Last cleared: 2026-06-10
