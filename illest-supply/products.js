@@ -22,7 +22,7 @@ async function loadProductOverrides() {
     PRODUCTS.length = 0;
 
     overrides
-      .filter(o => o.product_name && !o.is_hidden)
+      .filter(o => o.product_name && !o.is_hidden && o.img)
       .forEach(o => {
         const sizes = o.sizes ? o.sizes.split(',').map(s => s.trim()).filter(Boolean) : [];
         const imgs = o.imgs ? o.imgs.split(',').map(s => s.trim()).filter(Boolean) : [];
