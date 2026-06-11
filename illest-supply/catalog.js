@@ -22,7 +22,7 @@ async function loadProductOverrides() {
     PRODUCTS.length = 0;
 
     overrides
-      .filter(o => o.product_name && !o.is_hidden && o.img)
+      .filter(o => o.product_name && !o.is_hidden)
       .forEach(o => {
         const sizes = o.sizes ? o.sizes.split(',').map(s => s.trim()).filter(Boolean) : [];
         const imgs = o.imgs ? o.imgs.split(',').map(s => s.trim()).filter(Boolean) : [];
@@ -66,3 +66,40 @@ async function loadProductOverrides() {
 }
 
 loadProductOverrides();
+
+// ── SHARED CARD RENDERER ─────────────────────────────────────────────────
+function renderProductCard(p) {
+  const soldOut = p.isSoldOut || Object.values(p.stock||{}).every(v=>v===0);
+  const imgHtml = p.img
+    ? `<img src="${p.img}" alt="${p.name}" loading="lazy" style="width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;">`
+    : `<div style="width:100%;height:100%;background:#111;border-radius:12px 12px 0 0;display:flex;align-items:center;justify-content:center;font-size:48px;">👟</div>`;
+  const media = p.video
+    ? `<video src="${p.video}" autoplay muted loop playsinline style="width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;"></video>`
+    : imgHtml;
+  const badge = p.badges && p.badges.length
+    ? `<span style="position:absolute;top:10px;left:10px;background:#111;border:1px solid rgba(255,255,255,.15);color:#fff;font-size:10px;font-weight:700;letter-spacing:.06em;padding:4px 8px;border-radius:20px;">${p.badges[0]==='HOT'?'🔥 HOT':p.badges[0]}</span>`
+    : '';
+  const soldOverlay = soldOut
+    ? `<div style="position:absolute;inset:0;background:rgba(0,0,0,.55);border-radius:12px 12px 0 0;display:flex;align-items:center;justify-content:center;"><span style="color:#fff;font-size:13px;font-weight:700;letter-spacing:.08em;">SOLD OUT</span></div>`
+    : '';
+  const viewers = p.viewers || Math.floor(Math.random()*68)+8;
+  const viewBadge = `<span style="position:absolute;top:10px;right:10px;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.1);color:#fff;font-size:9px;font-weight:600;padding:3px 7px;border-radius:20px;">👁 ${viewers} viewing</span>`;
+  const sale = p.origPrice && p.origPrice > p.price
+    ? `<span style="font-size:11px;color:#22c55e;font-weight:700;margin-left:6px;">-${Math.round((1-p.price/p.origPrice)*100)}%</span>`
+    : '';
+  const btn = soldOut
+    ? `<button disabled style="width:100%;padding:11px;background:#1a1a1a;color:#444;border:1px solid #222;border-radius:8px;font-size:12px;font-weight:700;cursor:not-allowed;letter-spacing:.06em;">SOLD OUT</button>`
+    : `<button onclick="event.stopPropagation();goToProduct(${p.id})" style="width:100%;padding:11px;background:#fff;color:#000;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.06em;" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">SHOP NOW</button>`;
+  return `<div onclick="${soldOut?'':('goToProduct('+p.id+')')}" style="background:#0d0d0d;border:1px solid rgba(255,255,255,.07);border-radius:12px;overflow:hidden;cursor:${soldOut?'default':'pointer'};transition:transform .2s,border-color .2s;" onmouseover="this.style.transform='translateY(-3px)';this.style.borderColor='rgba(255,255,255,.18)'" onmouseout="this.style.transform='';this.style.borderColor='rgba(255,255,255,.07)'">
+    <div style="position:relative;aspect-ratio:1;overflow:hidden;">${media}${badge}${viewBadge}${soldOverlay}</div>
+    <div style="padding:14px;">
+      <div style="font-size:10px;color:#555;letter-spacing:.08em;text-transform:uppercase;margin-bottom:3px;">${p.brand||''}</div>
+      <div style="font-size:15px;font-family:'Bebas Neue',sans-serif;letter-spacing:.05em;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.name}</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div style="font-size:16px;font-weight:800;">$${p.price}${sale}</div>
+        ${p.soldCount>0?`<div style="font-size:10px;color:#555;">${p.soldCount}+ sold</div>`:''}
+      </div>
+      <div style="margin-top:10px;">${btn}</div>
+    </div>
+  </div>`;
+}
