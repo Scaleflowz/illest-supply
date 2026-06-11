@@ -310,7 +310,7 @@ input:checked + .tslider:before{transform:translateX(16px);background:#22c55e;}
     </div>
     <div style="display:flex;gap:8px;align-items:center;">
       <button class="btn btn-outline btn-sm" onclick="refreshProducts()" id="syncBtn">⟳ Sync</button>
-      <button class="btn btn-white" onclick="openAddProduct()">+ Add Product</button>
+      <button id="addProductBtn" class="btn btn-white" onclick="openAddProduct()">+ Add Product</button>
     </div>
   </div>
 
@@ -455,19 +455,42 @@ input:checked + .tslider:before{transform:translateX(16px);background:#22c55e;}
 
   <!-- ── TAB 2: MEDIA ── -->
   <div id="pdTab2" class="pd-tab-content" style="display:none;padding:24px 28px;">
-    <div style="background:rgba(255,255,255,.03);border:2px dashed rgba(255,255,255,.1);border-radius:14px;padding:28px;text-align:center;cursor:pointer;margin-bottom:20px;" onclick="document.getElementById('pd-file-input').click()" id="pdDropZone" ondragover="event.preventDefault();this.style.borderColor='#fff'" ondragleave="this.style.borderColor='rgba(255,255,255,.1)'" ondrop="pdHandleDrop(event)">
-      <div style="font-size:32px;margin-bottom:10px;">📸</div>
-      <div style="font-size:14px;font-weight:700;color:#ccc;margin-bottom:6px;">Drop files here or click to upload</div>
-      <div style="font-size:11px;color:#444;">JPG, PNG, WebP · MP4 video · Max 10MB images / 50MB video</div>
-      <div style="font-size:10px;color:#ef4444;margin-top:4px;">⚠️ MOV files not supported — please convert to MP4</div>
-      <input type="file" id="pd-file-input" multiple accept="image/jpeg,image/png,image/webp,video/mp4" style="display:none;" onchange="pdHandleFiles(this.files)"/>
+
+    <!-- ── IMAGES ─────────────────────────────── -->
+    <div style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#888;margin-bottom:10px;">Product Images</div>
+    <div style="background:rgba(255,255,255,.03);border:2px dashed rgba(255,255,255,.1);border-radius:14px;padding:24px;text-align:center;cursor:pointer;margin-bottom:16px;" onclick="document.getElementById('pd-img-input').click()" id="pdDropZone" ondragover="event.preventDefault();this.style.borderColor='#fff'" ondragleave="this.style.borderColor='rgba(255,255,255,.1)'" ondrop="pdHandleDrop(event)">
+      <div style="font-size:28px;margin-bottom:8px;">🖼️</div>
+      <div style="font-size:13px;font-weight:700;color:#ccc;margin-bottom:4px;">Click to upload images</div>
+      <div style="font-size:11px;color:#555;">JPG, PNG, WebP — up to 10MB each</div>
+      <input type="file" id="pd-img-input" multiple accept="image/jpeg,image/jpg,image/png,image/webp" style="display:none;" onchange="pdHandleImageFiles(this.files)"/>
     </div>
+
     <div id="pdUploadProgress" style="display:none;margin-bottom:16px;">
       <div style="font-size:11px;color:#f59e0b;margin-bottom:6px;" id="pdUploadMsg">Uploading…</div>
       <div style="height:4px;background:#1a1a1a;border-radius:2px;overflow:hidden;"><div id="pdUploadBar" style="height:100%;background:#f59e0b;width:0%;transition:width .3s;border-radius:2px;"></div></div>
     </div>
-    <div id="pdMediaGallery" style="display:flex;flex-wrap:wrap;gap:10px;min-height:60px;"></div>
-    <div style="font-size:10px;color:#444;margin-top:12px;">Click any thumbnail to set as main image. Drag to reorder. Click ✕ to remove.</div>
+    <div id="pdMediaGallery" style="display:flex;flex-wrap:wrap;gap:10px;min-height:40px;margin-bottom:8px;"></div>
+    <div style="font-size:10px;color:#444;margin-bottom:24px;">Click a photo to set it as the main image. Click ✕ to remove.</div>
+
+    <!-- ── VIDEO ──────────────────────────────── -->
+    <div style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#888;margin-bottom:10px;">Product Video <span style="color:#444;font-size:10px;text-transform:none;letter-spacing:0;font-weight:400;">(optional)</span></div>
+
+    <!-- Primary: file upload button -->
+    <div style="background:rgba(255,255,255,.03);border:2px dashed rgba(255,255,255,.1);border-radius:14px;padding:24px;text-align:center;cursor:pointer;margin-bottom:14px;" onclick="document.getElementById('pd-vid-input').click()" id="pdVidDropZone" onmouseover="this.style.borderColor='rgba(255,255,255,.3)'" onmouseout="this.style.borderColor='rgba(255,255,255,.1)'">
+      <div style="font-size:28px;margin-bottom:8px;">🎬</div>
+      <div style="font-size:14px;font-weight:700;color:#ccc;margin-bottom:4px;">Upload Product Video</div>
+      <div style="font-size:11px;color:#555;">MP4, MOV, WebM — up to 100MB</div>
+      <input type="file" id="pd-vid-input" accept="video/mp4,video/quicktime,video/webm,.mp4,.mov,.webm" style="display:none;" onchange="pdHandleVideoFile(this.files)"/>
+    </div>
+
+    <!-- Video preview (shown after upload) -->
+    <div id="pdVidPreview" style="display:none;margin-bottom:16px;"></div>
+
+    <!-- Secondary: URL fallback (collapsed by default) -->
+    <div style="margin-top:4px;">
+      
+    <div style="font-size:10px;color:#444;margin-top:10px;">Product saves fine without a video.</div>
+
   </div>
 
   <!-- ── TAB 3: INVENTORY ── -->
@@ -613,6 +636,16 @@ var LOCAL_CODES = {
   'staff2025':  {name:'Employee', role:'employee', passcode:'STAFF2025'}
 };
 
+function fetchAndStoreGhToken(passcode) {
+  fetch(API + '?action=getGhToken', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({passcode: passcode})
+  }).then(function(r){ return r.json(); }).then(function(d) {
+    if (d.token) sessionStorage.setItem('ils_gh_token', d.token);
+  }).catch(function(){});
+}
+
 function doLogin() {
   var code = document.getElementById('pc').value.trim();
   if (!code) return;
@@ -627,6 +660,8 @@ function doLogin() {
     document.getElementById('sbName').textContent = me.name;
     document.getElementById('sbRole').textContent = me.role;
     if (me.role === 'owner') document.getElementById('teamNav').style.display = 'block';
+    // Fetch GitHub token for direct media uploads
+    fetchAndStoreGhToken(code);
     loadAll();
     return;
   }
@@ -652,6 +687,7 @@ function doLogin() {
     document.getElementById('sbName').textContent = me.name;
     document.getElementById('sbRole').textContent = me.role;
     if (me.role === 'owner') document.getElementById('teamNav').style.display = 'block';
+    fetchAndStoreGhToken(code);
     loadAll();
   }).catch(function() {
     btn.textContent = 'ENTER →';
@@ -1136,10 +1172,14 @@ function loadProducts(cb) {
       if (!stockMap[item.product_id]) stockMap[item.product_id] = 0;
       if (item.in_stock) stockMap[item.product_id] += (item.quantity || 1);
     });
-    // Merge custom products from overrides (id >= 100)
-    var allProds = STATIC_PRODUCTS.slice();
+    // Merge: static (not hidden) + custom products (id >= 100, not hidden)
+    var hiddenStaticIds = {};
     allProductOverrides.forEach(function(ov) {
-      if (ov.product_id >= 100) {
+      if (ov.product_id < 100 && ov.is_hidden) hiddenStaticIds[ov.product_id] = true;
+    });
+    var allProds = STATIC_PRODUCTS.filter(function(p){ return !hiddenStaticIds[p.id]; });
+    allProductOverrides.forEach(function(ov) {
+      if (ov.product_id >= 100 && !ov.is_hidden) {
         if (!allProds.find(function(p){ return p.id === ov.product_id; })) {
           allProds.push({ id: ov.product_id, name: ov.product_name||'Product', price: ov.price||0, origPrice: ov.orig_price||0, badges: ov.badges||'', sold: ov.sold_count||0, img: ov.img||'', video: ov.video||null, category: ov.category||'sneakers', brand: ov.brand||'', condition: ov.condition||'Brand New', desc: ov.desc||'', sizes: ov.sizes ? ov.sizes.split(',') : [], isCustom: true });
         }
@@ -1222,7 +1262,7 @@ function renderProductList(prods, stockMap) {
       +'<span class="'+statusClass+'" style="font-size:9px;">'+statusLabel+'</span>'
       +(sale>0?'<span class="badge badge-contacted" style="font-size:9px;">-'+sale+'%</span>':'')
       +'<button onclick="openEditProduct('+p.id+')" style="background:#1a1a1a;border:1px solid #2a2a2a;color:#ccc;padding:5px 12px;border-radius:7px;font-size:10px;cursor:pointer;">✏️ Edit</button>'
-      +(isCustom?'<button onclick="promptDeleteProduct(\''+ov.id+'\',\''+name.replace(/'/g,"\\'")+'\')" style="background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.15);color:#ef4444;padding:5px 12px;border-radius:7px;font-size:10px;cursor:pointer;">🗑 Delete</button>':'')
+      +'<button onclick="promptDeleteProduct(\''+( ov.id||'')+'\',\''+name.replace(/'/g,"\\'")+'\','+p.id+')" style="background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.15);color:#ef4444;padding:5px 12px;border-radius:7px;font-size:10px;cursor:pointer;">🗑 Delete</button>'
       +'<button onclick="dupProductById('+p.id+')" style="background:#1a1a1a;border:1px solid #2a2a2a;color:#777;padding:5px 10px;border-radius:7px;font-size:10px;cursor:pointer;" title="Duplicate">⧉</button>'
       +'</div>'
       +'</div>'
@@ -1238,6 +1278,8 @@ function renderProductList(prods, stockMap) {
 // ── DRAWER OPEN/CLOSE ─────────────────────────────────────────────────────
 function openAddProduct() {
   pdMediaItems = [];
+  pdShowVidPreview('');
+  var _vInp = document.getElementById('pd-vid-input'); if (_vInp) _vInp.value = '';
   document.getElementById('pd-record-id').value = '';
   document.getElementById('pd-product-id').value = '';
   document.getElementById('pd-is-static').value = '0';
@@ -1279,7 +1321,7 @@ function openEditProduct(productId) {
   document.getElementById('pd-product-id').value = productId;
   document.getElementById('pd-is-static').value = isStatic ? '1' : '0';
   document.getElementById('drawerTitle').textContent = 'EDIT PRODUCT';
-  document.getElementById('drawerDeleteBtn').style.display = isCustom ? 'inline-block' : 'none';
+  document.getElementById('drawerDeleteBtn').style.display = 'inline-block'; // show delete for all products
   document.getElementById('drawerDupBtn').style.display = 'inline-block';
   document.getElementById('publishBtn').textContent = 'Update Product →';
   // Fill fields
@@ -1316,11 +1358,13 @@ function openEditProduct(productId) {
   pdMediaItems = [];
   var mainImg = ov.img || p.img || '';
   var vid = ov.video || p.video || '';
-  var extraImgs = (ov.imgs || '').split('\n').filter(Boolean);
+  var extraImgs = (ov.imgs || '').split(/[,\n]/).map(function(s){return s.trim();}).filter(Boolean);
   if (mainImg) pdMediaItems.push({url:mainImg, type:'image', isMain:true});
-  if (vid) pdMediaItems.push({url:vid, type:'video', isMain:!mainImg});
   extraImgs.forEach(function(u){ if (u !== mainImg) pdMediaItems.push({url:u, type:'image', isMain:false}); });
   pdRenderMediaGallery();
+  // Video preview + URL field
+  if (urlField) urlField.value = '';
+  if (vid) { pdShowVidPreview(vid); } else { pdShowVidPreview(''); }
   pdRenderSizeQty();
   pdCalcSale();
   // Clear errors
@@ -1363,23 +1407,61 @@ function pdCalcSale() {
 function pdHandleDrop(e) {
   e.preventDefault();
   document.getElementById('pdDropZone').style.borderColor = 'rgba(255,255,255,.1)';
-  pdHandleFiles(e.dataTransfer.files);
+  // Drop zone is images only — filter and warn if video dropped here
+  var arr = Array.from(e.dataTransfer.files);
+  var vids = arr.filter(function(f){ return f.type.startsWith('video/'); });
+  if (vids.length) toast('Drop images here. Use the video section below for videos.');
+  var imgs = arr.filter(function(f){ return f.type.startsWith('image/'); });
+  if (imgs.length) pdHandleImageFiles(imgs);
 }
 
-function pdHandleFiles(files) {
-  var arr = Array.from(files);
-  if (!arr.length) return;
-  // Check for MOV
-  var hasMov = arr.some(function(f){ return f.name.toLowerCase().endsWith('.mov'); });
-  if (hasMov) { toast('⚠️ MOV files not supported — please convert to MP4 first', 'warn'); arr = arr.filter(function(f){ return !f.name.toLowerCase().endsWith('.mov'); }); }
-  if (!arr.length) return;
-  pdUploadQueue(arr, 0);
+function pdHandleImageFiles(files) {
+  var arr = Array.from(files).filter(function(f){
+    return ['image/jpeg','image/jpg','image/png','image/webp'].indexOf(f.type) !== -1;
+  });
+  if (!arr.length) { toast('Please use JPG, PNG, or WebP for images.'); return; }
+  pdUploadQueue(arr, 0, 'image');
 }
 
-function pdUploadQueue(files, idx) {
+function pdHandleVideoFile(files) {
+  var file = Array.from(files)[0];
+  if (!file) return;
+  var nm = file.name.toLowerCase();
+  var validExt = nm.endsWith('.mp4') || nm.endsWith('.mov') || nm.endsWith('.webm');
+  var validType = file.type.includes('mp4') || file.type.includes('quicktime') || file.type.includes('webm') || file.type === '';
+  if (!validExt && !validType) {
+    toast('Please upload a video file (.mp4, .mov, or .webm).');
+    document.getElementById('pd-vid-input').value = '';
+    return;
+  }
+  if (file.size > 100*1024*1024) { toast('Video too large — max 100MB.', 'warn'); return; }
+  pdUploadQueue([file], 0, 'video');
+}
+
+// Upload media directly to GitHub from browser, then queue next file
+function pdUploadToGitHub(file, isVideo, onSuccess, onError) {
+  // Upload via backend — uses server-side GitHub token (no browser token needed)
+  var formData = new FormData();
+  formData.append('file', file);
+  fetch(API + '?action=uploadMedia', {
+    method: 'POST',
+    body: formData
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(d) {
+    if (d && d.url) {
+      onSuccess(d.url, isVideo ? 'video' : 'image');
+    } else {
+      onError(d.error || 'Upload failed — please try again.');
+    }
+  })
+  .catch(function(err){ onError('Upload error: ' + err); });
+}
+
+function pdUploadQueue(files, idx, typeHint) {
   if (idx >= files.length) {
     document.getElementById('pdUploadProgress').style.display = 'none';
-    toast('Media uploaded ✓');
+    toast('Upload complete ✓');
     return;
   }
   var file = files[idx];
@@ -1388,30 +1470,27 @@ function pdUploadQueue(files, idx) {
   var bar = document.getElementById('pdUploadBar');
   prog.style.display = 'block';
   msgEl.textContent = 'Uploading ' + (idx+1) + ' of ' + files.length + ': ' + file.name;
-  bar.style.width = Math.round((idx/files.length)*100) + '%';
-  // Size check client side
-  var isVideo = file.type.startsWith('video/');
+  bar.style.width = Math.round(((idx+1)/files.length)*100) + '%';
+  var isVideo = typeHint === 'video' || file.type.startsWith('video/');
   var maxSize = isVideo ? 50*1024*1024 : 10*1024*1024;
   if (file.size > maxSize) {
-    toast('⚠️ ' + file.name + ' too large (max ' + (isVideo?'50MB':'10MB') + ')', 'warn');
-    pdUploadQueue(files, idx+1);
+    toast(file.name + ' is too large (max ' + (isVideo?'50MB':'10MB') + ')', 'warn');
+    pdUploadQueue(files, idx+1, typeHint);
     return;
   }
-  var fd = new FormData();
-  fd.append('file', file);
-  fetch(API + '?action=uploadMedia', { method:'POST', body: fd })
-    .then(function(r){ return r.json(); })
-    .then(function(d) {
-      if (d.url) {
-        var isMain = pdMediaItems.length === 0;
-        pdMediaItems.push({ url: d.url, type: d.type || (isVideo?'video':'image'), isMain: isMain });
-        pdRenderMediaGallery();
-      } else {
-        toast('Upload failed: ' + (d.error||'unknown'), 'error');
-      }
-      pdUploadQueue(files, idx+1);
-    })
-    .catch(function(e){ toast('Upload error: ' + e, 'error'); pdUploadQueue(files, idx+1); });
+  pdUploadToGitHub(file, isVideo,
+    function(url, mediaType) {
+      var isMain = !isVideo && pdMediaItems.filter(function(i){ return i.type==='image'; }).length === 0;
+      pdMediaItems.push({ url: url, type: mediaType, isMain: isMain });
+      pdRenderMediaGallery();
+      if (mediaType === 'video') pdShowVidPreview(url);
+      pdUploadQueue(files, idx+1, typeHint);
+    },
+    function(errMsg) {
+      toast(errMsg, 'error');
+      pdUploadQueue(files, idx+1, typeHint);
+    }
+  );
 }
 
 function pdRenderMediaGallery() {
@@ -1441,6 +1520,33 @@ function pdRemoveMedia(idx) {
   pdMediaItems.splice(idx, 1);
   if (pdMediaItems.length && !pdMediaItems.some(function(i){ return i.isMain; })) pdMediaItems[0].isMain = true;
   pdRenderMediaGallery();
+  // If we removed the video, clear preview
+  if (!pdMediaItems.some(function(i){ return i.type==='video'; })) pdShowVidPreview('');
+}
+
+function pdShowVidPreview(url) {
+  var el = document.getElementById('pdVidPreview');
+  if (!el) return;
+  if (!url) { el.style.display = 'none'; el.innerHTML = ''; return; }
+  el.style.display = 'block';
+  el.innerHTML = '<div style="position:relative;display:inline-block;">'
+    +'<video src="'+url+'" style="width:180px;height:120px;object-fit:cover;border-radius:10px;border:2px solid #2a2a2a;" muted playsinline controls></video>'
+    +'<button onclick="pdRemoveVideo()" style="position:absolute;top:4px;right:4px;background:rgba(0,0,0,.8);border:none;color:#fff;width:22px;height:22px;border-radius:50%;font-size:13px;cursor:pointer;line-height:1;display:flex;align-items:center;justify-content:center;" title="Remove video">✕</button>'
+    +'<div style="font-size:9px;color:#555;margin-top:4px;">MP4 video ready</div>'
+    +'</div>';
+}
+
+
+
+function pdRemoveVideo() {
+  // Remove uploaded video from media items
+  pdMediaItems = pdMediaItems.filter(function(i){ return i.type !== 'video'; });
+  pdRenderMediaGallery();
+  pdShowVidPreview('');
+
+  // Reset file input
+  var vidInput = document.getElementById('pd-vid-input');
+  if (vidInput) vidInput.value = '';
 }
 
 // ── SIZE/QTY GRID ─────────────────────────────────────────────────────────
@@ -1525,7 +1631,7 @@ function pdBuildData(statusOverride) {
   var mainItem = pdMediaItems.find(function(i){ return i.isMain; }) || pdMediaItems[0];
   var img = (mainItem && mainItem.type === 'image') ? mainItem.url : '';
   var vid = pdMediaItems.filter(function(i){ return i.type==='video'; }).map(function(i){ return i.url; })[0] || '';
-  var extraImgs = pdMediaItems.filter(function(i){ return i.type==='image' && !i.isMain; }).map(function(i){ return i.url; }).join('\n');
+  var extraImgs = pdMediaItems.filter(function(i){ return i.type==='image' && !i.isMain; }).map(function(i){ return i.url; }).join(',');
   if (!img && mainItem && mainItem.type==='video') img = ''; // video-only product
   return {
     product_name: name, brand: brand, price: price, orig_price: orig,
@@ -1655,8 +1761,11 @@ function previewProduct() {
 }
 
 // ── DELETE ────────────────────────────────────────────────────────────────
-function promptDeleteProduct(recordId, name) {
-  _pdDeleteRecordId = recordId;
+var _pdDeleteProductId = null; // fallback product_id for static products without an override record
+
+function promptDeleteProduct(recordId, name, productId) {
+  _pdDeleteRecordId = recordId || null;
+  _pdDeleteProductId = productId || null;
   document.getElementById('pdDeleteName').textContent = '"' + name + '"';
   var el = document.getElementById('pdDeleteModal');
   el.style.display = 'flex';
@@ -1664,8 +1773,10 @@ function promptDeleteProduct(recordId, name) {
 
 function confirmDeleteDrawer() {
   var recordId = document.getElementById('pd-record-id').value;
+  var productId = document.getElementById('pd-product-id').value;
   var name = document.getElementById('pd-name').value || 'this product';
-  _pdDeleteRecordId = recordId;
+  _pdDeleteRecordId = recordId || null;
+  _pdDeleteProductId = productId || null;
   document.getElementById('pdDeleteName').textContent = '"' + name + '"';
   document.getElementById('pdDeleteModal').style.display = 'flex';
 }
@@ -1673,18 +1784,27 @@ function confirmDeleteDrawer() {
 function closePdDeleteModal() {
   document.getElementById('pdDeleteModal').style.display = 'none';
   _pdDeleteRecordId = null;
+  _pdDeleteProductId = null;
 }
 
 function executePdDelete() {
-  if (!_pdDeleteRecordId) return;
-  fetch(API + '?action=deleteProduct', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ id: _pdDeleteRecordId }) })
+  if (!_pdDeleteRecordId && !_pdDeleteProductId) { toast('Nothing to delete', 'error'); return; }
+  var payload = {};
+  if (_pdDeleteRecordId) payload.id = _pdDeleteRecordId;
+  if (_pdDeleteProductId) payload.product_id = parseInt(_pdDeleteProductId);
+  var btn = document.querySelector('#pdDeleteModal button[onclick="executePdDelete()"]');
+  if (btn) { btn.textContent = 'Deleting…'; btn.disabled = true; }
+  fetch(API + '?action=deleteProduct', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) })
     .then(function(r){ return r.json(); })
     .then(function(d){
       closePdDeleteModal();
       closeProductDrawer();
-      toast('Product deleted');
+      toast('Product deleted ✓');
       loadProducts();
-    }).catch(function(){ toast('Delete failed', 'error'); });
+    }).catch(function(){
+      if (btn) { btn.textContent = 'Delete Forever'; btn.disabled = false; }
+      toast('Delete failed — check connection', 'error');
+    });
 }
 
 // ── DUPLICATE ─────────────────────────────────────────────────────────────
@@ -1711,12 +1831,7 @@ function duplicateCurrentProduct() {
 </script>
 </body>
 </html>
-    <!-- PRODUCTS PAGE -->
-    <div id="products" class="page">
-      <div class="page-title">Products</div>
-      <div class="page-sub">Edit pricing, badges, sold count and sold-out status. Changes sync to the website instantly.</div>
-      <div id="productsGrid" style="display:flex;flex-direction:column;gap:12px;"></div>
-    </div>
+<!-- legacy products section removed -->
 
 
 <!-- cache bust Wed Jun 10 05:23:53 UTC 2026 -->
