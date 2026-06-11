@@ -1,4 +1,4 @@
-// THE ILLEST SUPPLY — PRODUCT CATALOG v5
+// THE ILLEST SUPPLY — PRODUCT CATALOG v4
 // DB-driven only. No hardcoded products.
 // Last cleared: 2026-06-10
 
