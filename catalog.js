@@ -62,7 +62,7 @@ async function loadProductOverrides() {
           condition: o.condition || 'Brand New',
           isNewArrival: o.is_new_arrival || false,
           isBestSeller: o.is_best_seller || false,
-          isSoldOut: o.is_sold_out || false,
+          isSoldOut: o.is_sold_out === true,
           badges: badges,
           soldCount: o.sold_count || 0,
           sold: o.sold_count || 0,
@@ -94,9 +94,17 @@ function renderProductCard(p) {
   const imgHtml = p.img
     ? `<img src="${p.img}" alt="${p.name}" loading="lazy" style="width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;">`
     : `<div style="width:100%;height:100%;background:#111;border-radius:12px 12px 0 0;display:flex;align-items:center;justify-content:center;font-size:48px;">👟</div>`;
-  const media = p.video
-    ? `<video src="${p.video}" autoplay muted loop playsinline style="width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;"></video>`
-    : imgHtml;
+  // Card media: show image if available, video only as fallback (no autoplay)
+  let media;
+  if (p.img || (p.imgs && p.imgs.length)) {
+    // Has image — show image, add ▶ badge if video also exists
+    media = `<div style="position:relative;width:100%;height:100%;">${imgHtml}${p.video ? '<div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.65);border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:10px;pointer-events:none;">▶</div>' : ''}</div>`;
+  } else if (p.video) {
+    // No image — show video, play on hover
+    media = `<div style="position:relative;width:100%;height:100%;"><video src="${p.video}" muted loop playsinline preload="metadata" style="width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" onmouseenter="this.play()" onmouseleave="this.pause();this.currentTime=0;"></video><div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.65);border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:10px;pointer-events:none;">▶</div></div>`;
+  } else {
+    media = imgHtml;
+  }
   const badge = p.badges && p.badges.length
     ? `<span style="position:absolute;top:10px;left:10px;background:#111;border:1px solid rgba(255,255,255,.15);color:#fff;font-size:10px;font-weight:700;letter-spacing:.06em;padding:4px 8px;border-radius:20px;">${p.badges[0]==='HOT'?'🔥 HOT':p.badges[0]}</span>`
     : '';
