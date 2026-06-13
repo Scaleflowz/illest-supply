@@ -45,7 +45,13 @@ async function loadProductOverrides() {
     overrides
       .filter(o => o.product_name && !o.is_hidden)
       .forEach(o => {
-        const sizes = o.sizes ? o.sizes.split(',').map(s => s.trim()).filter(Boolean) : [];
+        // Parse sizes: support comma-separated OR space-separated, strip * separators
+        const sizes = o.sizes
+          ? (o.sizes.includes(',')
+              ? o.sizes.split(',')
+              : o.sizes.split(/[\s*]+/)
+            ).map(s => s.replace(/\*/g,'').trim()).filter(Boolean)
+          : [];
         const imgs = o.imgs ? o.imgs.split(',').map(s => s.trim()).filter(Boolean) : [];
         if (o.img && !imgs.includes(o.img)) imgs.unshift(o.img);
         const badges = o.badges ? o.badges.split(',').map(b => b.trim()).filter(Boolean) : [];
