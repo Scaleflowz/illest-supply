@@ -20,7 +20,7 @@ function getSavePercent(p) {
 
 
 // THE ILLEST SUPPLY — PRODUCT CATALOG v4
-// DB-driven only. No hardcoded products.
+// DB-driven only. No hardcoded products. v33 v32
 // Last cleared: 2026-06-10
 
 const PRODUCTS = [];
@@ -45,12 +45,14 @@ async function loadProductOverrides() {
     overrides
       .filter(o => o.product_name && !o.is_hidden)
       .forEach(o => {
-        // Parse sizes: support comma-separated OR space-separated, strip * separators
+        // Parse sizes: handles comma-sep, space-sep, * separators, mixed spacing
+        // e.g. "8M  8.5M * 9M  9.5M" or "S,M,L" or "8 9 10"
         const sizes = o.sizes
-          ? (o.sizes.includes(',')
-              ? o.sizes.split(',')
-              : o.sizes.split(/[\s*]+/)
-            ).map(s => s.replace(/\*/g,'').trim()).filter(Boolean)
+          ? o.sizes
+              .replace(/\*/g, ' ')          // remove * separators
+              .split(/[,\s]+/)              // split on commas or any whitespace
+              .map(s => s.trim())
+              .filter(s => s.length > 0)
           : [];
         const imgs = o.imgs ? o.imgs.split(',').map(s => s.trim()).filter(Boolean) : [];
         if (o.img && !imgs.includes(o.img)) imgs.unshift(o.img);
@@ -59,7 +61,7 @@ async function loadProductOverrides() {
         PRODUCTS.push({
           id: o.product_id,
           _recordId: o.id,
-          name: o.product_name,
+          name: (o.product_name||'').replace(/SLIVER/g,'SILVER').replace(/REFELCTIVE/g,'REFLECTIVE').replace(/  +/g,' ').trim(),
           slug: o.product_name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
           price: o.price || 0,
           origPrice: o.orig_price || 0,
@@ -96,9 +98,11 @@ loadProductOverrides();
 
 // ── SHARED CARD RENDERER ─────────────────────────────────────────────────
 function renderProductCard(p) {
-  const soldOut = p.isSoldOut || Object.values(p.stock||{}).every(v=>v===0);
+  // Only check stock if there are actual sizes; if no sizes defined, trust isSoldOut flag
+  const _stockVals = Object.values(p.stock||{});
+  const soldOut = p.isSoldOut || (_stockVals.length > 0 && _stockVals.every(v=>v===0));
   const imgHtml = p.img
-    ? `<img src="${p.img}" alt="${p.name}" loading="lazy" style="width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;">`
+    ? `<img src="${p.img}" alt="${p.name}" loading="lazy" style="width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" onerror="this.style.display='none';this.nextSibling&&(this.nextSibling.style.display='flex')"><div style="display:none;width:100%;height:100%;background:#111;border-radius:12px 12px 0 0;align-items:center;justify-content:center;font-size:48px;">👟</div>`
     : `<div style="width:100%;height:100%;background:#111;border-radius:12px 12px 0 0;display:flex;align-items:center;justify-content:center;font-size:48px;">👟</div>`;
   // Card media: show image if available, video only as fallback (no autoplay)
   let media;
@@ -107,7 +111,7 @@ function renderProductCard(p) {
     media = `<div style="position:relative;width:100%;height:100%;">${imgHtml}${p.video ? '<div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.65);border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:10px;pointer-events:none;">▶</div>' : ''}</div>`;
   } else if (p.video) {
     // No image — show video, play on hover
-    media = `<div style="position:relative;width:100%;height:100%;"><video src="${p.video}" muted loop playsinline preload="metadata" style="width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" onmouseenter="this.play()" onmouseleave="this.pause();this.currentTime=0;"></video><div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.65);border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:10px;pointer-events:none;">▶</div></div>`;
+    media = `<div style="position:relative;width:100%;height:100%;"><video src="${p.video}" muted loop playsinline preload="none" style="width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" onmouseenter="this.play()" onmouseleave="this.pause();this.currentTime=0;" onerror="this.style.opacity='0'"></video><div style="position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.65);border-radius:50%;width:26px;height:26px;display:flex;align-items:center;justify-content:center;font-size:10px;pointer-events:none;">▶</div></div>`;
   } else {
     media = imgHtml;
   }
@@ -115,7 +119,7 @@ function renderProductCard(p) {
     ? `<span style="position:absolute;top:10px;left:10px;background:#111;border:1px solid rgba(255,255,255,.15);color:#fff;font-size:10px;font-weight:700;letter-spacing:.06em;padding:4px 8px;border-radius:20px;">${p.badges[0]==='HOT'?'🔥 HOT':p.badges[0]}</span>`
     : '';
   const soldOverlay = soldOut
-    ? `<div style="position:absolute;inset:0;background:rgba(0,0,0,.55);border-radius:12px 12px 0 0;display:flex;align-items:center;justify-content:center;"><span style="color:#fff;font-size:13px;font-weight:700;letter-spacing:.08em;">SOLD OUT</span></div>`
+    ? `<div style="position:absolute;inset:0;border-radius:12px 12px 0 0;"></div><div style="position:absolute;top:10px;left:10px;background:rgba(0,0,0,.82);border:1px solid rgba(255,255,255,.12);color:#fff;font-size:10px;font-weight:800;letter-spacing:.1em;padding:5px 10px;border-radius:4px;z-index:20;text-transform:uppercase;line-height:1.3;">SOLD OUT<br><span style="font-size:8px;font-weight:500;opacity:.7;letter-spacing:.08em;">RESTOCK SOON</span></div>`
     : '';
   const viewers = p.viewers || Math.floor(Math.random()*68)+8;
   const viewBadge = `<span style="position:absolute;top:10px;right:10px;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.1);color:#fff;font-size:9px;font-weight:600;padding:3px 7px;border-radius:20px;">👁 ${viewers} viewing</span>`;
@@ -123,7 +127,7 @@ function renderProductCard(p) {
     ? `<span style="font-size:11px;color:#22c55e;font-weight:700;margin-left:6px;">-${Math.round((1-p.price/p.origPrice)*100)}%</span>`
     : '';
   const btn = soldOut
-    ? `<button disabled style="width:100%;padding:11px;background:#1a1a1a;color:#444;border:1px solid #222;border-radius:8px;font-size:12px;font-weight:700;cursor:not-allowed;letter-spacing:.06em;">SOLD OUT</button>`
+    ? `<button disabled style="width:100%;padding:11px;background:#111;color:#555;border:1px solid #1a1a1a;border-radius:8px;font-size:11px;font-weight:700;cursor:not-allowed;letter-spacing:.05em;line-height:1.4;">Sold Out — Restock Soon</button>`
     : `<button onclick="event.stopPropagation();goToProduct(${p.id})" style="width:100%;padding:11px;background:#fff;color:#000;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.06em;" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">SHOP NOW</button>`;
   return `<div onclick="${soldOut?'':('goToProduct('+p.id+')')}" style="background:#0d0d0d;border:1px solid rgba(255,255,255,.07);border-radius:12px;overflow:hidden;cursor:${soldOut?'default':'pointer'};transition:transform .2s,border-color .2s;" onmouseover="this.style.transform='translateY(-3px)';this.style.borderColor='rgba(255,255,255,.18)'" onmouseout="this.style.transform='';this.style.borderColor='rgba(255,255,255,.07)'">
     <div style="position:relative;aspect-ratio:1;overflow:hidden;">${media}${badge}${viewBadge}${soldOverlay}</div>
