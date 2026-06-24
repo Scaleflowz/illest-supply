@@ -229,8 +229,8 @@ function goToProduct(id) { window.location.href = 'product.html?id=' + id; }
 
 <div id="footerContainer"></div>
 
-<script src="cart.js?v=3"></script>
-<script src="catalog.js?v=29"></script>
+<script src="cart.js?v=5"></script>
+<script src="catalog.js?v=33"></script>
 
 <script>
 document.getElementById('globalStyles').textContent = getGlobalCSS();
@@ -353,9 +353,35 @@ function renderHomeCard(p) {
     if(el) el.classList.add('show');
   }
 
-  // Show after 8s, only once per session
-  if(!sessionStorage.getItem(POPUP_KEY)){
-    setTimeout(showPopup, 8000);
+  // Show popup only once per session, and only after user engagement:
+  // - After 45s on page, OR
+  // - After scrolling 50% of the page height (whichever comes first)
+  if (!sessionStorage.getItem(POPUP_KEY)) {
+    var popupShown = false;
+    function maybeShowPopup() {
+      if (!popupShown) { popupShown = true; showPopup(); }
+    }
+    // Timer: show after 45s
+    var popupTimer = setTimeout(maybeShowPopup, 45000);
+    // Scroll trigger: show after scrolling 50% of page
+    function onScrollCheck() {
+      var scrolled = window.scrollY + window.innerHeight;
+      var total = document.documentElement.scrollHeight;
+      if (scrolled / total >= 0.50) {
+        clearTimeout(popupTimer);
+        window.removeEventListener('scroll', onScrollCheck);
+        setTimeout(maybeShowPopup, 800); // small delay after scroll trigger
+      }
+    }
+    window.addEventListener('scroll', onScrollCheck, { passive: true });
+    // Exit intent (desktop only): mouse leaves top of viewport
+    document.addEventListener('mouseleave', function onExit(e) {
+      if (e.clientY < 10) {
+        document.removeEventListener('mouseleave', onExit);
+        clearTimeout(popupTimer);
+        setTimeout(maybeShowPopup, 300);
+      }
+    });
   }
 
   window.closePopup = function(){
