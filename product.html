@@ -150,7 +150,7 @@ function goToProduct(id) { window.location.href = 'product.html?id=' + id; }
         <div class="trust-row">
           <div class="trust-pill">📦 Ships in 1–3 days</div>
           <div class="trust-pill">🎁 Free over $150</div>
-          <div class="trust-pill">✅ Secure Checkout</div>
+          <div class="trust-pill">🔒 Order Confirmation Sent</div>
         </div>
 
         <div class="pd-tabs">
@@ -195,18 +195,46 @@ function goToProduct(id) { window.location.href = 'product.html?id=' + id; }
 </div>
 
 <div id="footerContainer"></div>
-<script src="cart.js?v=3"></script>
-<script src="catalog.js?v=29"></script>
+<script src="cart.js?v=5"></script>
+<script src="catalog.js?v=33"></script>
 <script>
 document.getElementById('globalStyles').textContent = getGlobalCSS();
 document.getElementById('navContainer').innerHTML = getNavHTML('shop');
 document.getElementById('footerContainer').innerHTML = getFooterHTML();
 
+// GLOBAL — needed by sticky mobile bar buttons
+var currentProduct = null;
+var selectedSize = null;
+var qty = 1;
+
+// Safe stubs for sticky bar — won't error if clicked before product loads
+window.pdAddToCart = function() {
+  if (!currentProduct) { return; }
+  var needsSize = currentProduct.sizes && currentProduct.sizes.length > 0;
+  if (needsSize && !selectedSize) {
+    var se = document.getElementById('sizeError');
+    if (se) se.style.display = 'block';
+    var sg = document.getElementById('sizeGrid');
+    if (sg) sg.scrollIntoView({behavior:'smooth', block:'nearest'});
+    return;
+  }
+  for (var i = 0; i < qty; i++) Cart.add(currentProduct, selectedSize);
+  Cart.openDrawer();
+};
+window.pdBuyNow = function() {
+  if (!currentProduct) { return; }
+  var needsSize = currentProduct.sizes && currentProduct.sizes.length > 0;
+  if (needsSize && !selectedSize) {
+    var se = document.getElementById('sizeError');
+    if (se) se.style.display = 'block';
+    return;
+  }
+  for (var i = 0; i < qty; i++) Cart.add(currentProduct, selectedSize);
+  window.location.href = 'checkout.html';
+};
+
 // Wait for overrides then render product
 function renderProductPage() {
-let currentProduct = null;
-let selectedSize = null;
-let qty = 1;
 
 const params = new URLSearchParams(location.search);
 const pid = parseInt(params.get('id'));
@@ -216,7 +244,8 @@ if (!currentProduct) { document.querySelector('main').innerHTML = '<div style="t
 else {
   const p = currentProduct;
   const save = getSavePercent(p);
-  const soldOut = p.isSoldOut || Object.values(p.stock||{}).every(v=>v===0);
+  const _stockVals = Object.values(p.stock||{});
+  const soldOut = p.isSoldOut || (_stockVals.length > 0 && _stockVals.every(v=>v===0));
 
   document.getElementById('pageTitle').textContent = `${p.name} | The Illest Supply`;
   // Dynamic OG + structured data
@@ -238,16 +267,18 @@ else {
   document.getElementById('pdPrice').textContent = `$${p.price}`;
   document.getElementById('pdOrig').textContent = `$${p.origPrice}`;
   document.getElementById('pdSave').textContent = `-${save}%`;
-  document.getElementById('pdSold').textContent = soldOut ? 'All pairs gone' : `${p.sold}+ sold`;
+  // pdSold hidden — stats bar handles sold count display
+  const pdSoldEl = document.getElementById('pdSold');
+  if (pdSoldEl) pdSoldEl.style.display = 'none';
   document.getElementById('pdDesc').textContent = p.desc;
 
   // Gallery
   const mainMedia = document.getElementById('mainMedia');
   // Social proof stats
-  const views = Math.floor(p.sold * 3.2 + Math.floor(Math.random()*12) + 8);
-  const bought = Math.floor(p.sold * 0.6);
+  const _soldCount = p.soldCount || p.sold_count || p.sold || 0;
+  const views = Math.floor(_soldCount * 3.2 + Math.floor(Math.random()*12) + 8);
   const statsEl = document.getElementById('pdStats');
-  if(statsEl) statsEl.innerHTML = `<span class="pd-stat viewing"><span class="dot"></span>${views} people viewing now</span><span class="pd-stat">✅ <span>${bought}+</span> sold</span>`;
+  if(statsEl) statsEl.innerHTML = `<span class="pd-stat viewing"><span class="dot"></span>${views} people viewing now</span><span class="pd-stat">✅ <span>${_soldCount}+</span> sold</span>`;
   
   // Low stock check
   const lowEl = document.getElementById('pdLowStock');
@@ -277,7 +308,7 @@ else {
   }
 
   function showMainImage(src) {
-    mainMedia.innerHTML = `<img src="${src}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;">`;
+    mainMedia.innerHTML = `<img src="${src}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none';this.parentNode.style.background='#111';">`;
   }
 
   // Show video in main area if product has one; otherwise show image
@@ -372,7 +403,7 @@ else {
   // Actions
   const actDiv = document.getElementById('pdActions');
   if (soldOut) {
-    actDiv.innerHTML = `<button class="pd-sold-out-btn">Sold Out</button>`;
+    actDiv.innerHTML = `<button class="pd-sold-out-btn" style="text-align:center;line-height:1.4;">Sold Out<br><span style="font-size:11px;font-weight:500;opacity:.6;letter-spacing:.06em;">Restock Soon</span></button>`;
   } else {
     actDiv.innerHTML = `
       <button class="pd-atc" onclick="pdAddToCart()">Add to Cart</button>
@@ -384,8 +415,20 @@ else {
   document.getElementById('relatedGrid').innerHTML = related.length
     ? related.map(pr=>renderProductCard(pr)).join('')
     : PRODUCTS.filter(pr=>pr.id!==p.id&&!pr.isSoldOut).slice(0,4).map(pr=>renderProductCard(pr)).join('');
-}
 
+  // Fix 6 + Fix 1: update sticky mobile bar to reflect sold-out state
+  var stickyBar = document.querySelector('.sticky-buy-bar');
+  if (stickyBar) {
+    if (soldOut) {
+      stickyBar.innerHTML = '<button disabled style="flex:1;padding:14px;border-radius:12px;font-size:13px;background:#1a1a1a;color:#555;border:1px solid #222;font-weight:700;letter-spacing:.04em;cursor:not-allowed;">Sold Out — Restock Soon</button>';
+    } else {
+      stickyBar.innerHTML = '<button onclick="pdAddToCart()" class="pd-atc" style="flex:1;padding:14px;border-radius:12px;font-size:13px;">Add to Cart</button><button onclick="pdBuyNow()" class="pd-bn" style="flex:1;padding:13px;border-radius:12px;font-size:13px;border:1px solid rgba(255,255,255,.2);">Buy Now</button>';
+    }
+  }
+}  // end else (product found)
+} // end renderProductPage
+
+// GLOBAL helpers — callable from sticky mobile bar and inline onclick
 function changeQty(dir) {
   qty = Math.max(1, Math.min(10, qty + dir));
   document.getElementById('qtyVal').textContent = qty;
@@ -395,32 +438,32 @@ function pdAddToCart() {
   if (!currentProduct) return;
   const needsSize = currentProduct.sizes && currentProduct.sizes.length > 0;
   if (needsSize && !selectedSize) {
-    document.getElementById('sizeError').style.display='block';
-    document.getElementById('sizeGrid').scrollIntoView({behavior:'smooth',block:'nearest'});
+    document.getElementById('sizeError').style.display = 'block';
+    var sg = document.getElementById('sizeGrid');
+    if (sg) sg.scrollIntoView({behavior:'smooth', block:'nearest'});
     return;
   }
-  for (let i=0;i<qty;i++) Cart.add(currentProduct, selectedSize);
-  Cart.openDrawer();
+  var added = false;
+  for (var i = 0; i < qty; i++) { added = Cart.add(currentProduct, selectedSize) || added; }
+  if (added !== false) Cart.openDrawer();
 }
 
 function pdBuyNow() {
   if (!currentProduct) return;
   const needsSize = currentProduct.sizes && currentProduct.sizes.length > 0;
   if (needsSize && !selectedSize) {
-    document.getElementById('sizeError').style.display='block';
+    document.getElementById('sizeError').style.display = 'block';
     return;
   }
-  for (let i=0;i<qty;i++) Cart.add(currentProduct, selectedSize);
+  for (var i = 0; i < qty; i++) Cart.add(currentProduct, selectedSize);
   window.location.href = 'checkout.html';
 }
 
 function switchTab(name, el) {
-  document.querySelectorAll('.pd-tab-content').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.pd-tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById(`tab-${name}`).classList.add('active');
+  document.querySelectorAll('.pd-tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.pd-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
   el.classList.add('active');
-}
-
 }
 
 onProductsReady(renderProductPage);
