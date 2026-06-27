@@ -98,6 +98,19 @@ function goToProduct(id) { window.location.href = 'product.html?id=' + id; }
 </script>
 </head>
 <body>
+<script>
+/* ── COMING SOON MODE CHECK ── */
+(function(){
+  // Skip redirect if already on coming-soon page
+  if(location.pathname.indexOf('coming-soon')!==-1) return;
+  // Skip redirect for admin (allow admin to access site while CS mode is on)
+  if(location.pathname.indexOf('admin')!==-1) return;
+  fetch('https://superagent-bc2ec54c.base44.app/functions/adminApi?action=getComingSoonMode')
+    .then(function(r){return r.json();})
+    .then(function(d){if(d.enabled){location.replace('coming-soon.html');}})
+    .catch(function(){/* fail open — show store if API unreachable */});
+})();
+</script>
 <div id="navContainer"></div>
 
 <main>
