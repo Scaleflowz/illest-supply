@@ -97,18 +97,24 @@
 function goToProduct(id) { window.location.href = 'product.html?id=' + id; }
 </script>
 </head>
-<body>
+<body style="visibility:hidden">
 <script>
-/* ── COMING SOON MODE CHECK ── */
+/* ── COMING SOON MODE CHECK — instant, no flicker ── */
 (function(){
-  // Skip redirect if already on coming-soon page
-  if(location.pathname.indexOf('coming-soon')!==-1) return;
-  // Skip redirect for admin (allow admin to access site while CS mode is on)
-  if(location.pathname.indexOf('admin')!==-1) return;
-  fetch('https://superagent-bc2ec54c.base44.app/functions/adminApi?action=getComingSoonMode')
-    .then(function(r){return r.json();})
-    .then(function(d){if(d.enabled){location.replace('coming-soon.html');}})
-    .catch(function(){/* fail open — show store if API unreachable */});
+  var show = function(){ document.body.style.visibility = ''; };
+  fetch('https://superagent-bc2ec54c.base44.app/functions/adminApi?action=getComingSoonMode',
+        { cache: 'no-store' })
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if (d.enabled) {
+        location.replace('coming-soon.html');
+      } else {
+        show();
+      }
+    })
+    .catch(function(){ show(); /* fail open — show store if API unreachable */ });
+  // Hard timeout: if API takes >1.5s, show the store anyway
+  setTimeout(show, 1500);
 })();
 </script>
 <div id="navContainer"></div>
