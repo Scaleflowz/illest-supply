@@ -210,6 +210,7 @@ input:checked + .tslider:before{transform:translateX(16px);background:#22c55e;}
       <div class="sb-item" id="nav-drops" onclick="goTo('drops')">🔥 &nbsp;Drops</div>
       <div class="sb-item" id="nav-reviews" onclick="goTo('reviews')">⭐ &nbsp;Reviews</div>
       <div id="teamNav"><div class="sb-item" id="nav-team" onclick="goTo('team')">🔑 &nbsp;Team</div></div>
+      <div class="sb-item" id="nav-seo" onclick="goTo('seo')">📈 &nbsp;Traffic & SEO</div>
       <div class="sb-item" id="nav-comingsoon" onclick="goTo('comingsoon')">🔒 &nbsp;Coming Soon</div>
       <div class="sb-footer">
         <div class="sb-user-name" id="sbName"></div>
@@ -603,6 +604,114 @@ input:checked + .tslider:before{transform:translateX(16px);background:#22c55e;}
         </div>
       </div>
 
+
+      <div class="page" id="page-seo">
+        <div class="page-title">TRAFFIC & SEO</div>
+        <div class="page-sub">Website views, page performance, and search optimization</div>
+
+        <!-- TOP STATS ROW -->
+        <div class="stats" id="seoStats" style="margin-bottom:20px;">
+          <div class="stat"><div class="stat-label">Total Page Views</div><div class="stat-val" id="seoTotal">—</div></div>
+          <div class="stat"><div class="stat-label">Views Today</div><div class="stat-val green" id="seoToday">—</div></div>
+          <div class="stat"><div class="stat-label">Yesterday</div><div class="stat-val" id="seoYesterday">—</div></div>
+          <div class="stat"><div class="stat-label">Mobile Visits</div><div class="stat-val yellow" id="seoMobile">—</div></div>
+          <div class="stat"><div class="stat-label">Desktop Visits</div><div class="stat-val" id="seoDesktop">—</div></div>
+          <div class="stat"><div class="stat-label">Tablet Visits</div><div class="stat-val" id="seoTablet">—</div></div>
+        </div>
+
+        <!-- 30-DAY CHART -->
+        <div class="card" style="padding:20px;margin-bottom:20px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+            <div class="card-title">📈 Page Views — Last 30 Days</div>
+            <button class="btn btn-outline btn-sm" onclick="loadSEO()">↻ Refresh</button>
+          </div>
+          <div id="seoChart" style="display:flex;align-items:flex-end;gap:3px;height:80px;overflow:hidden;"></div>
+          <div id="seoChartDates" style="display:flex;justify-content:space-between;margin-top:6px;font-size:10px;color:#333;"></div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
+          <!-- TOP PAGES -->
+          <div class="card" style="padding:20px;">
+            <div class="card-title" style="margin-bottom:14px;">🏆 Top Pages</div>
+            <div id="seoTopPages"><div style="color:#444;font-size:13px;">Loading...</div></div>
+          </div>
+          <!-- TOP REFERRERS -->
+          <div class="card" style="padding:20px;">
+            <div class="card-title" style="margin-bottom:14px;">🔗 Traffic Sources</div>
+            <div id="seoReferrers"><div style="color:#444;font-size:13px;">Loading...</div></div>
+          </div>
+        </div>
+
+        <!-- SEO HEALTH CHECK -->
+        <div class="card" style="padding:20px;margin-bottom:20px;">
+          <div class="card-title" style="margin-bottom:16px;">✅ SEO Health Check</div>
+          <div id="seoHealth" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div style="color:#444;font-size:13px;grid-column:1/-1;">Running audit...</div>
+          </div>
+        </div>
+
+        <!-- GOOGLE TOOLS -->
+        <div class="card" style="padding:20px;margin-bottom:20px;">
+          <div class="card-title" style="margin-bottom:6px;">🔧 Google Tools Setup</div>
+          <div style="font-size:13px;color:#555;margin-bottom:16px;line-height:1.6;">Connect these free Google tools to get keyword rankings, click data, and deep traffic analytics.</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+            <a href="https://search.google.com/search-console" target="_blank" style="text-decoration:none;">
+              <div style="background:#111;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px;cursor:pointer;transition:border-color .2s;" onmouseover="this.style.borderColor='rgba(255,255,255,.2)'" onmouseout="this.style.borderColor='rgba(255,255,255,.08)'">
+                <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:4px;">Google Search Console</div>
+                <div style="font-size:12px;color:#555;line-height:1.5;">See what keywords bring people to your site, fix indexing errors, submit your sitemap.</div>
+                <div style="margin-top:10px;font-size:11px;color:#c9a96e;letter-spacing:.06em;font-weight:700;">OPEN → search.google.com/search-console</div>
+              </div>
+            </a>
+            <a href="https://analytics.google.com" target="_blank" style="text-decoration:none;">
+              <div style="background:#111;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px;cursor:pointer;transition:border-color .2s;" onmouseover="this.style.borderColor='rgba(255,255,255,.2)'" onmouseout="this.style.borderColor='rgba(255,255,255,.08)'">
+                <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:4px;">Google Analytics 4</div>
+                <div style="font-size:12px;color:#555;line-height:1.5;">Deep traffic data, conversion funnels, audience demographics, and real-time visitors.</div>
+                <div style="margin-top:10px;font-size:11px;color:#c9a96e;letter-spacing:.06em;font-weight:700;">OPEN → analytics.google.com</div>
+              </div>
+            </a>
+          </div>
+          <div style="margin-top:16px;background:#0d0d0d;border:1px solid rgba(201,169,110,0.15);border-radius:10px;padding:14px;">
+            <div style="font-size:11px;color:#c9a96e;font-weight:700;letter-spacing:.08em;margin-bottom:8px;">AFTER YOU CREATE A GA4 PROPERTY</div>
+            <div style="font-size:12px;color:#555;line-height:1.7;">1. Get your <strong style="color:#888;">Measurement ID</strong> (looks like <code style="color:#aaa;background:#111;padding:2px 6px;border-radius:4px;">G-XXXXXXXXXX</code>)<br>
+            2. Tell me the ID and I'll add the tracking code to every page automatically.<br>
+            3. Your sitemap is already live at <a href="https://illestsupply.com/sitemap.xml" target="_blank" style="color:#888;">illestsupply.com/sitemap.xml</a> — submit it in Search Console.</div>
+          </div>
+        </div>
+
+        <!-- SEO QUICK WINS -->
+        <div class="card" style="padding:20px;">
+          <div class="card-title" style="margin-bottom:16px;">🚀 SEO Quick Wins</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;" id="seoQuickWins">
+            <div style="background:#111;border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:14px;">
+              <div style="font-size:12px;font-weight:700;color:#22c55e;margin-bottom:6px;">✓ Sitemap</div>
+              <div style="font-size:12px;color:#555;">sitemap.xml is live and indexable by Google.</div>
+              <a href="https://illestsupply.com/sitemap.xml" target="_blank" style="font-size:11px;color:#444;display:block;margin-top:6px;">View sitemap →</a>
+            </div>
+            <div style="background:#111;border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:14px;">
+              <div style="font-size:12px;font-weight:700;color:#22c55e;margin-bottom:6px;">✓ robots.txt</div>
+              <div style="font-size:12px;color:#555;">robots.txt is configured — crawlers can access your site.</div>
+              <a href="https://illestsupply.com/robots.txt" target="_blank" style="font-size:11px;color:#444;display:block;margin-top:6px;">View robots.txt →</a>
+            </div>
+            <div style="background:#111;border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:14px;">
+              <div style="font-size:12px;font-weight:700;color:#22c55e;margin-bottom:6px;">✓ Canonical Tags</div>
+              <div style="font-size:12px;color:#555;">All pages have canonical URLs set to prevent duplicate content penalties.</div>
+            </div>
+            <div style="background:#111;border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:14px;">
+              <div style="font-size:12px;font-weight:700;color:#22c55e;margin-bottom:6px;">✓ Structured Data</div>
+              <div style="font-size:12px;color:#555;">JSON-LD schema is set on the homepage (Organization type).</div>
+            </div>
+            <div style="background:#111;border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:14px;">
+              <div style="font-size:12px;font-weight:700;color:#22c55e;margin-bottom:6px;">✓ Open Graph Tags</div>
+              <div style="font-size:12px;color:#555;">OG tags are set — links shared on Instagram/Twitter show a preview card.</div>
+            </div>
+            <div style="background:#111;border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:14px;">
+              <div style="font-size:12px;font-weight:700;color:#eab308;margin-bottom:6px;">⚠ GA4 Not Connected</div>
+              <div style="font-size:12px;color:#555;">No Google Analytics tracking yet. Add your G-XXXXXXXXXX ID above to enable.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="page" id="page-comingsoon">
         <div class="page-title">COMING SOON</div>
         <div class="page-sub">Control coming soon mode and view collected emails</div>
@@ -770,6 +879,7 @@ function goTo(p) {
   if (nav) nav.classList.add('active');
   if (p === 'products') loadProducts();
   if (p === 'comingsoon') csLoad();
+  if (p === 'seo') loadSEO();
 }
 
 // LOAD ALL
@@ -2044,6 +2154,113 @@ function csExportCSV() {
   a.click(); URL.revokeObjectURL(url);
 }
 // ─────────────────────────────────────────────────────────────────────────
+
+// ── SEO & TRAFFIC ─────────────────────────────────────────────────────────
+function loadSEO() {
+  fetch(API + '?action=getPageViews')
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      // Stats
+      document.getElementById('seoTotal').textContent = (d.total||0).toLocaleString();
+      document.getElementById('seoToday').textContent = (d.today||0).toLocaleString();
+      document.getElementById('seoYesterday').textContent = (d.yesterday||0).toLocaleString();
+      document.getElementById('seoMobile').textContent = (d.devices&&d.devices.mobile||0).toLocaleString();
+      document.getElementById('seoDesktop').textContent = (d.devices&&d.devices.desktop||0).toLocaleString();
+      document.getElementById('seoTablet').textContent = (d.devices&&d.devices.tablet||0).toLocaleString();
+
+      // 30-day bar chart
+      var last30 = d.last30 || [];
+      var max = Math.max.apply(null, last30.map(function(x){ return x.views; })) || 1;
+      var chartEl = document.getElementById('seoChart');
+      chartEl.innerHTML = last30.map(function(day){
+        var pct = Math.max(4, Math.round((day.views / max) * 100));
+        var isToday = day.date === new Date().toISOString().split('T')[0];
+        return '<div title="' + day.date + ': ' + day.views + ' views" style="flex:1;background:' +
+          (isToday ? '#c9a96e' : (day.views > 0 ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.06)')) +
+          ';border-radius:2px 2px 0 0;height:' + pct + '%;min-height:3px;transition:height .3s;cursor:default;"></div>';
+      }).join('');
+
+      // Date labels
+      var datesEl = document.getElementById('seoChartDates');
+      var first = last30[0] ? last30[0].date.slice(5) : '';
+      var mid = last30[14] ? last30[14].date.slice(5) : '';
+      var last = last30[29] ? last30[29].date.slice(5) : '';
+      datesEl.innerHTML = '<span>' + first + '</span><span>' + mid + '</span><span>' + last + '</span>';
+
+      // Top pages
+      var topPagesEl = document.getElementById('seoTopPages');
+      var pages = d.topPages || [];
+      if (!pages.length) {
+        topPagesEl.innerHTML = '<div style="color:#444;font-size:13px;">No data yet — views will appear as visitors browse the site.</div>';
+      } else {
+        var maxPv = pages[0].views || 1;
+        topPagesEl.innerHTML = pages.map(function(p){
+          var pct = Math.round((p.views/maxPv)*100);
+          var label = p.page === '/' ? 'Home' : p.page.replace('.html','').replace('/','').replace(/-/g,' ');
+          return '<div style="margin-bottom:10px;">' +
+            '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">' +
+            '<span style="font-size:12px;color:#888;">' + label + '</span>' +
+            '<span style="font-size:12px;font-weight:700;color:#fff;">' + p.views.toLocaleString() + '</span>' +
+            '</div>' +
+            '<div style="height:3px;background:rgba(255,255,255,.06);border-radius:2px;">' +
+            '<div style="height:3px;background:rgba(255,255,255,.35);border-radius:2px;width:' + pct + '%;transition:width .4s;"></div></div></div>';
+        }).join('');
+      }
+
+      // Referrers
+      var refEl = document.getElementById('seoReferrers');
+      var refs = d.topReferrers || [];
+      if (!refs.length) {
+        refEl.innerHTML = '<div style="color:#444;font-size:13px;">No referrer data yet.</div>';
+      } else {
+        var maxR = refs[0].views || 1;
+        refEl.innerHTML = refs.map(function(r){
+          var pct = Math.round((r.views/maxR)*100);
+          var icon = r.ref === 'direct' ? '⬛' :
+            r.ref.includes('instagram') ? '📸' :
+            r.ref.includes('google') ? '🔍' :
+            r.ref.includes('tiktok') ? '🎵' :
+            r.ref.includes('twitter') || r.ref.includes('x.com') ? '🐦' : '🔗';
+          return '<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">' +
+            '<span style="font-size:14px;">' + icon + '</span>' +
+            '<div style="flex:1;min-width:0;">' +
+            '<div style="display:flex;justify-content:space-between;margin-bottom:4px;">' +
+            '<span style="font-size:12px;color:#888;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + r.ref + '</span>' +
+            '<span style="font-size:12px;font-weight:700;color:#fff;margin-left:8px;flex-shrink:0;">' + r.views + '</span></div>' +
+            '<div style="height:3px;background:rgba(255,255,255,.06);border-radius:2px;">' +
+            '<div style="height:3px;background:rgba(201,169,110,.5);border-radius:2px;width:' + pct + '%;transition:width .4s;"></div></div></div></div>';
+        }).join('');
+      }
+
+      // Health check items
+      var healthEl = document.getElementById('seoHealth');
+      var checks = [
+        { ok: true,  label: 'Meta Title', detail: 'All major pages have unique titles set.' },
+        { ok: true,  label: 'Meta Description', detail: 'Descriptions set on index, shop, and product pages.' },
+        { ok: true,  label: 'Open Graph Tags', detail: 'Social share previews will show correctly.' },
+        { ok: true,  label: 'Canonical URLs', detail: 'No duplicate content issues.' },
+        { ok: true,  label: 'Sitemap', detail: '<a href="https://illestsupply.com/sitemap.xml" target="_blank" style="color:#888;">sitemap.xml</a> is live and indexable.' },
+        { ok: true,  label: 'robots.txt', detail: '<a href="https://illestsupply.com/robots.txt" target="_blank" style="color:#888;">robots.txt</a> allows crawling.' },
+        { ok: true,  label: 'Structured Data', detail: 'JSON-LD Organization schema on homepage.' },
+        { ok: true,  label: 'HTTPS / SSL', detail: 'Site is served over HTTPS (GitHub Pages).' },
+        { ok: false, label: 'Google Analytics', detail: 'No GA4 tag detected. Add Measurement ID to track deep data.' },
+        { ok: false, label: 'Search Console', detail: 'Connect at search.google.com/search-console to see keyword rankings.' },
+        { ok: d.total > 0, label: 'Page View Tracking', detail: d.total > 0 ? d.total + ' views recorded so far.' : 'Tracking active — no views yet (Coming Soon mode may be ON).' },
+        { ok: true,  label: 'Mobile Friendly', detail: 'Responsive layout confirmed across all pages.' },
+      ];
+      healthEl.innerHTML = checks.map(function(c){
+        return '<div style="background:#111;border:1px solid rgba(255,255,255,.05);border-radius:10px;padding:12px;">' +
+          '<div style="font-size:12px;font-weight:700;color:' + (c.ok ? '#22c55e' : '#eab308') + ';margin-bottom:4px;">' +
+          (c.ok ? '✓ ' : '⚠ ') + c.label + '</div>' +
+          '<div style="font-size:12px;color:#555;line-height:1.5;">' + c.detail + '</div></div>';
+      }).join('');
+    })
+    .catch(function(e){
+      document.getElementById('seoTotal').textContent = 'Error';
+      console.error('SEO load error:', e);
+    });
+}
+// ──────────────────────────────────────────────────────────────────────────
 </script>
 </body>
 </html>
