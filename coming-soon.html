@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Coming Soon — The Illest Supply</title>
+<meta name="robots" content="noindex,nofollow"/>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;background:#080808;color:#fff;font-family:'Inter',system-ui,-apple-system,sans-serif;overflow:hidden;}
+  .cs-wrap{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 20px;text-align:center;position:relative;}
+  .cs-wrap::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 50% 40%, rgba(201,169,110,0.06) 0%, transparent 70%);pointer-events:none;}
+  .cs-logo{width:90px;height:90px;object-fit:contain;mix-blend-mode:screen;animation:rock 3s ease-in-out infinite;margin-bottom:32px;filter:brightness(1.1);}
+  @keyframes rock{0%{transform:rotate(-5deg);}50%{transform:rotate(5deg);}100%{transform:rotate(-5deg);}}
+  .cs-brand{font-size:clamp(11px,3vw,13px);letter-spacing:0.28em;font-weight:700;color:#c9a96e;text-transform:uppercase;margin-bottom:18px;}
+  .cs-heading{font-size:clamp(38px,10vw,72px);font-weight:900;letter-spacing:-0.02em;line-height:1;color:#fff;text-transform:uppercase;margin-bottom:16px;}
+  .cs-sub{font-size:clamp(14px,4vw,17px);color:#888;font-weight:400;letter-spacing:0.02em;margin-bottom:44px;max-width:340px;}
+  .cs-form{display:flex;flex-direction:column;gap:12px;width:100%;max-width:360px;}
+  .cs-input-row{display:flex;gap:10px;width:100%;}
+  .cs-input{flex:1;background:#111;border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:15px 18px;font-size:14px;color:#fff;outline:none;transition:border-color .2s;min-width:0;font-family:inherit;}
+  .cs-input::placeholder{color:#444;}
+  .cs-input:focus{border-color:rgba(201,169,110,0.5);}
+  .cs-input.error{border-color:rgba(255,80,80,0.6);}
+  .cs-btn{background:#fff;color:#000;border:none;border-radius:10px;padding:15px 22px;font-size:13px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;transition:opacity .15s;white-space:nowrap;font-family:inherit;flex-shrink:0;}
+  .cs-btn:hover{opacity:0.88;}
+  .cs-btn:disabled{opacity:0.4;cursor:not-allowed;}
+  @media(max-width:380px){.cs-input-row{flex-direction:column;}.cs-btn{width:100%;}}
+  .cs-error{font-size:12px;color:#ff6b6b;letter-spacing:0.03em;display:none;margin-top:-4px;}
+  .cs-error.show{display:block;}
+  .cs-success{display:none;flex-direction:column;align-items:center;gap:12px;animation:fadeUp .4s ease forwards;}
+  .cs-success.show{display:flex;}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+  .cs-success-icon{width:48px;height:48px;border-radius:50%;background:rgba(201,169,110,0.12);border:1px solid rgba(201,169,110,0.3);display:flex;align-items:center;justify-content:center;font-size:22px;}
+  .cs-success-text{font-size:15px;font-weight:700;color:#fff;letter-spacing:0.02em;}
+  .cs-success-sub{font-size:13px;color:#666;}
+  .cs-footer{position:fixed;bottom:20px;left:0;right:0;text-align:center;font-size:11px;color:#333;letter-spacing:0.06em;}
+  .cs-footer a{color:#444;text-decoration:none;}
+</style>
+</head>
+<body>
+<div class="cs-wrap">
+  <img class="cs-logo" src="https://media.base44.com/images/public/6a21ea02495f72afbc2ec54c/409f6a116_918D9A7E-D61E-4658-A7B6-5DF1F8B5AC78.png" alt="The Illest Supply"/>
+  <div class="cs-brand">The Illest Supply</div>
+  <h1 class="cs-heading">Coming Soon</h1>
+  <p class="cs-sub" id="csSub">Drop your email to get first access.</p>
+  <div class="cs-form" id="csForm">
+    <div class="cs-input-row">
+      <input class="cs-input" id="csEmail" type="email" placeholder="your@email.com" autocomplete="email" inputmode="email" onkeydown="if(event.key==='Enter')csSubmit()"/>
+      <button class="cs-btn" id="csBtn" onclick="csSubmit()">Notify Me</button>
+    </div>
+    <div class="cs-error" id="csError"></div>
+  </div>
+  <div class="cs-success" id="csSuccess">
+    <div class="cs-success-icon">&#10003;</div>
+    <div class="cs-success-text">You're locked in.</div>
+    <div class="cs-success-sub">We'll notify you first.</div>
+  </div>
+</div>
+<div class="cs-footer">&copy; 2026 The Illest Supply &middot; <a href="https://www.instagram.com/theillestsupply" target="_blank">@theillestsupply</a></div>
+<script>
+var API = 'https://superagent-bc2ec54c.base44.app/functions/adminApi';
+function csSubmit() {
+  var emailEl = document.getElementById('csEmail');
+  var btnEl   = document.getElementById('csBtn');
+  var errEl   = document.getElementById('csError');
+  var email   = emailEl.value.trim();
+  errEl.className = 'cs-error';
+  emailEl.classList.remove('error');
+  if (!email) { showError('Please enter your email.'); return; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showError("That doesn't look like a valid email."); return; }
+  btnEl.disabled = true;
+  btnEl.textContent = '...';
+  fetch(API + '?action=submitComingSoonEmail', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: email })
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(data) {
+    if (data.error) {
+      showError(data.error);
+      btnEl.disabled = false;
+      btnEl.textContent = 'Notify Me';
+    } else {
+      document.getElementById('csForm').style.display = 'none';
+      document.getElementById('csSub').style.display = 'none';
+      document.getElementById('csSuccess').className = 'cs-success show';
+    }
+  })
+  .catch(function() {
+    showError('Something went wrong. Try again.');
+    btnEl.disabled = false;
+    btnEl.textContent = 'Notify Me';
+  });
+}
+function showError(msg) {
+  var errEl = document.getElementById('csError');
+  document.getElementById('csEmail').classList.add('error');
+  errEl.textContent = msg;
+  errEl.className = 'cs-error show';
+}
+</script>
+</body>
+</html>
